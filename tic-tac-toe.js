@@ -7,11 +7,12 @@ let currentPlayer = 'X';
 // ゲームが続行中、終了
 let isGameActive = true;
 
+
 // メッセージ要素を取得
-const messageElement = document.getElementById('message');
+const messageElement = document.getElementById('info__message');
 
 // ボタンエレメントを取得
-const buttonElement = document.getElementById('restartButton');
+const buttonElement = document.getElementById('info__btn__restart');
 
 // 勝利時の条件を配列に保存
 const winnerConditions = [
@@ -34,7 +35,7 @@ function makeMove(index) {
   board[index] = currentPlayer;
 
   // それぞれのセルの要素にX,Oを追加して画面に表示
-  document.getElementById(`cell-${index}`).innerHTML = currentPlayer;
+  document.getElementById(`board__cell-${index}`).innerHTML = currentPlayer;
 
   helperFunction();
 }
@@ -83,7 +84,7 @@ function helperFunction() {
 // ボタンが押されたら全てリセット
 function gameRestart() {
   for(let i = 0; i <= 8; i++) {
-    document.getElementById(`cell-${i}`).innerHTML = '';
+    document.getElementById(`board__cell-${i}`).innerHTML = '';
   }
   board = ['', '', '', '', '', '', '', '', ''];
   currentPlayer = 'X';
