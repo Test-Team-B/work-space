@@ -17,8 +17,8 @@ class Player {
 }
 
 class Game {
-    - checkGameStatus: String
-    - turnInfo: String
+    - gameStatus: String
+    - turnStatus: String
     - winnConditions: int[]
     - cpuInfo: String
 
