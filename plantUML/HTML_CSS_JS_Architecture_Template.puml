@@ -1,4 +1,4 @@
-@startuml
+@startuml HTML_CSS_JS_Architecture_Template
 
 ' HTMLファイルをnodeで作成し、"HTML"と名前をつける
 node "HTMLファイル" as HTML {
