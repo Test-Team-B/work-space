@@ -1,9 +1,26 @@
 /*　セルの中に表示される"Playwrite SK"というフォントをimportしました */
 @import url('https://fonts.googleapis.com/css2?family=Playwrite+SK:wght@100..400&display=swap');
 
+:root {
+  --bg-content-box: #e4e4d2cc;
+  --bg-content: #e7e8e1;
+
+  --bg-playerX: #007bff;
+  --bg-playerY: #dc3545;
+  --color-vs: rgb(129, 23, 23);
+
+  --bg-board: rgb(119, 38, 38);
+  --bg-board-cell: rgb(221, 221, 221);
+  --bg-board-cell-hover: #d8e0edcb; 
+
+  --bg-details: #0e110eaf;
+
+  --color-gray: gray;
+  --color-yellow: yellow;
+}
  
 .content-box {
-  background-color: #e4e4d2cc;
+  background-color: var(--bg-content-box);
   font-family: cursive, Arial, sans-serif;
   padding: 1.5rem;
   height: 100vh;
@@ -11,66 +28,98 @@
 
 .container {
   padding: 1.25rem;
-  background-color: #e7e8e1;
+  background-color: var(--bg-content);
   border-radius: 0.938rem;
   box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5);
 }
+
+
   
-/*** Scoreboard ***/
-.scoreboard {
+/*** Scoreboard section ***/
+#scoreboard {
   margin-bottom: 1.25rem;
   padding: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .scoreboard__player {
   width: 100%;
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-family: 'Times New Roman', Times, serif;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-#scoreboard__playerX {
-  background-color: #007bff;
+#scoreboard__X {
+  background-color: var(--bg-playerX);
   color: white;
   border-radius: 1.875rem 1.875rem 1.875rem 1.875rem;
-  text-align: end;
-  padding: 0 3.125rem 0 0;
+  border: solid 0.4rem #003cff;
+  box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5), inset 0 0 0.938rem rgba(0, 0, 0, 0.5);
+}
+  
+.scoreboard__X__mark {
+    font-family: "Playwrite SK", cursive;
+    color: var(--color-yellow);
 }
 
-#scoreboard__playerO {
-  background-color: #dc3545;
+#scoreboard__X__score {
+  color: black;
+}
+
+#scoreboard__O {
+  background-color: var(--bg-playerY);
   color: white;
   border-radius: 1.875rem 1.875rem 1.875rem 1.875rem;
-  text-align: start;
-  padding: 0 0 0 3.125rem;
+  border: solid 0.4rem rgb(218, 58, 26);
+  box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5), inset 0 0 0.938rem rgba(0, 0, 0, 0.5);
+}
+
+.scoreboard__O__mark {
+  font-family: "Playwrite SK", cursive;
+  color: var(--color-yellow);
+}
+
+#scoreboard__O__score {
+  color: black;
 }
 
 .scoreboard__vs {
   font-size: 1.5rem;
-  color: rgb(129, 23, 23);
+  color: var(--color-vs);
   padding: 0 0.625rem;
 }
 
-/*** Board & Cell ***/ 
-.board {
+
+
+/*** Board Section ***/ 
+.board__container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   height: 25rem;
   width: 25rem;
   gap: 0.4rem;
   padding: 0.4rem;
-  background-color: rgb(119, 38, 38);
+  background-color: var(--bg-board);
   border: solid 1.25rem rgb(119, 38, 38);
   box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5), inset 0 0 0.938rem rgba(0, 0, 0, 0.5);
   border-radius: 0.25rem;
 }
 
-.board__cell {
-  height: 139px;
+.board__container__cell {
+  min-height: 111.47px;
+  min-width: 111.47px;
+  max-width: 139px;
+  max-height: 139px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
-  background-color: rgb(221, 221, 221);
+  background-color: var(--bg-board-cell);
   cursor: pointer;
   border-radius: 50%;
   font-family: "Playwrite SK", cursive;
@@ -78,40 +127,132 @@
   font-weight: bold;
 }
 
-.board__cell:hover {
-  background-color: #d8e0edcb;
+.board__container__cell:hover {
+  background-color: var(--bg-board-cell-hover);
 }
 
-/*** Info ***/
+/*** Info section (message, button) ***/
 #info__message {
   font-family: "Playwrite SK", cursive;
   font-size: 2rem;
 }
 
+#info .info__btns button {
+  border: solid 5px var(--color-gray);
+  box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5), inset 0 0 0.938rem rgba(0, 0, 0, 0.5);
+  width: 78%;
+}
 
-/*** メディアクエリ ***/
-@media (max-width: 768px) {
-  .board {
+#info .info__btns button:hover {
+  transform: scale(1.1);
+}
+
+
+
+/*** User name section ***/
+#name-setting {
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-details);
+}
+
+#name-setting__board {
+  background-color: rgb(93, 29, 29);
+  height: 65%;
+  width: 60%;
+  border: solid 0.5rem rgb(64, 24, 24);
+  border-radius: 50%;
+  box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5), inset 0 0 0.938rem rgba(0, 0, 0, 0.5);
+  color: var(--color-yellow);
+}
+
+#name-setting #name-setting__board form input {
+  margin: 1.25rem;
+  font-size: 1rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 2rem;
+}
+
+::placeholder {
+  font-style: italic;
+}
+
+input[type="submit"]:hover {
+  transform: translateY(0.125rem);
+}
+
+/*** Media Query ***/
+
+/* widthが1000pxまで */
+@media (max-width: 1000px) {
+  .content-box {
+    height: 100vh;
+  }
+
+  .board__container {
     height: 350px;
     width: 350px;
   }
 
-  .scoreboard {
-    display: flex;
-    align-items: center;
+  .board__container__cell {
+    max-height: 94.81px; 
+    max-width: 94.81px; 
+    min-height: 89.46px; 
+    min-width: 89.46px; 
   }
 
-  .scoreboard__player {
-    width: 50%;
+  .scoreboard__player h2 {
+    font-size: 1rem;
+  }
+
+  #name-setting__board {
+    text-align: center;
+    width: 90%;
+    height: 60%;
   }
 }
 
-@media (max-width: 992px) {
-  .board {
-    height: 350px;
+/* widthが768px以下まで */
+@media (max-width: 768px) {
+  .content-box {
+    height: 100%;
   }
 
-  .board__cell {
-    height: 88px
+  #scoreboard {
+    flex-direction: row;
+  }
+
+  #info .info__btns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #name-setting__board h2 {
+    font-size: medium;
+  }
+
+  #name-setting #name-setting__board form input {
+    font-size: 0.6rem;
+    border-radius: 2rem;
+    width: 80%;
+  }
+}
+
+/* widthが600px以下まで */
+@media (max-width: 600px) {
+  .board {
+    height: 300px;
+    width: 300px;
+  }
+
+  .board__container__cell {
+    /* max-width: 78.14px;
+    max-height: 78.14px; */
+    min-width: 72.8px;
+    min-height: 72.8px;
   }
 }
