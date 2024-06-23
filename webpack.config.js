@@ -1,11 +1,12 @@
 const path = require('path');
 module.exports = {
     entry: {
-        bundle: './scripts/TicTacToe.ts'
+        bundle: './src/TicTacToe.ts'
     },
     output: {
         path: path.join(__dirname,'dist/js'),
-        filename: '[name].js'
+        filename: '[name].js',
+        path: path.resolve(__dirname, 'dist')
     },
     resolve: {
         extensions:['.ts','.js']
@@ -18,15 +19,25 @@ module.exports = {
     module: {
         rules: [
             {
-                test:/\.ts$/,loader:'ts-loader'
-            }
-        ]
+              test: /\.ts$/, // .tsファイルに対して
+              exclude: /node_modules/, // node_modulesは除外
+              use: [
+                {
+                  loader: 'babel-loader',
+                  options: {
+                    presets: ['@babel/preset-env'],
+                  },
+                },
+                'ts-loader', // ts-loaderは最後に実行
+              ],
+            },
+            {
+                test: /\.js$/, // .jsファイルに対して
+                enforce: 'pre',
+                use: ['source-map-loader'], // source-map-loaderを使用
+              },
+          ],
     },
     devtool: 'source-map', // ソースマップを有効にする
-    plugins: [
-        // ソースマップファイルを別ディレクトリに移動するためのプラグイン
-        new (require('webpack-source-map-support'))({
-            appendTo: 'source-maps' // ソースマップファイルをsource-mapsディレクトリに出力
-        })
-    ]
+    mode: 'development'
 }

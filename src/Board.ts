@@ -8,7 +8,7 @@ export class Board implements IBoard {
 
     protected winningCombinations: number[][];
 
-    constructor(size: number, parentElement: HTMLElement = document.getElementById('board')!) {
+    constructor(size: number, parentElement: HTMLElement = document.getElementById('board__container')!) {
         this.size = size;
         this.cells = [];
         this.winningCombinations = this.generateWinningCombinations(size);

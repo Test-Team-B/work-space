@@ -1,2 +1,2 @@
 "use strict";
-//# sourceMappingURL=IBoard.js.map
+Object.defineProperty(exports, "__esModule", { value: true });

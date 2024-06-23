@@ -38,7 +38,6 @@ export class Game implements IGame {
     private initializeGame(): void {
         this.board.clearBoard();
         this.board.addClickHandlers(this);
-        //document.getElementById('info__message')?.classList.add('hide');
         this.updateScores();
     }
 

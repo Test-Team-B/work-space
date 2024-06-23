@@ -1,2 +1,2 @@
 "use strict";
-//# sourceMappingURL=IGame.js.map
+Object.defineProperty(exports, "__esModule", { value: true });
