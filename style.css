@@ -5,16 +5,25 @@
   --bg-content-box: #e4e4d2cc;
   --bg-content: #e7e8e1;
 
+  /* scoreboard */
   --bg-playerX: #007bff;
-  --bg-playerY: #dc3545;
+  --bg-playerX-border: #003cff;
+  --bg-playerO: #dc3545;
+  --bg-playerO-border: rgb(218, 58, 26);
   --color-vs: rgb(129, 23, 23);
 
+  /* board */
   --bg-board: rgb(119, 38, 38);
   --bg-board-cell: rgb(221, 221, 221);
   --bg-board-cell-hover: #d8e0edcb; 
 
-  --bg-details: #0e110eaf;
+  /* name-setting */
+  --bg-name-setting: rgb(93, 29, 29);
+  --bg-name-setting-border: rgb(64, 24, 24);
+  --bg-box-shadow: rgba(0, 0, 0, 0.5);
 
+  --color-white: white;
+  --color-black: black;
   --color-gray: gray;
   --color-yellow: yellow;
 }
@@ -30,7 +39,7 @@
   padding: 1.25rem;
   background-color: var(--bg-content);
   border-radius: 0.938rem;
-  box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow);
 }
 
 
@@ -56,10 +65,10 @@
 
 #scoreboard__X {
   background-color: var(--bg-playerX);
-  color: white;
+  color: var(--color-white);
   border-radius: 1.875rem 1.875rem 1.875rem 1.875rem;
-  border: solid 0.4rem #003cff;
-  box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5), inset 0 0 0.938rem rgba(0, 0, 0, 0.5);
+  border: solid 0.4rem var(--bg-playerX-border);
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
 }
   
 .scoreboard__X__mark {
@@ -68,15 +77,15 @@
 }
 
 #scoreboard__X__score {
-  color: black;
+  color: var(--color-black);
 }
 
 #scoreboard__O {
-  background-color: var(--bg-playerY);
-  color: white;
+  background-color: var(--bg-playerO);
+  color: var(--color-white);
   border-radius: 1.875rem 1.875rem 1.875rem 1.875rem;
-  border: solid 0.4rem rgb(218, 58, 26);
-  box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5), inset 0 0 0.938rem rgba(0, 0, 0, 0.5);
+  border: solid 0.4rem var(--bg-playerO-border);
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
 }
 
 .scoreboard__O__mark {
@@ -85,7 +94,7 @@
 }
 
 #scoreboard__O__score {
-  color: black;
+  color: var(--bg-box-shadow);
 }
 
 .scoreboard__vs {
@@ -105,8 +114,8 @@
   gap: 0.4rem;
   padding: 0.4rem;
   background-color: var(--bg-board);
-  border: solid 1.25rem rgb(119, 38, 38);
-  box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5), inset 0 0 0.938rem rgba(0, 0, 0, 0.5);
+  border: solid 1.25rem var(--bg-board);
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
   border-radius: 0.25rem;
 }
 
@@ -139,7 +148,7 @@
 
 #info .info__btns button {
   border: solid 5px var(--color-gray);
-  box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5), inset 0 0 0.938rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
   width: 78%;
 }
 
@@ -160,12 +169,12 @@
 }
 
 #name-setting__board {
-  background-color: rgb(93, 29, 29);
+  background-color: var(--bg-name-setting);
   height: 65%;
   width: 60%;
-  border: solid 0.5rem rgb(64, 24, 24);
+  border: solid 0.5rem var(--bg-name-setting-border);
   border-radius: 50%;
-  box-shadow: 0 0 0.938rem rgba(0, 0, 0, 0.5), inset 0 0 0.938rem rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
   color: var(--color-yellow);
 }
 
