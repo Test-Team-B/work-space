@@ -1,0 +1,22 @@
+@startuml
+!theme hacker
+node "HTMLファイル" as HTML {
+    ' アンダーバー（_）の部分は反応しなかったので一本線にしてありますが、実際のコードは全て二つ連続した線(__)になっています。
+    component "セクション1(赤と青で囲われた各プレーヤーのnameとscore)\nID: scoreboard\nID1: scoreboard_X_name\nID2: scoreboard_X_score\nID3: scoreboard_O_name\nID4: scoreboard_O_score" as E1
+    component "セクション2(マルバツボードの各セル)\nID: board\nID & Class1: board_container_cell-0 & board_container_cell\nID & Class2: board_container_cell-1 & board_container_cell\nID & Class3: board_container_cell-2 & board_container_cell\nID & Class4: board_container_cell-3 & board_container_cell\nID & Class5: board_container_cell-4 & board_container_cell\nID & Class6: board_container_cell-5 & board_container_cell\nID & Class7: board_container_cell-6 & board_container_cell\nID & Class8: board_container_cell-7 & board_container_cell\nID & Class9: board_container_cell-8 & board_container_cell" as E2
+    component "セクション3（XorOのターンを表すメッセージと各ボタン）\nID: info\nID1: info_message\nID2: info_btn_start\nID3: info_btn_continue\nID4: info_btn_reset" as E3
+    component "セクション４（スタートボタンが押された時表示されるプレーヤーの名前登録ボード、\nsubmitが押されたら画面から消え、各名前がscoreboardに登録される）\nID: name-setting\nID1: name-setting_form_player1\nID2: name-setting_form_player2\nID3: name-setting_form_submit" as E4
+}
+
+node "CSSファイル" as CSS {
+    component "scoreboard section\n\n IDs: \n #scoreboard_X_name\n #scoreboard_X_score\n\n #scoreboard_O_name\n #scoreboard_O_score" as C1
+    component "board section\n\n 共通クラス: .board_container_cell\n\n IDs: \n #board_container_cell-0\n\n #board_container_cell-1\n\n #board_container_cell-2\n\n #board_container_cell-3\n\n #board_container_cell-4\n\n #board_container_cell-5\n\n #board_container_cell-6\n\n #board_container_cell-7\n\n #board_container_cell-8" as C2
+    component "info section\n\n IDs: \n #info_message\n\n #info_btn_start\n\n #info_btn_continue\n\n #info_btn_reset" as C3
+    component "name-setting section\n\n IDs: \n #name-setting_form_player1\n\n #iname-setting_form_player2\n\n #name-setting_form_submit" as C4
+}
+
+E1 -> C1
+E2 -> C2
+E3 -> C3
+E4 -> C4
+@enduml
