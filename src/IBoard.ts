@@ -8,8 +8,6 @@ export interface IBoard {
     markCell(cellIndex: number, mark: string): void;
     checkWin(): boolean;
     checkDraw(): boolean;
-    isCellEmpty(row: number, col: number): boolean;
     clearBoard(): void;
-    getBoard(): string[][];
     addClickHandlers(game: IGame): void;
 }

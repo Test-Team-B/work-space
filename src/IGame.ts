@@ -13,6 +13,6 @@ export interface IGame {
     switchPlayer(): void;
     handleEndGame(draw: boolean): void;
     updateScores(): void;
-    checkWin(): void;
-    checkDraw(): void;
+    checkWin(): boolean;
+    checkDraw(): boolean;
 }

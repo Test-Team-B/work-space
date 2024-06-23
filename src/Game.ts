@@ -4,16 +4,16 @@ import { IBoard } from "./IBoard";
 import { Player } from "./Player";
 import { Board } from "./Board"
 
-class Game implements IGame {
+export class Game implements IGame {
     public players: { [key: string]: IPlayer};
     public currentPlayer: IPlayer;
     public board: IBoard;
     public scores: { [key: string]: number};
 
-    constructor(boardSize: number) {
+    constructor(playerXName: string, playerOName: string, boardSize: number) {
         this.players = {
-            'X' : new Player('X'),
-            'O' : new Player('O')
+            'X' : new Player('X', playerXName),
+            'O' : new Player('O', playerOName)
         }
         this.currentPlayer = this.players['X'];
         this.board = new Board(boardSize);
