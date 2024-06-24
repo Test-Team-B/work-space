@@ -1,6 +1,6 @@
-import { IBoard } from "./IBoard";
-import { ICell } from "./ICell"
-import { IGame } from "./IGame";
+import { IBoard } from "./IBoard.js";
+import { ICell } from "./ICell.js"
+import { IGame } from "./IGame.js";
 
 export class Board implements IBoard {
     public cells: ICell[];
@@ -8,7 +8,10 @@ export class Board implements IBoard {
 
     protected winningCombinations: number[][];
 
-    constructor(size: number, parentElement: HTMLElement = document.getElementById('board__container')!) {
+    constructor(size: number, parentElement: HTMLElement | null = document.querySelector('.board__container')!) {
+        if (!parentElement) {
+            throw new Error("Parent element not found");
+        }
         this.size = size;
         this.cells = [];
         this.winningCombinations = this.generateWinningCombinations(size);
@@ -73,6 +76,7 @@ export class Board implements IBoard {
     public markCell(cellIndex: number, mark: string): void {
         this.cells[cellIndex].mark = mark;
         this.cells[cellIndex].element.classList.add(mark);
+        this.cells[cellIndex].element.textContent = mark;
     }
 
     // 勝者を判定する
@@ -113,9 +117,11 @@ export class Board implements IBoard {
 
     // ボードをクリアする
     public clearBoard(): void {
+        console.log(this.cells)
         this.cells.forEach(cell => {
             cell.mark = '';
             cell.element.classList.remove('X', 'O');
+            cell.element.textContent = '';
         });
     }
 }

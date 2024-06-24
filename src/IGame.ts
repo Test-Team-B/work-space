@@ -1,5 +1,5 @@
-import { IBoard } from "./IBoard";
-import { IPlayer } from "./IPlayer";
+import { IBoard } from "./IBoard.js";
+import { IPlayer } from "./IPlayer.js";
 
 export interface IGame {
     players: { [key: string]: IPlayer};

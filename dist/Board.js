@@ -1,5 +1,8 @@
 export class Board {
-    constructor(size, parentElement = document.getElementById('board__container')) {
+    constructor(size, parentElement = document.querySelector('.board__container')) {
+        if (!parentElement) {
+            throw new Error("Parent element not found");
+        }
         this.size = size;
         this.cells = [];
         this.winningCombinations = this.generateWinningCombinations(size);
@@ -54,6 +57,7 @@ export class Board {
     markCell(cellIndex, mark) {
         this.cells[cellIndex].mark = mark;
         this.cells[cellIndex].element.classList.add(mark);
+        this.cells[cellIndex].element.textContent = mark;
     }
     // 勝者を判定する
     // 勝者条件のどれかの配列(some)、マークが存在し全て同じ(every)
@@ -93,9 +97,11 @@ export class Board {
     }
     // ボードをクリアする
     clearBoard() {
+        console.log(this.cells);
         this.cells.forEach(cell => {
             cell.mark = '';
             cell.element.classList.remove('X', 'O');
+            cell.element.textContent = '';
         });
     }
 }

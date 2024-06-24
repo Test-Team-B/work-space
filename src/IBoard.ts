@@ -1,5 +1,5 @@
-import { ICell } from './ICell'
-import { IGame } from './IGame'
+import { ICell } from './ICell.js'
+import { IGame } from './IGame.js'
 
 export interface IBoard {
     cells: ICell[];

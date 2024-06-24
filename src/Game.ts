@@ -1,8 +1,8 @@
-import { IGame } from "./IGame";
-import { IPlayer } from "./IPlayer";
-import { IBoard } from "./IBoard";
-import { Player } from "./Player";
-import { Board } from "./Board"
+import { IGame } from "./IGame.js";
+import { IPlayer } from "./IPlayer.js";
+import { IBoard } from "./IBoard.js";
+import { Player } from "./Player.js";
+import { Board } from "./Board.js"
 
 export class Game implements IGame {
     public players: { [key: string]: IPlayer};
@@ -65,7 +65,7 @@ export class Game implements IGame {
         if (draw) {
             winningMessageTextElement.innerText = 'Draw!';
         } else {
-            winningMessageTextElement.innerText = `${this.currentPlayer} Wins!`;
+            winningMessageTextElement.innerText = `${this.currentPlayer.name} Wins!`;
             this.scores[this.currentPlayer.mark]++;
             this.updateScores();
         }
@@ -74,7 +74,7 @@ export class Game implements IGame {
     // スコアボードの更新
     public updateScores(): void {
         document.getElementById('scoreboard__X__score')!.innerText = `${this.scores['X']}`;
-        document.getElementById('scoreboard__O__score')!.innerText = `${this.scores['0']}`;
+        document.getElementById('scoreboard__O__score')!.innerText = `${this.scores['O']}`;
     }
 
     // カプセル化、勝ち判定

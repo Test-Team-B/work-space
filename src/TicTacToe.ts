@@ -1,4 +1,4 @@
-import { Game } from './Game';
+import { Game } from './Game.js';
 
 const boardSize = 3
 

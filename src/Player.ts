@@ -1,4 +1,4 @@
-import { IPlayer } from "./IPlayer";
+import { IPlayer } from "./IPlayer.js";
 
 export class Player implements IPlayer {
     public name: string;
