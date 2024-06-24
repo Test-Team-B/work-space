@@ -10,23 +10,34 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 class TicTacToe {
+    private submitButton: HTMLElement;
     private startGameButton: HTMLElement;
     private continueButton: HTMLElement;
     private resetButton: HTMLElement;
+    private nameBoard: HTMLElement;
     private game: Game | null = null;
 
 
     constructor() {
+        this.submitButton = document.getElementById('name-setting__form__submit')!;
         this.startGameButton = document.getElementById('info__btn__start')!;
         this.continueButton = document.getElementById('info__btn__continue')!;
         this.resetButton = document.getElementById('info__btn__reset')!;
+        this.nameBoard = document.getElementById('name-setting')!;
     }
 
     // 各ボタンにクリックイベントを付与する
     public init(): void {
+        this.submitButton.addEventListener('click', () => this.submitName());
         this.startGameButton.addEventListener('click', () => this.startGame());
         this.resetButton.addEventListener('click', () => this.resetGame());
         this.continueButton.addEventListener('click', () => this.continueGame());
+    }
+
+    private submitName(): void {
+        this.startGame();
+        this.nameBoard.classList.remove('d-flex');
+        this.nameBoard.classList.add('d-none');
     }
 
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
