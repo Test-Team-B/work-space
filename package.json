@@ -1,0 +1,13 @@
+{
+  "name": "work-space",
+  "version": "1.0.0",
+  "description": "Tic-Tac-Tao",
+  "main": "tic-tac-toe.js",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
