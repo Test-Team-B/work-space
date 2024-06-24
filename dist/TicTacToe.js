@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const Game_1 = require("./Game");
+import { Game } from './Game.js';
 const boardSize = 3;
 // HTML の初期文書が完全に読み込まれた時点でイベントを発生させる
 // TicTacToeインスタンスの作成、初期化
@@ -25,7 +23,7 @@ class TicTacToe {
     startGame() {
         const playerXName = document.getElementById('name-setting__form__player1').value || 'Player X';
         const playerOName = document.getElementById('name-setting__form__player2').value || 'Player O';
-        this.game = new Game_1.Game(playerXName, playerOName, boardSize);
+        this.game = new Game(playerXName, playerOName, boardSize);
         this.game.startGame();
     }
     // ゲームをコンティニュする、カプセル化

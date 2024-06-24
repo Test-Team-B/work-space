@@ -1,16 +1,13 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Game = void 0;
-const Player_1 = require("./Player");
-const Board_1 = require("./Board");
-class Game {
+import { Player } from "./Player.js";
+import { Board } from "./Board.js";
+export class Game {
     constructor(playerXName, playerOName, boardSize) {
         this.players = {
-            'X': new Player_1.Player('X', playerXName),
-            'O': new Player_1.Player('O', playerOName)
+            'X': new Player('X', playerXName),
+            'O': new Player('O', playerOName)
         };
         this.currentPlayer = this.players['X'];
-        this.board = new Board_1.Board(boardSize);
+        this.board = new Board(boardSize);
         this.scores = {
             'X': 0,
             'O': 0
@@ -73,4 +70,3 @@ class Game {
         return this.board.checkDraw();
     }
 }
-exports.Game = Game;

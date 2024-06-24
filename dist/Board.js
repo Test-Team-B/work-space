@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Board = void 0;
-class Board {
+export class Board {
     constructor(size, parentElement = document.getElementById('board__container')) {
         this.size = size;
         this.cells = [];
@@ -102,4 +99,3 @@ class Board {
         });
     }
 }
-exports.Board = Board;
