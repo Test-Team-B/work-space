@@ -21,6 +21,8 @@ export class Game implements IGame {
             'X': 0,
             'O': 0
         };
+
+        this.updateScoreBoardNames()
     }
 
     // スコアをリセットしゲームを初期化
@@ -75,6 +77,12 @@ export class Game implements IGame {
     public updateScores(): void {
         document.getElementById('scoreboard__X__score')!.innerText = `${this.scores['X']}`;
         document.getElementById('scoreboard__O__score')!.innerText = `${this.scores['O']}`;
+    }
+
+     // スコアボードの名前を更新
+    private updateScoreBoardNames(): void {
+        document.getElementById('scoreboard__X__name')!.innerText = this.players['X'].name;
+        document.getElementById('scoreboard__O__name')!.innerText = this.players['O'].name;
     }
 
     // カプセル化、勝ち判定

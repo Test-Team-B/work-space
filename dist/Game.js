@@ -12,6 +12,7 @@ export class Game {
             'X': 0,
             'O': 0
         };
+        this.updateScoreBoardNames();
     }
     // スコアをリセットしゲームを初期化
     startGame() {
@@ -60,6 +61,11 @@ export class Game {
     updateScores() {
         document.getElementById('scoreboard__X__score').innerText = `${this.scores['X']}`;
         document.getElementById('scoreboard__O__score').innerText = `${this.scores['O']}`;
+    }
+    // スコアボードの名前を更新
+    updateScoreBoardNames() {
+        document.getElementById('scoreboard__X__name').innerText = this.players['X'].name;
+        document.getElementById('scoreboard__O__name').innerText = this.players['O'].name;
     }
     // カプセル化、勝ち判定
     checkWin() {
