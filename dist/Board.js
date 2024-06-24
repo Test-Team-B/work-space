@@ -9,6 +9,10 @@ export class Board {
         this.createCells(parentElement);
     }
     // 勝利条件を動的に実装
+    // index = i × num_cols + j
+    // i: 行インデックス
+    // j: 列インデックス
+    // num_cols: 列の数
     generateWinningCombinations(size) {
         const combinations = [];
         // 行
