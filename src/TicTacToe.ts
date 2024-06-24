@@ -28,27 +28,39 @@ class TicTacToe {
 
     // 各ボタンにクリックイベントを付与する
     public init(): void {
-        this.submitButton.addEventListener('click', () => this.submitName());
-        this.startGameButton.addEventListener('click', () => this.startGame());
+        this.submitButton.addEventListener('click', (e) => this.submitName(e));
+        this.startGameButton.addEventListener('click', () => this.manualStartGame());
         this.resetButton.addEventListener('click', () => this.resetGame());
         this.continueButton.addEventListener('click', () => this.continueGame());
     }
+    // プレイヤー名を取得する
+    public getPlayerNames(): { playerXName: string, playerOName: string } {
+        const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement).value || 'Player X';
+        const playerOName = (document.getElementById('name-setting__form__player2') as HTMLInputElement).value || 'Player O';
+        return { playerOName, playerXName};
+    }
 
-    private submitName(): void {
-        this.startGame();
+    // 名前入力フォームでスタートボタンを押したらフォームが消えゲームがスタートする
+    private submitName(e: Event): void {
+        e.preventDefault(); // フォームの送信を防ぐ
+        this.manualStartGame();
         this.nameBoard.classList.remove('d-flex');
         this.nameBoard.classList.add('d-none');
     }
 
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
-    private startGame(): void {
-        const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement).value || 'Player X';
-        const playerOName = (document.getElementById('name-setting__form__player2') as HTMLInputElement).value || 'Player O';
+    private startGame(playerXName: string, playerOName: string): void {
         this.game = new Game(playerXName, playerOName, boardSize);
         this.game.startGame();
     }
 
-    // ゲームをコンティニュする、カプセル化
+    // ゲームスタート
+    private manualStartGame(): void {
+        const { playerXName, playerOName } = this.getPlayerNames();
+        this.startGame(playerXName, playerOName);
+    }
+
+    // ゲームをコンティニューする、カプセル化
     private continueGame(): void {
         if (this.game) {
             this.game.continueGame();
