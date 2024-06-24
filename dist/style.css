@@ -108,7 +108,7 @@
 /*** Board Section ***/ 
 .board__container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* grid-template-columns: repeat(3, 1fr); */
   height: 25rem;
   width: 25rem;
   gap: 0.4rem;
