@@ -117,7 +117,6 @@ export class Board implements IBoard {
 
     // ボードをクリアする
     public clearBoard(): void {
-        console.log(this.cells)
         this.cells.forEach(cell => {
             cell.mark = '';
             cell.element.classList.remove('X', 'O');

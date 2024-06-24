@@ -97,7 +97,6 @@ export class Board {
     }
     // ボードをクリアする
     clearBoard() {
-        console.log(this.cells);
         this.cells.forEach(cell => {
             cell.mark = '';
             cell.element.classList.remove('X', 'O');
