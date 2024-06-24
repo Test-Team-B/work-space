@@ -19,6 +19,10 @@ export class Board implements IBoard {
     }
 
     // 勝利条件を動的に実装
+    // index = i × num_cols + j
+        // i: 行インデックス
+        // j: 列インデックス
+        // num_cols: 列の数
     private generateWinningCombinations(size: number): number[][] {
         const combinations: number[][] = [];
 
