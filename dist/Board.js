@@ -83,6 +83,7 @@ export class Board {
                     }
                     else {
                         game.switchPlayer();
+                        game.winningMessageTextElement.innerText = `${game._currentPlayer.name}'s Turn`;
                     }
                 }
             }, { once: true }); // １度目のクリックだけにイベントが発生するように設定

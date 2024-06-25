@@ -11,6 +11,7 @@ export class Game {
             'X': 0,
             'O': 0
         };
+        this._winningMessageTextElement = document.getElementById('info__message');
         this.updateScoreBoardNames();
     }
     // スコアをリセットしゲームを初期化
@@ -18,12 +19,13 @@ export class Game {
         this.resetScores();
         this.initializeGame();
     }
-    // ゲームだけ初期化,スコアはそのまま
+    // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     continueGame() {
         this.initializeGame();
     }
     // ゲームを初期化
     initializeGame() {
+        this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         this._board.clearBoard();
         this._board.addClickHandlers(this);
         this.updateScores();
@@ -46,12 +48,11 @@ export class Game {
     }
     // ゲーム結果の表示、スコアの更新
     handleEndGame(draw) {
-        const winningMessageTextElement = document.getElementById('info__message');
         if (draw) {
-            winningMessageTextElement.innerText = 'Draw!';
+            this.winningMessageTextElement.innerText = 'Draw!';
         }
         else {
-            winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
+            this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
             this._scores[this._currentPlayer.mark]++;
             this.updateScores();
         }
@@ -86,6 +87,9 @@ export class Game {
     }
     get scores() {
         return this._scores;
+    }
+    get winningMessageTextElement() {
+        return this._winningMessageTextElement;
     }
     // セッター
     set currentPlayers(player) {

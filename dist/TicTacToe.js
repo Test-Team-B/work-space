@@ -18,7 +18,7 @@ class TicTacToe {
     // 各ボタンにクリックイベントを付与する
     init() {
         this.submitButton.addEventListener('click', (e) => this.submitName(e));
-        this.startGameButton.addEventListener('click', () => this.manualStartGame());
+        // this.startGameButton.addEventListener('click', () => this.manualStartGame());
         this.resetButton.addEventListener('click', () => this.resetGame());
         this.continueButton.addEventListener('click', () => this.continueGame());
     }
@@ -31,7 +31,8 @@ class TicTacToe {
     // 名前入力フォームでスタートボタンを押したらフォームが消えゲームがスタートする
     submitName(e) {
         e.preventDefault(); // フォームの送信を防ぐ
-        this.manualStartGame();
+        const { playerXName, playerOName } = this.getPlayerNames();
+        this.startGame(playerXName, playerOName);
         this.nameBoard.classList.remove('d-flex');
         this.nameBoard.classList.add('d-none');
     }
@@ -41,10 +42,10 @@ class TicTacToe {
         this.game.startGame();
     }
     // ゲームスタート
-    manualStartGame() {
-        const { playerXName, playerOName } = this.getPlayerNames();
-        this.startGame(playerXName, playerOName);
-    }
+    // private manualStartGame(): void {
+    //     const { playerXName, playerOName } = this.getPlayerNames();
+    //     this.startGame(playerXName, playerOName);
+    // }
     // ゲームをコンティニューする、カプセル化
     continueGame() {
         if (this.game) {

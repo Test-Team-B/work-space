@@ -5,6 +5,7 @@ export class Game {
     private _currentPlayer: { name: string, mark: string };
     private _board: Board;
     private _scores: { [key: string]: number};
+    private _winningMessageTextElement: HTMLElement;
 
     constructor(playerXName: string, playerOName: string, boardSize: number) {
         this._players = {
@@ -17,7 +18,7 @@ export class Game {
             'X': 0,
             'O': 0
         };
-
+        this._winningMessageTextElement = document.getElementById('info__message')!;
         this.updateScoreBoardNames()
     }
 
@@ -27,13 +28,14 @@ export class Game {
         this.initializeGame();
     }
 
-    // ゲームだけ初期化,スコアはそのまま
+    // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     public continueGame(): void {
         this.initializeGame();
     }
-
+    
     // ゲームを初期化
     private initializeGame(): void {
+        this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         this._board.clearBoard();
         this._board.addClickHandlers(this);
         this.updateScores();
@@ -59,11 +61,10 @@ export class Game {
 
     // ゲーム結果の表示、スコアの更新
     public handleEndGame(draw: boolean): void {
-        const winningMessageTextElement = document.getElementById('info__message')!;
         if (draw) {
-            winningMessageTextElement.innerText = 'Draw!';
+            this.winningMessageTextElement.innerText = 'Draw!';
         } else {
-            winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
+            this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
             this._scores[this._currentPlayer.mark]++;
             this.updateScores();
         }
@@ -92,28 +93,32 @@ export class Game {
     }
 
     // ゲッター
-    public get players() {
+    get players() {
         return this._players;
     }
     
-    public get currentPlayer() {
+    get currentPlayer() {
         return this._currentPlayer;
     }
 
-    public get board() {
+    get board() {
         return this._board;
     }
 
-    public get scores() {
+    get scores() {
         return this._scores;
     }
 
+    get winningMessageTextElement() {
+        return this._winningMessageTextElement
+    }
+
     // セッター
-    public set currentPlayers(player: { name: string, mark: string }) {
+    set currentPlayers(player: { name: string, mark: string }) {
         this._currentPlayer = player;
     }
 
-    public set board(board: Board) {
+    set board(board: Board) {
         this._board = board;
     }
 }
