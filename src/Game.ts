@@ -1,23 +1,19 @@
-import { IGame } from "./IGame.js";
-import { IPlayer } from "./IPlayer.js";
-import { IBoard } from "./IBoard.js";
-import { Player } from "./Player.js";
 import { Board } from "./Board.js"
 
-export class Game implements IGame {
-    public players: { [key: string]: IPlayer};
-    public currentPlayer: IPlayer;
-    public board: IBoard;
-    public scores: { [key: string]: number};
+export class Game {
+    private _players: { [key: string]: { name: string, mark: string}};
+    private _currentPlayer: { name: string, mark: string };
+    private _board: Board;
+    private _scores: { [key: string]: number};
 
     constructor(playerXName: string, playerOName: string, boardSize: number) {
-        this.players = {
-            'X' : new Player('X', playerXName),
-            'O' : new Player('O', playerOName)
+        this._players = {
+            'X' : { name: playerXName, mark: 'X' },
+            'O' : { name: playerOName, mark: 'O' }
         }
-        this.currentPlayer = this.players['X'];
-        this.board = new Board(boardSize);
-        this.scores = {
+        this._currentPlayer = this._players['X'];
+        this._board = new Board(boardSize);
+        this._scores = {
             'X': 0,
             'O': 0
         };
@@ -38,14 +34,14 @@ export class Game implements IGame {
 
     // ゲームを初期化
     private initializeGame(): void {
-        this.board.clearBoard();
-        this.board.addClickHandlers(this);
+        this._board.clearBoard();
+        this._board.addClickHandlers(this);
         this.updateScores();
     }
 
     // スコアをリセット
     private resetScores(): void {
-        this.scores = {
+        this._scores = {
             'X': 0,
             'O': 0
         };
@@ -58,7 +54,7 @@ export class Game implements IGame {
 
     // プレイヤー交代
     public switchPlayer(): void {
-        this.currentPlayer = this.currentPlayer.mark === 'X' ? this.players['O'] : this.players['X'];
+        this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
     }
 
     // ゲーム結果の表示、スコアの更新
@@ -67,31 +63,57 @@ export class Game implements IGame {
         if (draw) {
             winningMessageTextElement.innerText = 'Draw!';
         } else {
-            winningMessageTextElement.innerText = `${this.currentPlayer.name} Wins!`;
-            this.scores[this.currentPlayer.mark]++;
+            winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
+            this._scores[this._currentPlayer.mark]++;
             this.updateScores();
         }
     }
 
     // スコアボードの更新
     public updateScores(): void {
-        document.getElementById('scoreboard__X__score')!.innerText = `${this.scores['X']}`;
-        document.getElementById('scoreboard__O__score')!.innerText = `${this.scores['O']}`;
+        document.getElementById('scoreboard__X__score')!.innerText = `${this._scores['X']}`;
+        document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
     }
 
      // スコアボードの名前を更新
     private updateScoreBoardNames(): void {
-        document.getElementById('scoreboard__X__name')!.innerText = this.players['X'].name;
-        document.getElementById('scoreboard__O__name')!.innerText = this.players['O'].name;
+        document.getElementById('scoreboard__X__name')!.innerText = this._players['X'].name;
+        document.getElementById('scoreboard__O__name')!.innerText = this._players['O'].name;
     }
 
     // カプセル化、勝ち判定
     public checkWin(): boolean {
-        return this.board.checkWin();
+        return this._board.checkWin();
     }
 
     // カプセル化、引き分け判定
     public checkDraw(): boolean {
-        return this.board.checkDraw();
+        return this._board.checkDraw();
+    }
+
+    // ゲッター
+    public get players() {
+        return this._players;
+    }
+    
+    public get currentPlayer() {
+        return this._currentPlayer;
+    }
+
+    public get board() {
+        return this._board;
+    }
+
+    public get scores() {
+        return this._scores;
+    }
+
+    // セッター
+    public set currentPlayers(player: { name: string, mark: string }) {
+        this._currentPlayer = player;
+    }
+
+    public set board(board: Board) {
+        this._board = board;
     }
 }
