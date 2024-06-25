@@ -5,6 +5,9 @@
   --bg-content-box: #e4e4d2cc;
   --bg-content: #e7e8e1;
 
+  /* navbar */
+  --bg-nav-item: rgb(172, 172, 172);
+
   /* scoreboard */
   --bg-playerX: #007bff;
   --bg-playerX-border: #003cff;
@@ -17,9 +20,10 @@
   --bg-board-cell: rgb(221, 221, 221);
   --bg-board-cell-hover: #d8e0edcb; 
 
-  /* name-setting */
-  --bg-name-setting: rgb(93, 29, 29);
-  --bg-name-setting-border: rgb(64, 24, 24);
+  /* options & name-setting  */
+  --bg-menu: #0e110eaf;
+  --bg-menu-board: rgb(93, 29, 29);
+  --bg-menu-board-border: rgb(64, 24, 24);
   --bg-box-shadow: rgba(0, 0, 0, 0.5);
 
   --color-white: white;
@@ -27,20 +31,67 @@
   --color-gray: gray;
   --color-yellow: yellow;
 }
- 
-.content-box {
+
+:root > body {
+  /* font-family: cursive, Arial, sans-serif; */
+  font-family: 'Times New Roman', Times, serif;
   background-color: var(--bg-content-box);
-  font-family: cursive, Arial, sans-serif;
-  padding: 1.5rem;
-  height: 100vh;
+  /* width: 100vw; */
+  /* padding: 1.5rem; */
+  /* height: 100vh; */
+  /* overflow: visible; */
 }
 
-.container {
+/* navbar */
+.navbar {
+  background-color: var(--bg-board);
+  color: var(--bg-white);
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.navbar .sidebar{
+  background-color: rgb(119, 38, 38, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.navbar .sidebar h5 {
+  color: var(--color-yellow);
+}
+
+.nav-item {
+  padding-right: 0;
+}
+
+.nav-item:hover {
+  background-color: var(--bg-nav-item);
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 1rem var(--bg-box-shadow);
+  transform: scale(1.2);
+}
+
+@media (max-width: 991px) {
+  .offcanvas-body .nav-item:hover {
+    text-align: center;
+    transform: scale(1.1);
+    margin-right: 0px;
+    width: 100%;
+  }
+}
+
+.main-container {
+  margin: 0 2rem;
+  padding: 2rem;
+  background-color: var(--bg-content);
+  border: solid 1rem #c1c899;
+  border-radius: 0.938rem;
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow);
+}
+
+/* .container {
   padding: 1.25rem;
   background-color: var(--bg-content);
   border-radius: 0.938rem;
   box-shadow: 0 0 0.938rem var(--bg-box-shadow);
-}
+} */
 
 
   
@@ -158,32 +209,40 @@
 
 
 
-/*** User name section ***/
-#name-setting {
+/*** Menu ***/
+.menu {
   justify-content: center;
   align-items: center;
   position: absolute;
   height: 100vh;
   width: 100vw;
-  background-color: var(--bg-details);
+  background-color: var(--bg-menu);
 }
 
-#name-setting__board {
-  background-color: var(--bg-name-setting);
-  height: 65%;
-  width: 60%;
-  border: solid 0.5rem var(--bg-name-setting-border);
-  border-radius: 50%;
-  box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
+.menu__board {
+  height: 80%;
+  width: 80%; 
+  text-align: center;
+  background-color: var(--bg-menu-board);
   color: var(--color-yellow);
+  border: solid 1rem var(--bg-menu-board-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
 }
 
-#name-setting #name-setting__board form input {
+.menu__board__title {
+  margin-bottom: 5rem;
+}
+
+#name-setting .menu__board form input {
   margin: 1.25rem;
   font-size: 1rem;
   padding: 0.625rem 1.25rem;
   border-radius: 2rem;
+  width: 100%;
 }
+
+
 
 ::placeholder {
   font-style: italic;
@@ -192,6 +251,53 @@
 input[type="submit"]:hover {
   transform: translateY(0.125rem);
 }
+
+/*** options ***/
+#options h1{
+  width: 80%;
+}
+
+.options__audio-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  margin-bottom: 4rem;
+}
+
+#options__audio {
+  width: 60%;
+}
+
+.options__click-sound-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  margin-bottom: 4rem;
+}
+
+.options__click-sound {
+  width: 60%;
+}
+
+.options__level-selection-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+}
+
+
+#options__level-selection {
+  background-color: antiquewhite;
+  border-radius: 35px;
+  padding: 0.6rem;
+  font-weight: bold;
+  width: 50%;
+}
+
 
 /*** Media Query ***/
 
@@ -217,11 +323,6 @@ input[type="submit"]:hover {
     font-size: 1rem;
   }
 
-  #name-setting__board {
-    text-align: center;
-    width: 90%;
-    height: 60%;
-  }
 }
 
 /* widthが768px以下まで */

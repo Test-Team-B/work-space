@@ -62,6 +62,7 @@ export class Board {
         this.cells[cellIndex].mark = mark;
         this.cells[cellIndex].element.classList.add(mark);
         this.cells[cellIndex].element.textContent = mark;
+        console.log(cells[cellIndex]);
     }
     // 勝者を判定する
     // 勝者条件のどれかの配列(some)、マークが存在し全て同じ(every)
@@ -84,6 +85,9 @@ export class Board {
     addClickHandlers(game) {
         this.cells.forEach((cell, index) => {
             cell.element.addEventListener('click', () => {
+                let mouseclick = new Audio();
+                mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
+                mouseclick.play();
                 if (!cell.mark && !game.checkWin() && !game.checkDraw()) {
                     game.board.markCell(index, game.currentPlayer.mark);
                     if (game.checkWin()) {
