@@ -85,6 +85,7 @@ export class Board {
                         game.switchPlayer();
                         game.winningMessageTextElement.innerText = `${game._currentPlayer.name}'s Turn`;
                     }
+                    game.saveGameStorage();
                 }
             }, { once: true }); // １度目のクリックだけにイベントが発生するように設定
         });
@@ -103,5 +104,19 @@ export class Board {
     }
     get size() {
         return this._size;
+    }
+    // ボードの状態の取得
+    getBoardState() {
+        console.log("getBoardStateを実行しました");
+        return this._cells.map(cell => ({ mark: cell.mark }));
+    }
+    // ボードの状態の復元
+    setBoardState(state) {
+        state.forEach((cellState, index) => {
+            this._cells[index].mark = cellState.mark;
+            this._cells[index].element.classList.add(cellState.mark);
+            this._cells[index].element.textContent = cellState.mark;
+        });
+        console.log("setBoardStateを実行しました");
     }
 }

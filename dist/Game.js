@@ -16,7 +16,8 @@ export class Game {
     }
     // スコアをリセットしゲームを初期化
     startGame() {
-        this.resetScores();
+        this.loadGameStorage;
+        console.log("startGame()からloadGameStorageを呼び出しました");
         this.initializeGame();
     }
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
@@ -97,5 +98,30 @@ export class Game {
     }
     set board(board) {
         this._board = board;
+    }
+    // localStorageに保存
+    saveGameStorage() {
+        const gameState = {
+            players: this._players,
+            currentPlayer: this._currentPlayer,
+            scores: this._scores,
+            board: this._board.getBoardState()
+        };
+        localStorage.setItem('ticTacToeState', JSON.stringify(gameState));
+        console.log("saveGameStorageを実行しました");
+        console.log("gameStorage : " + gameState);
+    }
+    // localStorageから取得
+    loadGameStorage() {
+        const gameState = localStorage.getItem('ticTacToeState');
+        if (gameState) {
+            const state = JSON.parse(gameState);
+            this._players = state.players;
+            this._currentPlayer = state.currentPlayer;
+            this._scores = state.scores;
+            this._board.setBoardState(state);
+        }
+        console.log("loadGameStorageを実行しました");
+        console.log("gameState : " + gameState);
     }
 }
