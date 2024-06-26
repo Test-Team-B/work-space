@@ -1,9 +1,8 @@
 import { Game } from './Game.js';
 
-const boardSize = 3
+const boardSize = 3;
 
-// HTML の初期文書が完全に読み込まれた時点でイベントを発生させる
-// TicTacToeインスタンスの作成、初期化
+// HTML の初期文書が完全に読み込まれた時点で初期化
 document.addEventListener('DOMContentLoaded', () => {
     const ticTacToe = new TicTacToe();
     ticTacToe.init();
@@ -11,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 class TicTacToe {
     private submitButton: HTMLElement;
-    private startGameButton: HTMLElement;
     private continueButton: HTMLElement;
     private resetButton: HTMLElement;
     private nameBoard: HTMLElement;
@@ -20,16 +18,16 @@ class TicTacToe {
 
     constructor() {
         this.submitButton = document.getElementById('name-setting__form__submit')!;
-        this.startGameButton = document.getElementById('info__btn__start')!;
         this.continueButton = document.getElementById('info__btn__continue')!;
         this.resetButton = document.getElementById('info__btn__reset')!;
         this.nameBoard = document.getElementById('name-setting')!;
+
+        this.loadPlayerName();
     }
 
     // 各ボタンにクリックイベントを付与する
     public init(): void {
         this.submitButton.addEventListener('click', (e) => this.submitName(e));
-        // this.startGameButton.addEventListener('click', () => this.manualStartGame());
         this.resetButton.addEventListener('click', () => this.resetGame());
         this.continueButton.addEventListener('click', () => this.continueGame());
     }
@@ -51,17 +49,21 @@ class TicTacToe {
         this.nameBoard.classList.add('d-none');
     }
 
+    // localStorageに保存された名前を読み取る
+    private loadPlayerName(): void {
+        const saveState = localStorage.getItem('ticTacToeState');
+        if (saveState) {
+            const state = JSON.parse(saveState);
+            (document.getElementById('name-setting__form__player1') as HTMLInputElement).value = state.players.X.name;
+            (document.getElementById('name-setting__form__player2') as HTMLInputElement).value = state.players.O.name;
+        }
+    }
+
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     private startGame(playerXName: string, playerOName: string): void {
         this.game = new Game(playerXName, playerOName, boardSize);
         this.game.startGame();
     }
-
-    // ゲームスタート
-    // private manualStartGame(): void {
-    //     const { playerXName, playerOName } = this.getPlayerNames();
-    //     this.startGame(playerXName, playerOName);
-    // }
 
     // ゲームをコンティニューする、カプセル化
     private continueGame(): void {
@@ -70,8 +72,9 @@ class TicTacToe {
         }
     }
 
-    // ゲームをリセットする、カプセル化
+    // ゲームをlocalStorageを含めリセットする、カプセル化
     private resetGame(): void {
+        localStorage.removeItem('ticTacToeState');
         if (this.game) {
             this.game.resetGame();
         }
