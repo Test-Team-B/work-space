@@ -120,10 +120,10 @@
 }
 
 .board__container__cell {
-  /* min-height: 111.47px; */
-  /* min-width: 111.47px; */
-  /* max-width: 139px; */
-  /* max-height: 139px; */
+  min-height: 111.47px;
+  min-width: 111.47px;
+  max-width: 139px;
+  max-height: 139px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,12 +206,12 @@ input[type="submit"]:hover {
     width: 350px;
   }
 
-  /* .board__container__cell {
+  .board__container__cell {
     max-height: 94.81px; 
     max-width: 94.81px; 
     min-height: 89.46px; 
     min-width: 89.46px; 
-  } */
+  }
 
   .scoreboard__player h2 {
     font-size: 1rem;
@@ -258,10 +258,10 @@ input[type="submit"]:hover {
     width: 300px;
   }
 
-  /* .board__container__cell {
-    max-width: 78.14px;
-    max-height: 78.14px;
+  .board__container__cell {
+    /* max-width: 78.14px;
+    max-height: 78.14px; */
     min-width: 72.8px;
     min-height: 72.8px;
-  } */
+  }
 }

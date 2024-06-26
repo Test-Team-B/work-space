@@ -107,16 +107,16 @@ export class Board {
     }
     // ボードの状態の取得
     getBoardState() {
-        console.log("getBoardStateを実行しました");
         return this._cells.map(cell => ({ mark: cell.mark }));
     }
     // ボードの状態の復元
     setBoardState(state) {
         state.forEach((cellState, index) => {
-            this._cells[index].mark = cellState.mark;
-            this._cells[index].element.classList.add(cellState.mark);
-            this._cells[index].element.textContent = cellState.mark;
+            if (cellState.mark) {
+                this._cells[index].mark = cellState.mark;
+                this._cells[index].element.classList.add(cellState.mark);
+                this._cells[index].element.textContent = cellState.mark;
+            }
         });
-        console.log("setBoardStateを実行しました");
     }
 }
