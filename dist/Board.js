@@ -62,7 +62,6 @@ export class Board {
         this.cells[cellIndex].mark = mark;
         this.cells[cellIndex].element.classList.add(mark);
         this.cells[cellIndex].element.textContent = mark;
-        console.log(cells[cellIndex]);
     }
     // 勝者を判定する
     // 勝者条件のどれかの配列(some)、マークが存在し全て同じ(every)
