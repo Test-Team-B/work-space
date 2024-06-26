@@ -73,6 +73,9 @@ export class Board {
     addClickHandlers(game) {
         this._cells.forEach((cell, index) => {
             cell.element.addEventListener('click', () => {
+                let mouseclick = new Audio();
+                mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
+                mouseclick.play();
                 if (!cell.mark && !game.checkWin() && !game.checkDraw()) {
                     game.board.markCell(index, game.currentPlayer.mark);
                     if (game.checkWin()) {
