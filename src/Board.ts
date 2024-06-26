@@ -51,7 +51,7 @@ export class Board {
     }
 
     // セルを作りクラスとインデックスを付与、マークとエレメントを保持する
-    protected createCells(parentElement: HTMLElement): void{
+    protected createCells(parentElement: HTMLElement): void {
         parentElement.style.gridTemplateColumns = `repeat(${this._size}, 1fr)`;
             parentElement.innerHTML = "";   // セルのクリア
 

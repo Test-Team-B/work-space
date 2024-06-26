@@ -1,15 +1,65 @@
-@startuml Class-Diagram
-folder "project-root" {
-    folder "scripts" {
-        file tictactoe.ts
-        file Game.ts
-        file Board.ts
-    }
-    file index.html
-    file styles.css
+@startuml work-space
+class TicTacToe {
+    - submitButton: HTMLElement;
+    - continueButton: HTMLElement;
+    - resetButton: HTMLElement;
+    - nameBoard: HTMLElement;
+    - game: Game | null = null;
+    + init(): void
+    + getPlayerNames(): { playerXName: string, playerOName: string }
+    - submitName(e: Event): void
+    - loadPlayerName(): void 
+    - startGame(playerXName: string, playerOName: string): void
+    - continueGame(): void
+    - resetGame(): void
 }
 
-tictactoe.ts --> Game.ts : アソシエーション
+class Game {
+    - _players: { [key: string]: { name: string, mark: string}};
+    - _currentPlayer: { name: string, mark: string };
+    - _board: Board;
+    - _scores: { [key: string]: number};
+    - _winningMessageTextElement: HTMLElement;
+    + startGame(): void
+    + continueGame(): void 
+    - initializeGame(): void 
+    - resetScores(): void 
+    + resetGame(): void 
+    + switchPlayer(): void 
+    + handleEndGame(draw: boolean): void 
+    + updateScores(): void 
+    - updateScoreBoardNames(): void 
+    + checkWin(): boolean 
+    get players() 
+    get currentPlayer() 
+    get board() 
+    get scores() 
+    get winningMessageTextElement() 
+    set currentPlayers(player: { name: string, mark: string }) 
+    set board(board: Board) 
+    + saveGameStorage() 
+    + loadGameStorage() 
+}
 
-Game.ts <..> Board.ts : 依存
+class Board {
+    - _cells: { mark: string, element: HTMLElement}[];
+    - _size: number;
+    # winningCombinations: number[][];
+    - generateWinningCombinations(size: number): number[][] 
+    # createCells(parentElement: HTMLElement): void 
+    - markCell(cellIndex: number, mark: string): void 
+    - checkWin(): boolean 
+    - checkDraw(): boolean 
+    - addClickHandlers(game: any): void 
+    - clearBoard(): void 
+    get cells() 
+    get size() 
+    - getBoardState(): { mark: string }[]
+    - setBoardState(state: { mark: string}[]): void 
+}
+
+TicTacToe --> Game : アソシエーション
+
+Game <..> Board : 依存
+
 @enduml
