@@ -3,14 +3,7 @@ folder "project-root" {
     folder "scripts" {
         file tictactoe.ts
         file Game.ts
-        file Player.ts
-        file UltimateBoard.ts
-        file MiniBoard.ts
-        file BaseBoard.ts
-        file IGame.ts
-        file IBoard.ts
-        file IPlayer.ts
-        file ICell.ts
+        file Board.ts
     }
     file index.html
     file styles.css
@@ -18,16 +11,5 @@ folder "project-root" {
 
 tictactoe.ts --> Game.ts : アソシエーション
 
-Game.ts ..|> IGame.ts : 実装
-BaseBoard.ts ..|> IBoard.ts : 実装
-Player.ts ..|> IPlayer.ts : 実装
-
-UltimateBoard.ts --|> BaseBoard.ts : 継承
-MiniBoard.ts --|> BaseBoard.ts : 継承
-
-UltimateBoard.ts *-- MiniBoard.ts : 構成
-IBoard.ts *-- ICell.ts : 構成
-
-IGame.ts ..> IPlayer.ts : 依存
-IGame.ts ..> UltimateBoard.ts : 依存
+Game.ts <..> Board.ts : 依存
 @enduml
