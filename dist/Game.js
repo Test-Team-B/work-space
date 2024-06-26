@@ -1,17 +1,17 @@
-import { Player } from "./Player.js";
 import { Board } from "./Board.js";
 export class Game {
     constructor(playerXName, playerOName, boardSize) {
-        this.players = {
-            'X': new Player('X', playerXName),
-            'O': new Player('O', playerOName)
+        this._players = {
+            'X': { name: playerXName, mark: 'X' },
+            'O': { name: playerOName, mark: 'O' }
         };
-        this.currentPlayer = this.players['X'];
-        this.board = new Board(boardSize);
-        this.scores = {
+        this._currentPlayer = this._players['X'];
+        this._board = new Board(boardSize);
+        this._scores = {
             'X': 0,
             'O': 0
         };
+        this._winningMessageTextElement = document.getElementById('info__message');
         this.updateScoreBoardNames();
     }
     // スコアをリセットしゲームを初期化
@@ -19,19 +19,20 @@ export class Game {
         this.resetScores();
         this.initializeGame();
     }
-    // ゲームだけ初期化,スコアはそのまま
+    // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     continueGame() {
         this.initializeGame();
     }
     // ゲームを初期化
     initializeGame() {
-        this.board.clearBoard();
-        this.board.addClickHandlers(this);
+        this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
+        this._board.clearBoard();
+        this._board.addClickHandlers(this);
         this.updateScores();
     }
     // スコアをリセット
     resetScores() {
-        this.scores = {
+        this._scores = {
             'X': 0,
             'O': 0
         };
@@ -43,36 +44,58 @@ export class Game {
     }
     // プレイヤー交代
     switchPlayer() {
-        this.currentPlayer = this.currentPlayer.mark === 'X' ? this.players['O'] : this.players['X'];
+        this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
     }
     // ゲーム結果の表示、スコアの更新
     handleEndGame(draw) {
-        const winningMessageTextElement = document.getElementById('info__message');
         if (draw) {
-            winningMessageTextElement.innerText = 'Draw!';
+            this.winningMessageTextElement.innerText = 'Draw!';
         }
         else {
-            winningMessageTextElement.innerText = `${this.currentPlayer.name} Wins!`;
-            this.scores[this.currentPlayer.mark]++;
+            this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
+            this._scores[this._currentPlayer.mark]++;
             this.updateScores();
         }
     }
     // スコアボードの更新
     updateScores() {
-        document.getElementById('scoreboard__X__score').innerText = `${this.scores['X']}`;
-        document.getElementById('scoreboard__O__score').innerText = `${this.scores['O']}`;
+        document.getElementById('scoreboard__X__score').innerText = `${this._scores['X']}`;
+        document.getElementById('scoreboard__O__score').innerText = `${this._scores['O']}`;
     }
     // スコアボードの名前を更新
     updateScoreBoardNames() {
-        document.getElementById('scoreboard__X__name').innerText = this.players['X'].name;
-        document.getElementById('scoreboard__O__name').innerText = this.players['O'].name;
+        document.getElementById('scoreboard__X__name').innerText = this._players['X'].name;
+        document.getElementById('scoreboard__O__name').innerText = this._players['O'].name;
     }
     // カプセル化、勝ち判定
     checkWin() {
-        return this.board.checkWin();
+        return this._board.checkWin();
     }
     // カプセル化、引き分け判定
     checkDraw() {
-        return this.board.checkDraw();
+        return this._board.checkDraw();
+    }
+    // ゲッター
+    get players() {
+        return this._players;
+    }
+    get currentPlayer() {
+        return this._currentPlayer;
+    }
+    get board() {
+        return this._board;
+    }
+    get scores() {
+        return this._scores;
+    }
+    get winningMessageTextElement() {
+        return this._winningMessageTextElement;
+    }
+    // セッター
+    set currentPlayers(player) {
+        this._currentPlayer = player;
+    }
+    set board(board) {
+        this._board = board;
     }
 }
