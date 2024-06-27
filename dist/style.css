@@ -64,7 +64,7 @@
   transform: scale(1.1);
 }
 
-/*** Main ***/
+/***---------------- Nomal mode ---------------------- ***/
 .main-container {
   margin: 0 1.8rem;
   padding: 1.2rem;
@@ -426,4 +426,47 @@ input[type="submit"]:hover {
     min-width: 72.8px;
     min-height: 72.8px; */
   } 
+}
+
+
+/*** -------------- Ultimate mode ------------ ***/
+
+/*** Ultimate board  ***/
+.ultimate-container {
+  margin-top: 4.063rem; /* 65px */
+}
+
+.ultimate__board__container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  height: 50rem; /* 800 x 800*/
+  width: 50rem; 
+  gap: 0.4rem;
+  padding: 0.4rem; 
+  background-color: var(--bg-board);
+  border: solid 1.25rem var(--bg-board);
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
+  border-radius: 0.25rem;
+}
+
+.ultimate__mini-board__container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /*ミニボードの枠も100%にしてあるので伸びるかもです  */
+  /* height: 16.625rem; 226 x 226 */
+  /* width: 16.625rem;    */
+  gap: 0.1rem;
+  background-color: var(--bg-board);
+}
+
+.ultimate__mini-board-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: var(--bg-board-cell);
+}
+
+.ultimate__mini-board-cell:hover {
+  background-color: var(--bg-board-cell-hover);
 }
