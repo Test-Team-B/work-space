@@ -197,10 +197,10 @@
 }
 
 .board__container__cell {
-  min-height: 111.47px;
+  /* min-height: 111.47px;
   min-width: 111.47px;
   max-width: 139px;
-  max-height: 139px;
+  max-height: 139px; */
   display: flex;
   align-items: center;
   justify-content: center;

@@ -41,6 +41,7 @@ export class Board {
     // セルを作りクラスとインデックスを付与、マークとエレメントを保持する
     createCells(parentElement) {
         parentElement.style.gridTemplateColumns = `repeat(${this._size}, 1fr)`;
+        parentElement.style.gridTemplateRows = `repeat(${this._size}, 1fr)`;
         parentElement.innerHTML = ""; // セルのクリア
         for (let i = 0; i < this._size * this._size; i++) {
             const cellElement = document.createElement('div');

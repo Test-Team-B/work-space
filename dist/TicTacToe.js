@@ -1,5 +1,5 @@
 import { Game } from './Game.js';
-const boardSize = 3;
+const boardSize = 5;
 // HTML の初期文書が完全に読み込まれた時点で初期化
 document.addEventListener('DOMContentLoaded', () => {
     const ticTacToe = new TicTacToe();
