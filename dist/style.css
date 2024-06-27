@@ -2,15 +2,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Playwrite+SK:wght@100..400&display=swap');
 
 :root {
-  --bg-content-box: #e4e4d2cc;
-  --bg-content: #e7e8e1;
+  /* --bg-body: #e4e4d2cc; */
+  /* --bg-body: #e4e4d2cc; */
+  --bg-content: linear-gradient(0.25turn, #3f87a6, #ebf8e1, #f69d3c);
 
   /* navbar */
   --bg-nav-item: rgb(172, 172, 172);
+  --bg-nav-slider: rgb(119, 38, 38, 0.5);
 
   /* scoreboard */
-  --bg-playerX: #007bff;
-  --bg-playerX-border: #003cff;
+  --bg-playerX: #003cff;
   --bg-playerO: #dc3545;
   --bg-playerO-border: rgb(218, 58, 26);
   --color-vs: rgb(129, 23, 23);
@@ -19,6 +20,10 @@
   --bg-board: rgb(119, 38, 38);
   --bg-board-cell: rgb(221, 221, 221);
   --bg-board-cell-hover: #d8e0edcb; 
+
+  /* info */
+  --bg-info: rgba(205, 213, 205, 0.486);
+  --bg-info-border-top: rgb(86, 6, 6, 0.8);
 
   /* options & name-setting  */
   --bg-menu: #0e110eaf;
@@ -33,24 +38,19 @@
 }
 
 :root > body {
-  /* font-family: cursive, Arial, sans-serif; */
   font-family: 'Times New Roman', Times, serif;
-  background-color: var(--bg-content-box);
-  /* width: 100vw; */
-  /* padding: 1.5rem; */
-  /* height: 100vh; */
-  /* overflow: visible; */
+  background: var(--bg-content);
 }
 
-/* navbar */
+/*** navbar ***/
 .navbar {
   background-color: var(--bg-board);
   color: var(--bg-white);
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.navbar .sidebar{
-  background-color: rgb(119, 38, 38, 0.5);
+.navbar .sidebar {
+  background-color: var(--bg-nav-slider);
   backdrop-filter: blur(10px);
 }
 
@@ -58,41 +58,36 @@
   color: var(--color-yellow);
 }
 
-.nav-item {
-  padding-right: 0;
-}
-
 .nav-item:hover {
   background-color: var(--bg-nav-item);
   box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 1rem var(--bg-box-shadow);
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
+/*** Main ***/
+.main-container {
+  margin: 0 1.8rem;
+  padding: 1.2rem;
+  background: var(--bg-content);
+  /* border: solid 0.625rem #c1c899; */
+  border: solid 0.625rem #9d9e98;
+  border-radius: 0.938rem;
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow);
+  }
+  
 @media (max-width: 991px) {
   .offcanvas-body .nav-item:hover {
     text-align: center;
     transform: scale(1.1);
-    margin-right: 0px;
     width: 100%;
   }
 }
 
-.main-container {
-  margin: 0 2rem;
-  padding: 2rem;
-  background-color: var(--bg-content);
-  border: solid 1rem #c1c899;
-  border-radius: 0.938rem;
-  box-shadow: 0 0 0.938rem var(--bg-box-shadow);
+@media (max-width: 768px) {
+  .main-container {
+    margin-top: 2.5rem;
+  }
 }
-
-/* .container {
-  padding: 1.25rem;
-  background-color: var(--bg-content);
-  border-radius: 0.938rem;
-  box-shadow: 0 0 0.938rem var(--bg-box-shadow);
-} */
-
 
   
 /*** Scoreboard section ***/
@@ -108,7 +103,7 @@
 .scoreboard__player {
   width: 100%;
   font-family: 'Times New Roman', Times, serif;
-  padding: 0.5rem;
+  padding: 0.8rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -118,7 +113,7 @@
   background-color: var(--bg-playerX);
   color: var(--color-white);
   border-radius: 1.875rem 1.875rem 1.875rem 1.875rem;
-  border: solid 0.4rem var(--bg-playerX-border);
+  border: solid 0.4rem var(--bg-playerX);
   box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
 }
   
@@ -129,6 +124,11 @@
 
 #scoreboard__X__score {
   color: var(--color-black);
+  background-color: var(--color-white);
+  border-radius: 1.25rem;
+  padding: 0 0.2rem;
+  border: solid 0.2rem var(--color-gray);
+  font-weight: bold;
 }
 
 #scoreboard__O {
@@ -143,9 +143,14 @@
   font-family: "Playwrite SK", cursive;
   color: var(--color-yellow);
 }
-
+ 
 #scoreboard__O__score {
-  color: var(--bg-box-shadow);
+  color: var(--color-black);
+  background-color: var(--color-white);
+  border-radius: 1.25rem;
+  padding: 0 0.2rem;
+  border: solid 0.2rem var(--color-gray);
+  font-weight: bold;
 }
 
 .scoreboard__vs {
@@ -154,7 +159,25 @@
   padding: 0 0.625rem;
 }
 
+@media (max-width: 768px) {
+  #scoreboard {
+    flex-direction: row;
+  }
 
+  .scoreboard__player h2 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .scoreboard__X__mark {
+     display: none;
+   } 
+ 
+   .scoreboard__O__mark {
+     display: none;
+   } 
+ }
 
 /*** Board Section ***/ 
 .board__container {
@@ -162,6 +185,9 @@
   /* grid-template-columns: repeat(3, 1fr); */
   height: 25rem;
   width: 25rem;
+  /* ボードのたてX横はセルの大きさによって変えた方が良さげ */
+  /* height: 100%;
+  width: 100%; */
   gap: 0.4rem;
   padding: 0.4rem;
   background-color: var(--bg-board);
@@ -178,29 +204,44 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 1.8rem;
   background-color: var(--bg-board-cell);
   cursor: pointer;
   border-radius: 50%;
   font-family: "Playwrite SK", cursive;
-  font-optical-sizing: auto;
-  font-weight: bold;
+  font-optical-sizing: none;
+  font-weight: bold; 
 }
 
 .board__container__cell:hover {
   background-color: var(--bg-board-cell-hover);
 }
 
-/*** Info section (message, button) ***/
+/*** Info section ***/
+#info {
+  padding: 1rem;
+  background-color: var(--bg-info);
+  border-top: solid 0.625rem var(--bg-info-border-top);
+  width: 100%;
+}
+
+
 #info__message {
-  font-family: "Playwrite SK", cursive;
+  /* font-family: "Playwrite SK", cursive; */
+  font-family: 'Times New Roman', Times, serif;
   font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.info__btns {
+  width: 80%;
 }
 
 #info .info__btns button {
-  border: solid 5px var(--color-gray);
+  border: solid 0.425rem var(--color-gray);
   box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
-  width: 78%;
+  font-size: 1.5rem;
+  width: 45%;
 }
 
 #info .info__btns button:hover {
@@ -208,8 +249,7 @@
 }
 
 
-
-/*** Menu ***/
+/*** Menu Display ***/
 .menu {
   justify-content: center;
   align-items: center;
@@ -219,9 +259,14 @@
   background-color: var(--bg-menu);
 }
 
-.menu__board {
-  height: 80%;
-  width: 80%; 
+.menu__board__title {
+  margin-bottom: 3rem;
+}
+
+/*** Navbar - Name Settings ***/
+#name-setting .name-setting__board {
+  height: 65%;
+  width: 60%; 
   text-align: center;
   background-color: var(--bg-menu-board);
   color: var(--color-yellow);
@@ -230,19 +275,14 @@
   box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
 }
 
-.menu__board__title {
-  margin-bottom: 5rem;
-}
-
-#name-setting .menu__board form input {
+#name-setting .name-setting__board form input {
   margin: 1.25rem;
-  font-size: 1rem;
+  font-size: 2rem;
   padding: 0.625rem 1.25rem;
-  border-radius: 2rem;
+  border-radius: 1rem;
   width: 100%;
+  font-weight: bold;
 }
-
-
 
 ::placeholder {
   font-style: italic;
@@ -252,7 +292,29 @@ input[type="submit"]:hover {
   transform: translateY(0.125rem);
 }
 
-/*** options ***/
+@media (max-width: 991px) {
+  #name-setting .name-setting__board {
+    height: 65%;
+    width: 80%; 
+  }
+
+  #name-setting .name-setting__board form input {
+    font-size: 1rem;
+  }
+}
+
+/*** Navbar - Options ***/
+#options .options__board {
+  height: 80%;
+  width: 70%; 
+  text-align: center;
+  background-color: var(--bg-menu-board);
+  color: var(--color-yellow);
+  border: solid 1rem var(--bg-menu-board-border);
+  border-radius: 1.25rem;
+  box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
+}
+
 #options h1{
   width: 80%;
 }
@@ -266,7 +328,7 @@ input[type="submit"]:hover {
 }
 
 #options__audio {
-  width: 60%;
+  width: 70%;
 }
 
 .options__click-sound-container {
@@ -277,7 +339,7 @@ input[type="submit"]:hover {
   margin-bottom: 4rem;
 }
 
-.options__click-sound {
+#options__click-sound {
   width: 60%;
 }
 
@@ -286,27 +348,35 @@ input[type="submit"]:hover {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 80%;
+  width: 90%;
 }
-
 
 #options__level-selection {
   background-color: antiquewhite;
-  border-radius: 35px;
-  padding: 0.6rem;
+  border-radius: 2.188rem;
+  padding: 0.7rem;
   font-weight: bold;
   width: 50%;
 }
 
-
-/*** Media Query ***/
-
-/* widthが1000pxまで */
-@media (max-width: 1000px) {
-  .content-box {
-    height: 100vh;
+@media (max-width: 991px) {
+  #options .options__board {
+    height: 80%;
+    width: 80%; 
   }
 
+  .options__audio-container {
+    margin-bottom: 2.5rem;
+  }
+  
+  .options__click-sound-container {
+    margin-bottom: 3rem;
+  }
+}
+
+/*** Media Query ***/
+/* widthが1000pxまで */
+@media (max-width: 1000px) {
   .board__container {
     height: 350px;
     width: 350px;
@@ -319,37 +389,28 @@ input[type="submit"]:hover {
     min-width: 89.46px; 
   }
 
-  .scoreboard__player h2 {
-    font-size: 1rem;
-  }
+  /* .scoreboard__player h2 {
+    font-size: 1.1rem;
+  } */
 
 }
 
 /* widthが768px以下まで */
 @media (max-width: 768px) {
-  .content-box {
+  /* .content-box {
     height: 100%;
-  }
+  } */
 
-  #scoreboard {
-    flex-direction: row;
-  }
 
-  #info .info__btns {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #name-setting__board h2 {
+  /* #name-setting__board h2 {
     font-size: medium;
-  }
+  } */
 
-  #name-setting #name-setting__board form input {
+  /* #name-setting #name-setting__board form input {
     font-size: 0.6rem;
     border-radius: 2rem;
     width: 80%;
-  }
+  } */
 }
 
 /* widthが600px以下まで */
@@ -361,8 +422,8 @@ input[type="submit"]:hover {
 
   .board__container__cell {
     /* max-width: 78.14px;
-    max-height: 78.14px; */
+    max-height: 78.14px; 
     min-width: 72.8px;
-    min-height: 72.8px;
-  }
+    min-height: 72.8px; */
+  } 
 }
