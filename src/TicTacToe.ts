@@ -28,8 +28,8 @@ class TicTacToe {
     // 各ボタンにクリックイベントを付与する
     public init(): void {
         this.submitButton.addEventListener('click', (e) => this.submitName(e));
-        this.resetButton.addEventListener('click', () => this.resetGame());
-        this.continueButton.addEventListener('click', () => this.continueGame());
+        this.resetButton.addEventListener('click', () => this._resetGame());
+        this.continueButton.addEventListener('click', () => this._continueGame());
     }
     // プレイヤー名を取得する
     public getPlayerNames(): { playerXName: string, playerOName: string } {
