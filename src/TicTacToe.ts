@@ -62,18 +62,18 @@ class TicTacToe {
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     private startGame(playerXName: string, playerOName: string): void {
         this.game = new Game(playerXName, playerOName, boardSize);
-        this.game.startGame();
+        this.game.initializeGame();
     }
 
     // ゲームをコンティニューする、カプセル化
-    private continueGame(): void {
+    private _continueGame(): void {
         if (this.game) {
             this.game.continueGame();
         }
     }
 
     // ゲームをlocalStorageを含めリセットする、カプセル化
-    private resetGame(): void {
+    private _resetGame(): void {
         localStorage.removeItem('ticTacToeState');
         if (this.game) {
             this.game.resetGame();

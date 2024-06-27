@@ -46,7 +46,7 @@ class TicTacToe {
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     startGame(playerXName, playerOName) {
         this.game = new Game(playerXName, playerOName, boardSize);
-        this.game.startGame();
+        this.game.initializeGame();
     }
     // ゲームをコンティニューする、カプセル化
     continueGame() {

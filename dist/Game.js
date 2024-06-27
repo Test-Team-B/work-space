@@ -14,21 +14,17 @@ export class Game {
         this._winningMessageTextElement = document.getElementById('info__message');
         this.updateScoreBoardNames();
     }
-    // スコアをリセットしゲームを初期化
-    startGame() {
-        this.initializeGame();
-    }
-    // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
-    continueGame() {
-        this.initializeGame();
-        this._board.clearBoard();
-    }
     // ゲームを初期化
     initializeGame() {
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         this.loadGameStorage();
         this._board.addClickHandlers(this);
         this.updateScores();
+    }
+    // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
+    continueGame() {
+        this.initializeGame();
+        this._board.clearBoard();
     }
     // スコアをリセット
     resetScores() {
@@ -41,7 +37,7 @@ export class Game {
     resetGame() {
         this._board.clearBoard();
         this.resetScores();
-        this.startGame();
+        this.initializeGame();
     }
     // プレイヤー交代
     switchPlayer() {

@@ -22,23 +22,19 @@ export class Game {
         this.updateScoreBoardNames()
     }
 
-    // スコアをリセットしゲームを初期化
-    public startGame(): void {
-        this.initializeGame();
-    }
-    
-    // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
-    public continueGame(): void {
-        this.initializeGame();
-        this._board.clearBoard();
-    }
-    
+
     // ゲームを初期化
-    private initializeGame(): void {
+    public initializeGame(): void {
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         this.loadGameStorage();
         this._board.addClickHandlers(this);
         this.updateScores();
+    }
+
+    // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
+    public continueGame(): void {
+        this.initializeGame();
+        this._board.clearBoard();
     }
 
     // スコアをリセット
@@ -53,7 +49,7 @@ export class Game {
     public resetGame(): void {
         this._board.clearBoard();
         this.resetScores();
-        this.startGame();
+        this.initializeGame();
     }
 
     // プレイヤー交代
