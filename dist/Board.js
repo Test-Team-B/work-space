@@ -1,9 +1,11 @@
 export class Board {
-    constructor(size, parentElement = document.querySelector('.board__container')) {
+    constructor(size, parentElement = document.querySelector('.board__container'), game) {
         this._size = size;
         this._cells = [];
+        this.game = game;
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement);
+        this.addClickHandlers();
     }
     // 勝利条件を動的に実装
     generateWinningCombinations(size) {
@@ -70,27 +72,31 @@ export class Board {
         return this._cells.every(_cell => _cell.mark !== '');
     }
     // クリックイベントの付与
-    addClickHandlers(game) {
+    addClickHandlers() {
         this._cells.forEach((cell, index) => {
-            cell.element.addEventListener('click', () => {
-                let mouseclick = new Audio();
-                mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
-                mouseclick.play();
-                if (!cell.mark && !game.checkWin() && !game.checkDraw()) {
-                    game.board.markCell(index, game.currentPlayer.mark);
-                    if (game.checkWin()) {
-                        game.handleEndGame(false);
+            // セルの要素からクリックイベントリスナーを削除
+            if (cell.clickHandler) {
+                cell.element.removeEventListener('click', cell.clickHandler);
+            }
+            const clickHandler = (event) => {
+                if (!cell.mark && !this.game.checkWin() && !this.game.checkDraw() && !this.game.isCPUThinking) {
+                    this.game.board.markCell(index, this.game.currentPlayer.mark);
+                    if (this.game.checkWin()) {
+                        this.game.handleEndGame(false);
                     }
-                    else if (game.checkDraw()) {
-                        game.handleEndGame(true);
+                    else if (this.game.checkDraw()) {
+                        this.game.handleEndGame(true);
                     }
                     else {
-                        game.switchPlayer();
-                        game.winningMessageTextElement.innerText = `${game._currentPlayer.name}'s Turn`;
+                        this.game.switchPlayer();
+                        this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
                     }
-                    game.saveGameStorage();
+                    this.game.saveGameStorage();
                 }
-            }, { once: true }); // １度目のクリックだけにイベントが発生するように設定
+            };
+            // イベントリスナーを再度追加
+            cell.element.addEventListener('click', clickHandler);
+            cell.clickHandler = clickHandler;
         });
     }
     // ボードをクリアする
@@ -99,7 +105,11 @@ export class Board {
             cell.mark = '';
             cell.element.classList.remove('X', 'O');
             cell.element.textContent = '';
+            if (cell.clickHandler) {
+                cell.element.removeEventListener('click', cell.clickHandler);
+            }
         });
+        this.addClickHandlers();
     }
     // ゲッター
     get cells() {
