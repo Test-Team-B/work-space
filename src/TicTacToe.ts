@@ -28,14 +28,14 @@ class TicTacToe {
     // 各ボタンにクリックイベントを付与する
     public init(): void {
         this.submitButton.addEventListener('click', (e) => this.submitName(e));
-        this.resetButton.addEventListener('click', () => this.resetGame());
-        this.continueButton.addEventListener('click', () => this.continueGame());
+        this.resetButton.addEventListener('click', () => this._resetGame());
+        this.continueButton.addEventListener('click', () => this._continueGame());
     }
     // プレイヤー名を取得する
     public getPlayerNames(): { playerXName: string, playerOName: string } {
         const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement).value || 'Player X';
         const playerOName = (document.getElementById('name-setting__form__player2') as HTMLInputElement).value || 'Player O';
-        return { playerOName, playerXName};
+        return { playerOName, playerXName };
     }
 
     // 名前入力フォームでスタートボタンを押したらフォームが消えゲームがスタートする
