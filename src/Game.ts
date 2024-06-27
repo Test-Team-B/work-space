@@ -1,25 +1,32 @@
 import { Board } from "./Board.js"
 
 export class Game {
-    private _players: { [key: string]: { name: string, mark: string}};
-    private _currentPlayer: { name: string, mark: string };
+    private _players: { [key: string]: { name: string, mark: string, isCPU: boolean } };
+    private _currentPlayer: { name: string, mark: string, isCPU: boolean };
+    private _isCPUThinking: boolean = false;
     private _board: Board;
-    private _scores: { [key: string]: number};
+    private _scores: { [key: string]: number };
     private _winningMessageTextElement: HTMLElement;
 
-    constructor(playerXName: string, playerOName: string, boardSize: number) {
+    constructor(playerXName: string, playerOName: string, boardSize: number, isCPUOpponent: boolean = false) {
         this._players = {
-            'X' : { name: playerXName, mark: 'X' },
-            'O' : { name: playerOName, mark: 'O' }
+            'X': { name: playerXName, mark: 'X', isCPU: false },
+            'O': { name: playerOName, mark: 'O', isCPU: isCPUOpponent }
         }
         this._currentPlayer = this._players['X'];
-        this._board = new Board(boardSize);
+        this._board = new Board(boardSize, undefined, this);
         this._scores = {
             'X': 0,
             'O': 0
         };
         this._winningMessageTextElement = document.getElementById('info__message')!;
-        this.updateScoreBoardNames()
+        this.updateScoreBoardNames();
+        const boardContainer = document.querySelector('.board__container');
+        if (boardContainer instanceof HTMLElement) {
+            this._board = new Board(boardSize, boardContainer, this);
+        } else {
+            throw new Error("Board container element not found");
+        }
     }
 
 
@@ -27,7 +34,7 @@ export class Game {
     public initializeGame(): void {
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         this.loadGameStorage();
-        this._board.addClickHandlers(this);
+        this._board.addClickHandlers();
         this.updateScores();
     }
 
@@ -55,6 +62,35 @@ export class Game {
     // プレイヤー交代
     public switchPlayer(): void {
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
+
+        if (this._currentPlayer.isCPU) {
+            this.playCPUTurn();
+        }
+    }
+
+    public get isCPUThinking(): boolean {
+        return this._isCPUThinking;
+    }
+
+    private playCPUTurn(): void {
+        this._isCPUThinking = true;
+        setTimeout(() => {
+            const emptyCells = this._board.cells.filter(cell => !cell.mark);
+            if (emptyCells.length > 0) {
+                const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                const cellIndex = this._board.cells.indexOf(randomCell);
+                this._board.markCell(cellIndex, this._currentPlayer.mark);
+                if (this.checkWin()) {
+                    this.handleEndGame(false);
+                } else if (this.checkDraw()) {
+                    this.handleEndGame(true);
+                } else {
+                    this.switchPlayer();
+                }
+                this.saveGameStorage();
+                this._isCPUThinking = false;
+            }
+        }, 1000);
     }
 
     // ゲーム結果の表示、スコアの更新
@@ -74,7 +110,7 @@ export class Game {
         document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
     }
 
-     // スコアボードの名前を更新
+    // スコアボードの名前を更新
     private updateScoreBoardNames(): void {
         document.getElementById('scoreboard__X__name')!.innerText = this._players['X'].name;
         document.getElementById('scoreboard__O__name')!.innerText = this._players['O'].name;
@@ -112,7 +148,7 @@ export class Game {
     }
 
     // セッター
-    set currentPlayers(player: { name: string, mark: string }) {
+    set currentPlayers(player: { name: string, mark: string, isCPU: boolean }) {
         this._currentPlayer = player;
     }
 
