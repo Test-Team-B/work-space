@@ -66,14 +66,14 @@ class TicTacToe {
     }
 
     // ゲームをコンティニューする、カプセル化
-    private continueGame(): void {
+    private _continueGame(): void {
         if (this.game) {
             this.game.continueGame();
         }
     }
 
     // ゲームをlocalStorageを含めリセットする、カプセル化
-    private resetGame(): void {
+    private _resetGame(): void {
         localStorage.removeItem('ticTacToeState');
         if (this.game) {
             this.game.resetGame();
