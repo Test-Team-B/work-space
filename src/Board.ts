@@ -53,16 +53,16 @@ export class Board {
     // セルを作りクラスとインデックスを付与、マークとエレメントを保持する
     protected createCells(parentElement: HTMLElement): void{
         parentElement.style.gridTemplateColumns = `repeat(${this._size}, 1fr)`;
-        parentElement.innerHTML = "";   // セルのクリア
+            parentElement.innerHTML = "";   // セルのクリア
 
         for (let i = 0; i < this._size * this._size; i++) {
             const cellElement = document.createElement('div');
             cellElement.classList.add('board__container__cell');
             cellElement.dataset.ceeIndex = i.toString();
             parentElement.appendChild(cellElement);
+
             this._cells.push({mark : '', element: cellElement})
         }
-
     }
 
     // セルにマークをつける
@@ -100,6 +100,7 @@ export class Board {
                         game.switchPlayer();
                         game.winningMessageTextElement.innerText = `${game._currentPlayer.name}'s Turn`;
                     }
+                    game.saveGameStorage();
                 }
             }, { once: true });     // １度目のクリックだけにイベントが発生するように設定
         });
@@ -115,11 +116,27 @@ export class Board {
     }
 
     // ゲッター
-    public get cells() {
+    get cells() {
         return this._cells;
     }
 
-    public get size() {
+    get size() {
         return this._size;
+    }
+
+    // ボードの状態の取得
+    public getBoardState(): { mark: string }[]{
+        return this._cells.map(cell => ({ mark: cell.mark }));
+    }
+
+    // ボードの状態の復元
+    public setBoardState(state: { mark: string}[]): void {
+        state.forEach((cellState, index) => {
+            if (cellState.mark) {
+                this._cells[index].mark = cellState.mark;
+                this._cells[index].element.classList.add(cellState.mark);
+                this._cells[index].element.textContent = cellState.mark;
+            }
+        })
     }
 }
