@@ -17,8 +17,8 @@ class TicTacToe {
     // 各ボタンにクリックイベントを付与する
     init() {
         this.submitButton.addEventListener('click', (e) => this.submitName(e));
-        this.resetButton.addEventListener('click', () => this.resetGame());
-        this.continueButton.addEventListener('click', () => this.continueGame());
+        this.resetButton.addEventListener('click', () => this._resetGame());
+        this.continueButton.addEventListener('click', () => this._continueGame());
     }
     // プレイヤー名を取得する
     getPlayerNames() {
@@ -49,13 +49,13 @@ class TicTacToe {
         this.game.initializeGame();
     }
     // ゲームをコンティニューする、カプセル化
-    continueGame() {
+    _continueGame() {
         if (this.game) {
             this.game.continueGame();
         }
     }
     // ゲームをlocalStorageを含めリセットする、カプセル化
-    resetGame() {
+    _resetGame() {
         localStorage.removeItem('ticTacToeState');
         if (this.game) {
             this.game.resetGame();
