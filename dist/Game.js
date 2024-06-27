@@ -1,24 +1,32 @@
 import { Board } from "./Board.js";
 export class Game {
-    constructor(playerXName, playerOName, boardSize) {
+    constructor(playerXName, playerOName, boardSize, isCPUOpponent = false) {
+        this._isCPUThinking = false;
         this._players = {
-            'X': { name: playerXName, mark: 'X' },
-            'O': { name: playerOName, mark: 'O' }
+            'X': { name: playerXName, mark: 'X', isCPU: false },
+            'O': { name: playerOName, mark: 'O', isCPU: isCPUOpponent }
         };
         this._currentPlayer = this._players['X'];
-        this._board = new Board(boardSize);
+        this._board = new Board(boardSize, undefined, this);
         this._scores = {
             'X': 0,
             'O': 0
         };
         this._winningMessageTextElement = document.getElementById('info__message');
         this.updateScoreBoardNames();
+        const boardContainer = document.querySelector('.board__container');
+        if (boardContainer instanceof HTMLElement) {
+            this._board = new Board(boardSize, boardContainer, this);
+        }
+        else {
+            throw new Error("Board container element not found");
+        }
     }
     // ゲームを初期化
     initializeGame() {
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         this.loadGameStorage();
-        this._board.addClickHandlers(this);
+        this._board.addClickHandlers();
         this.updateScores();
     }
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
@@ -42,6 +50,34 @@ export class Game {
     // プレイヤー交代
     switchPlayer() {
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
+        if (this._currentPlayer.isCPU) {
+            this.playCPUTurn();
+        }
+    }
+    get isCPUThinking() {
+        return this._isCPUThinking;
+    }
+    playCPUTurn() {
+        this._isCPUThinking = true;
+        setTimeout(() => {
+            const emptyCells = this._board.cells.filter(cell => !cell.mark);
+            if (emptyCells.length > 0) {
+                const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                const cellIndex = this._board.cells.indexOf(randomCell);
+                this._board.markCell(cellIndex, this._currentPlayer.mark);
+                if (this.checkWin()) {
+                    this.handleEndGame(false);
+                }
+                else if (this.checkDraw()) {
+                    this.handleEndGame(true);
+                }
+                else {
+                    this.switchPlayer();
+                }
+                this.saveGameStorage();
+                this._isCPUThinking = false;
+            }
+        }, 1000);
     }
     // ゲーム結果の表示、スコアの更新
     handleEndGame(draw) {

@@ -1,14 +1,19 @@
+import { Game } from './Game';
+
 export class Board {
-    private _cells: { mark: string, element: HTMLElement}[];
+    private _cells: { mark: string, element: HTMLElement, clickHandler?: (event: MouseEvent) => void }[];
     private _size: number;
+    private game: Game;
 
     protected winningCombinations: number[][];
 
-    constructor(size: number, parentElement: HTMLElement | null = document.querySelector('.board__container')!) {
+    constructor(size: number, parentElement: HTMLElement | null = document.querySelector('.board__container')!, game: Game) {
         this._size = size;
         this._cells = [];
+        this.game = game;
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement!);
+        this.addClickHandlers();
     }
 
     // 勝利条件を動的に実装
@@ -53,7 +58,7 @@ export class Board {
     // セルを作りクラスとインデックスを付与、マークとエレメントを保持する
     protected createCells(parentElement: HTMLElement): void {
         parentElement.style.gridTemplateColumns = `repeat(${this._size}, 1fr)`;
-            parentElement.innerHTML = "";   // セルのクリア
+        parentElement.innerHTML = "";   // セルのクリア
 
         for (let i = 0; i < this._size * this._size; i++) {
             const cellElement = document.createElement('div');
@@ -61,7 +66,7 @@ export class Board {
             cellElement.dataset.ceeIndex = i.toString();
             parentElement.appendChild(cellElement);
 
-            this._cells.push({mark : '', element: cellElement})
+            this._cells.push({ mark: '', element: cellElement })
         }
     }
 
@@ -87,23 +92,30 @@ export class Board {
     }
 
     // クリックイベントの付与
-    public addClickHandlers(game: any): void {
+    public addClickHandlers(): void {
         this._cells.forEach((cell, index) => {
-            cell.element.addEventListener('click', () => {
-                if (!cell.mark && !game.checkWin() && !game.checkDraw()) {
-                    game.board.markCell(index, game.currentPlayer.mark);
-                    if (game.checkWin()) {
-                        game.handleEndGame(false);
-                    } else if (game.checkDraw()) {
-                        game.handleEndGame(true);
+            // セルの要素からクリックイベントリスナーを削除
+            if (cell.clickHandler) {
+                cell.element.removeEventListener('click', cell.clickHandler);
+            }
+            const clickHandler = (event: MouseEvent) => {
+                if (!cell.mark && !this.game.checkWin() && !this.game.checkDraw() && !this.game.isCPUThinking) {
+                    this.game.board.markCell(index, this.game.currentPlayer.mark);
+                    if (this.game.checkWin()) {
+                        this.game.handleEndGame(false);
+                    } else if (this.game.checkDraw()) {
+                        this.game.handleEndGame(true)
                     } else {
-                        game.switchPlayer();
-                        game.winningMessageTextElement.innerText = `${game._currentPlayer.name}'s Turn`;
+                        this.game.switchPlayer();
+                        this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
                     }
-                    game.saveGameStorage();
+                    this.game.saveGameStorage();
                 }
-            }, { once: true });     // １度目のクリックだけにイベントが発生するように設定
-        });
+            };
+            // イベントリスナーを再度追加
+            cell.element.addEventListener('click', clickHandler);
+            cell.clickHandler = clickHandler;
+        })
     }
 
     // ボードをクリアする
@@ -112,7 +124,11 @@ export class Board {
             cell.mark = '';
             cell.element.classList.remove('X', 'O');
             cell.element.textContent = '';
+            if (cell.clickHandler) {
+                cell.element.removeEventListener('click', cell.clickHandler);
+            }
         });
+        this.addClickHandlers();
     }
 
     // ゲッター
@@ -125,12 +141,12 @@ export class Board {
     }
 
     // ボードの状態の取得
-    public getBoardState(): { mark: string }[]{
+    public getBoardState(): { mark: string }[] {
         return this._cells.map(cell => ({ mark: cell.mark }));
     }
 
     // ボードの状態の復元
-    public setBoardState(state: { mark: string}[]): void {
+    public setBoardState(state: { mark: string }[]): void {
         state.forEach((cellState, index) => {
             if (cellState.mark) {
                 this._cells[index].mark = cellState.mark;
