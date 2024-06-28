@@ -22,7 +22,7 @@ class TicTacToe {
     }
     // プレイヤー名を取得する
     getPlayerNames() {
-        const isCPUOpponent = false;
+        const isCPUOpponent = true;
         const playerXName = document.getElementById('name-setting__form__player1').value || 'Player X';
         const playerOName = (isCPUOpponent) ? "CPU" : document.getElementById('name-setting__form__player2').value || 'Player O';
         return { playerOName, playerXName, isCPUOpponent };

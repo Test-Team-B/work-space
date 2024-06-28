@@ -34,7 +34,7 @@ class TicTacToe {
     }
     // プレイヤー名を取得する
     public getPlayerNames(): { playerXName: string, playerOName: string, isCPUOpponent: boolean } {
-        const isCPUOpponent = false;
+        const isCPUOpponent = true;
         const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement).value || 'Player X';
         const playerOName = (isCPUOpponent) ? "CPU" : (document.getElementById('name-setting__form__player2') as HTMLInputElement).value || 'Player O';
         return { playerOName, playerXName, isCPUOpponent };

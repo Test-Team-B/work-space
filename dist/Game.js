@@ -14,33 +14,31 @@ export class Game {
             'O': 0
         };
         this._winningMessageTextElement = document.getElementById('info__message');
-        this.updateScoreBoardNames();
         const boardContainer = document.querySelector('.board__container');
         const ultimateBoardContainer = document.querySelector('.ultimate__board__container');
-        if (!ultimateBoard) {
-            if (boardContainer instanceof HTMLElement) {
-                this._board = new Board(boardSize, boardContainer, this);
-            }
-            else {
-                throw new Error("Board container element not found");
-            }
+        if (ultimateBoard) {
+            this._board = new UltimateBoard(boardSize, ultimateBoardContainer, this);
         }
         else {
-            if (ultimateBoardContainer instanceof HTMLElement) {
-                this._board = new UltimateBoard(boardSize, ultimateBoardContainer, this);
-            }
-            else {
-                throw new Error("Ultimate Board container element not found");
-            }
+            this._board = new Board(boardSize, boardContainer, this);
         }
+        this.updateScoreBoardNames();
     }
     // ゲームを初期化
     initializeGame() {
+        console.log("initialize!!!");
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
-        this.loadGameStorage();
-        this._board.addClickHandlers();
+        // this.loadGameStorage();
+        if (this._board instanceof UltimateBoard) {
+            console.log("アルティメット・クリアボード・アドクリック");
+            // this._board.clearUltimateBoard();
+            // this._board.ultimateAddClickHandlers
+        }
+        else {
+            this._board.clearBoard();
+            this._board.addClickHandlers();
+        }
         this.updateScores();
-        console.log(this._board);
     }
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     continueGame() {
@@ -61,20 +59,51 @@ export class Game {
         this.initializeGame();
     }
     // プレイヤー交代
+    // public switchPlayer(): void {
+    //     this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
+    //     if (this._currentPlayer.isCPU) {
+    //         this.playCPUTurn();
+    //     }
+    // }
     switchPlayer() {
+        console.log(`Current Player before switch: ${this._currentPlayer.name} (isCPU: ${this._currentPlayer.isCPU})`);
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
+        console.log(`Current Player after switch: ${this._currentPlayer.name} (isCPU: ${this._currentPlayer.isCPU})`);
         if (this._currentPlayer.isCPU) {
+            console.log("CPU's turn");
             this.playCPUTurn();
+        }
+        else {
+            console.log("Human's turn");
         }
     }
     playCPUTurn() {
         this._isCPUThinking = true;
         setTimeout(() => {
-            const emptyCells = this._board.cells.filter(cell => !cell.mark);
+            let emptyCells = [];
+            if (this._board instanceof UltimateBoard) {
+                const boardIndex = this._board.currentBoardIndex !== null ? this._board.currentBoardIndex : Math.floor(Math.random() * this._board.miniBoards.length);
+                this._board.miniBoards[boardIndex].cells.forEach((cell, cellIndex) => {
+                    if (!cell.mark) {
+                        emptyCells.push({ boardIndex, cellIndex, cell });
+                    }
+                });
+            }
+            else {
+                emptyCells = this._board.cells
+                    .map((cell, index) => ({ boardIndex: 0, cellIndex: index, cell }))
+                    .filter(({ cell }) => !cell.mark);
+            }
             if (emptyCells.length > 0) {
                 const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                const cellIndex = this._board.cells.indexOf(randomCell);
-                this._board.markCell(cellIndex, this._currentPlayer.mark);
+                const { boardIndex, cellIndex } = randomCell;
+                if (this._board instanceof UltimateBoard) {
+                    console.log("アルティメットマーク");
+                    this._board.ultimateMarkCell(boardIndex, cellIndex, this._currentPlayer.mark);
+                }
+                else {
+                    this._board.markCell(cellIndex, this._currentPlayer.mark);
+                }
                 if (this.checkWin()) {
                     this.handleEndGame(false);
                 }
@@ -100,6 +129,8 @@ export class Game {
             this._scores[this._currentPlayer.mark]++;
             this.updateScores();
         }
+        console.log("ウィニングメッセージ");
+        console.log(this.winningMessageTextElement);
     }
     // スコアボードの更新
     updateScores() {

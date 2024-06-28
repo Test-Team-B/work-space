@@ -5,7 +5,7 @@ export class Board {
         this._game = game;
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement);
-        this.addClickHandlers();
+        this.addClickHandlers;
     }
     // 勝利条件を動的に実装
     generateWinningCombinations(size) {
@@ -48,22 +48,40 @@ export class Board {
         for (let i = 0; i < this._size * this._size; i++) {
             const cellElement = document.createElement('div');
             cellElement.classList.add('board__container__cell');
-            cellElement.dataset.ceeIndex = i.toString();
+            cellElement.dataset.cellIndex = i.toString();
             parentElement.appendChild(cellElement);
             this._cells.push({ mark: '', element: cellElement });
         }
     }
     // セルにマークをつける
     markCell(cellIndex, mark) {
+        console.log(`Marking cell ${cellIndex} with ${mark}`);
         this._cells[cellIndex].mark = mark;
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;
     }
     // 勝者を判定する
+    // public checkWin(): boolean {
+    //     console.log("t1")
+    //     console.log(this.game.currentPlayer)
+    //     return this.winningCombinations.some(combination => {
+    //         return combination.every(index => {
+    //             return this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
+    //         });
+    //     });
+    // }
     checkWin() {
+        console.log("Checking win for current player:", this.game.currentPlayer);
+        // セルの状態を出力
+        this._cells.forEach((cell, index) => {
+            console.log(`Cell ${index}: ${cell.mark}`);
+        });
         return this.winningCombinations.some(combination => {
+            console.log("Checking combination:", combination);
             return combination.every(index => {
-                return this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
+                const result = this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
+                console.log(`Index ${index}: ${result}`);
+                return result;
             });
         });
     }
@@ -73,18 +91,20 @@ export class Board {
     }
     // クリックイベントの付与
     addClickHandlers() {
+        console.log("Adding click handlers");
         this._cells.forEach((cell, index) => {
             // セルの要素からクリックイベントリスナーを削除
             if (cell.clickHandler) {
                 cell.element.removeEventListener('click', cell.clickHandler);
             }
             const clickHandler = (event) => {
-                if (!cell.mark && !this.game.checkWin() && !this.game.checkDraw() && !this.game.isCPUThinking) {
-                    this.game.board.markCell(index, this.game.currentPlayer.mark);
-                    if (this.game.checkWin()) {
+                console.log(`Cell ${index} clicked`);
+                if (!cell.mark && !this.checkWin() && !this.checkDraw() && !this.game.isCPUThinking) {
+                    this.markCell(index, this.game.currentPlayer.mark);
+                    if (this.checkWin()) {
                         this.game.handleEndGame(false);
                     }
-                    else if (this.game.checkDraw()) {
+                    else if (this.checkDraw()) {
                         this.game.handleEndGame(true);
                     }
                     else {
@@ -101,6 +121,7 @@ export class Board {
     }
     // ボードをクリアする
     clearBoard() {
+        console.log("Clearing board");
         this._cells.forEach(cell => {
             cell.mark = '';
             cell.element.classList.remove('X', 'O');
