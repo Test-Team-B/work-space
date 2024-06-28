@@ -31,7 +31,7 @@ navbarNameSettings.addEventListener('click',()=>{
 });
 
 const nameSettingBtn = document.getElementById('name-setting__btn-close');
-console.log(nameSettingBtn);
+// console.log(nameSettingBtn);
 nameSettingBtn.addEventListener('click', () => {
   if (nameSetting.classList.contains('d-none')) {
     nameSetting.classList.remove('d-none');
@@ -45,7 +45,7 @@ nameSettingBtn.addEventListener('click', () => {
 });
 
 const optionsBtn = document.getElementById('options__btn-close');
-console.log(optionsBtn);
+// console.log(optionsBtn);
 options.addEventListener('click', () => {
   if (options.classList.contains('d-none')) {
     options.classList.remove('d-none');
