@@ -183,6 +183,7 @@
 .board__container {
   display: grid;
   /* grid-template-columns: repeat(3, 1fr); */
+  grid-template-rows: repeat(3, 1fr);
   height: 25rem;
   width: 25rem;
   /* ボードのたてX横はセルの大きさによって変えた方が良さげ */
@@ -197,10 +198,10 @@
 }
 
 .board__container__cell {
-  min-height: 111.47px;
+  /* min-height: 111.47px;
   min-width: 111.47px;
   max-width: 139px;
-  max-height: 139px;
+  max-height: 139px; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -433,14 +434,30 @@ input[type="submit"]:hover {
 
 /*** Ultimate board  ***/
 .ultimate-container {
-  margin-top: 4.063rem; /* 65px */
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
 }
+
+#ultimate__board {
+  width: 80vh;
+  height: 80vh;
+}
+  
+  @media (max-width: 991px) {
+    #ultimate__board {
+      width: 80vw;
+      height: 80vw;
+    }
+  }
 
 .ultimate__board__container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  height: 50rem; /* 800 x 800*/
-  width: 50rem; 
+  grid-template-rows: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
   gap: 0.4rem;
   padding: 0.4rem; 
   background-color: var(--bg-board);
@@ -452,9 +469,7 @@ input[type="submit"]:hover {
 .ultimate__mini-board__container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  /*ミニボードの枠も100%にしてあるので伸びるかもです  */
-  /* height: 16.625rem; 226 x 226 */
-  /* width: 16.625rem;    */
+  grid-template-rows: repeat(3, 1fr);
   gap: 0.1rem;
   background-color: var(--bg-board);
 }
