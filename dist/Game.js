@@ -54,9 +54,6 @@ export class Game {
             this.playCPUTurn();
         }
     }
-    get isCPUThinking() {
-        return this._isCPUThinking;
-    }
     playCPUTurn() {
         this._isCPUThinking = true;
         setTimeout(() => {
@@ -73,6 +70,7 @@ export class Game {
                 }
                 else {
                     this.switchPlayer();
+                    this.winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
                 }
                 this.saveGameStorage();
                 this._isCPUThinking = false;
@@ -123,6 +121,9 @@ export class Game {
     }
     get winningMessageTextElement() {
         return this._winningMessageTextElement;
+    }
+    get isCPUThinking() {
+        return this._isCPUThinking;
     }
     // セッター
     set currentPlayers(player) {

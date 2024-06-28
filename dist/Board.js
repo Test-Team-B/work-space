@@ -60,7 +60,6 @@ export class Board {
         this._cells[cellIndex].element.textContent = mark;
     }
     // 勝者を判定する
-    // 勝者条件のどれかの配列(some)、マークが存在し全て同じ(every)
     checkWin() {
         return this.winningCombinations.some(combination => {
             return combination.every(index => {
@@ -68,7 +67,7 @@ export class Board {
             });
         });
     }
-    // 全てのセルが空ではない(every)
+    // 全てのセルが空ではない
     checkDraw() {
         return this._cells.every(_cell => _cell.mark !== '');
     }

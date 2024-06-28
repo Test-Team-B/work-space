@@ -2,9 +2,11 @@ import { Board } from "./Board.js";
 class ultimateBoard extends Board {
     constructor(size, parentElement = document.querySelector('#ultimate__board'), game) {
         super(size, parentElement, game);
-        this.miniBoards = this.createMiniBoards(size, parentElement);
+        this.miniBoards = [];
+        this.createUltimateBoards(size, parentElement);
     }
-    createMiniBoards(size, parentElement) {
+    // ultimateBoard の作成、miniBoardをsize個生成し ultimateBoardの grid に当てはめる
+    createUltimateBoards(size, parentElement) {
         parentElement.innerHTML = ''; // 親要素の中身を空に初期化
         parentElement.style.display = 'grid';
         parentElement.style.gridTemplateColumns = `repeat(${this.size}, 1fr)`;
@@ -17,18 +19,58 @@ class ultimateBoard extends Board {
             this.miniBoards.push(new Board(size, miniBoardElement, this.miniBoards[i].game));
         }
     }
-    markCell(cellIndex, mark) {
+    ultimateMarkCell(boardIndex, cellIndex, mark) {
+        this.miniBoards[boardIndex].markCell(cellIndex, mark);
     }
-    checkWin() {
+    // ultimateBoardの勝者判定
+    ultimateCheckWin() {
+        return this.winningCombinations.some(combination => {
+            return combination.every(boardIndex => {
+                return this.miniBoards[boardIndex].checkWin();
+            });
+        });
     }
-    checkDraw() {
+    ultimateCheckDraw() {
+        return this.miniBoards.every(miniBoard => miniBoard.checkDraw());
     }
-    addClickHandlers(game) {
+    ultimateAddClickHandlers() {
+        this.miniBoards.forEach((miniBoard, boardIndex) => {
+            // セルの要素からクリックイベントリスナーを削除
+            miniBoard.cells.forEach((cell, cellIndex) => {
+                if (cell.clickHandler) {
+                    cell.element.removeEventListener('click', cell.clickHandler);
+                }
+                const clickHandler = (event) => {
+                    if (!cell.mark && !this.game.checkWin() && !this.game.checkDraw() && !this.game.isCPUThinking) {
+                        this.game.board.markCell(cellIndex, this.game.currentPlayer.mark);
+                        if (this.game.checkWin()) {
+                            this.game.handleEndGame(false);
+                        }
+                        else if (this.game.checkDraw()) {
+                            this.game.handleEndGame(true);
+                        }
+                        else {
+                            this.game.switchPlayer();
+                            this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
+                        }
+                        this.game.saveGameStorage();
+                    }
+                };
+                // イベントリスナーを再度追加
+                cell.element.addEventListener('click', clickHandler);
+                cell.clickHandler = clickHandler;
+            });
+        });
     }
-    clearBoard() {
+    ultimateClearBoard() {
+        this.miniBoards.forEach(miniBoard => miniBoard.clearBoard());
     }
-    getBoardState() {
+    getUltimateBoardState() {
+        return this.miniBoards.map(miniBoard => miniBoard.getBoardState());
     }
-    setBoardState(state) {
+    setUltimateBoardState(state) {
+        state.forEach((miniBoardState, boardIndex) => {
+            this.miniBoards[boardIndex].setBoardState(miniBoardState);
+        });
     }
 }

@@ -37,7 +37,7 @@ export class Game {
         this._board.addClickHandlers();
         this.updateScores();
     }
-
+    
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     public continueGame(): void {
         this.initializeGame();
@@ -62,16 +62,12 @@ export class Game {
     // プレイヤー交代
     public switchPlayer(): void {
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
-
         if (this._currentPlayer.isCPU) {
             this.playCPUTurn();
         }
     }
 
-    public get isCPUThinking(): boolean {
-        return this._isCPUThinking;
-    }
-
+    
     private playCPUTurn(): void {
         this._isCPUThinking = true;
         setTimeout(() => {
@@ -86,13 +82,14 @@ export class Game {
                     this.handleEndGame(true);
                 } else {
                     this.switchPlayer();
+                    this.winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
                 }
                 this.saveGameStorage();
                 this._isCPUThinking = false;
             }
         }, 1000);
     }
-
+    
     // ゲーム結果の表示、スコアの更新
     public handleEndGame(draw: boolean): void {
         if (draw) {
@@ -103,29 +100,29 @@ export class Game {
             this.updateScores();
         }
     }
-
+    
     // スコアボードの更新
     public updateScores(): void {
         document.getElementById('scoreboard__X__score')!.innerText = `${this._scores['X']}`;
         document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
     }
-
+    
     // スコアボードの名前を更新
     private updateScoreBoardNames(): void {
         document.getElementById('scoreboard__X__name')!.innerText = this._players['X'].name;
         document.getElementById('scoreboard__O__name')!.innerText = this._players['O'].name;
     }
-
+    
     // カプセル化、勝ち判定
     public checkWin(): boolean {
         return this._board.checkWin();
     }
-
+    
     // カプセル化、引き分け判定
     public checkDraw(): boolean {
         return this._board.checkDraw();
     }
-
+    
     // ゲッター
     get players() {
         return this._players;
@@ -134,17 +131,21 @@ export class Game {
     get currentPlayer() {
         return this._currentPlayer;
     }
-
+    
     get board() {
         return this._board;
     }
-
+    
     get scores() {
         return this._scores;
     }
-
+    
     get winningMessageTextElement() {
         return this._winningMessageTextElement
+    }
+    
+    get isCPUThinking(): boolean {
+        return this._isCPUThinking;
     }
 
     // セッター
