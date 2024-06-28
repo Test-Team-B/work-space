@@ -1,4 +1,5 @@
 import { Game } from './Game.js';
+import { UltimateBoard } from './ultimateBoard.js';
 
 const boardSize = 3;
 
@@ -33,7 +34,7 @@ class TicTacToe {
     }
     // プレイヤー名を取得する
     public getPlayerNames(): { playerXName: string, playerOName: string, isCPUOpponent: boolean } {
-        const isCPUOpponent = true;
+        const isCPUOpponent = false;
         const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement).value || 'Player X';
         const playerOName = (isCPUOpponent) ? "CPU" : (document.getElementById('name-setting__form__player2') as HTMLInputElement).value || 'Player O';
         return { playerOName, playerXName, isCPUOpponent };
@@ -62,7 +63,8 @@ class TicTacToe {
     
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     private startGame(playerXName: string, playerOName: string, isCPUOpponent: boolean): void {
-        this.game = new Game(playerXName, playerOName, boardSize, isCPUOpponent);
+        const ultimateBoard = true;
+        this.game = new Game(playerXName, playerOName, boardSize, isCPUOpponent, ultimateBoard);
         this.game.initializeGame();
     }
 

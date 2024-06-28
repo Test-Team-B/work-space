@@ -1,22 +1,28 @@
 import { Board } from "./Board.js";
-class ultimateBoard extends Board {
+export class UltimateBoard extends Board {
     constructor(size, parentElement = document.querySelector('#ultimate__board'), game) {
         super(size, parentElement, game);
         this.miniBoards = [];
-        this.createUltimateBoards(size, parentElement);
+        this.createUltimateBoards(size, parentElement, game);
     }
     // ultimateBoard の作成、miniBoardをsize個生成し ultimateBoardの grid に当てはめる
-    createUltimateBoards(size, parentElement) {
+    createUltimateBoards(size, parentElement, game) {
         parentElement.innerHTML = ''; // 親要素の中身を空に初期化
         parentElement.style.display = 'grid';
-        parentElement.style.gridTemplateColumns = `repeat(${this.size}, 1fr)`;
-        parentElement.style.gridTemplateRows = `repeat(${this.size}, 1fr)`;
+        parentElement.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+        parentElement.style.gridTemplateRows = `repeat(${size}, 1fr)`;
         for (let i = 0; i < size * size; i++) {
             const miniBoardElement = document.createElement('div');
-            miniBoardElement.classList.add('ultimateBoard__container__cell');
+            miniBoardElement.classList.add('ultimate__mini-board__container');
             miniBoardElement.dataset.ceeIndex = i.toString();
             parentElement.appendChild(miniBoardElement);
-            this.miniBoards.push(new Board(size, miniBoardElement, this.miniBoards[i].game));
+            const miniBoard = new Board(size, miniBoardElement, game);
+            miniBoard.cells.forEach(cell => {
+                cell.element.classList.remove('board__container__cell');
+                cell.element.classList.add('ultimate__mini-board-cell');
+            });
+            this.miniBoards.push(miniBoard);
+            console.log(this.miniBoards);
         }
     }
     ultimateMarkCell(boardIndex, cellIndex, mark) {
@@ -36,7 +42,7 @@ class ultimateBoard extends Board {
     ultimateAddClickHandlers() {
         this.miniBoards.forEach((miniBoard, boardIndex) => {
             // セルの要素からクリックイベントリスナーを削除
-            miniBoard.cells.forEach((cell, cellIndex) => {
+            this.miniBoards[boardIndex].cells.forEach((cell, cellIndex) => {
                 if (cell.clickHandler) {
                     cell.element.removeEventListener('click', cell.clickHandler);
                 }

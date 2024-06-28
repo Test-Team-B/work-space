@@ -1,13 +1,14 @@
 import { Board } from "./Board.js";
+import { UltimateBoard } from "./ultimateBoard.js";
 export class Game {
-    constructor(playerXName, playerOName, boardSize, isCPUOpponent = false) {
+    constructor(playerXName, playerOName, boardSize, isCPUOpponent = false, ultimateBoard = false) {
         this._isCPUThinking = false;
         this._players = {
             'X': { name: playerXName, mark: 'X', isCPU: false },
             'O': { name: playerOName, mark: 'O', isCPU: isCPUOpponent }
         };
         this._currentPlayer = this._players['X'];
-        this._board = new Board(boardSize, undefined, this);
+        this._board = ultimateBoard ? new Board(boardSize, undefined, this) : new UltimateBoard(boardSize, undefined, this);
         this._scores = {
             'X': 0,
             'O': 0
@@ -15,11 +16,22 @@ export class Game {
         this._winningMessageTextElement = document.getElementById('info__message');
         this.updateScoreBoardNames();
         const boardContainer = document.querySelector('.board__container');
-        if (boardContainer instanceof HTMLElement) {
-            this._board = new Board(boardSize, boardContainer, this);
+        const ultimateBoardContainer = document.querySelector('.ultimate__board__container');
+        if (!ultimateBoard) {
+            if (boardContainer instanceof HTMLElement) {
+                this._board = new Board(boardSize, boardContainer, this);
+            }
+            else {
+                throw new Error("Board container element not found");
+            }
         }
         else {
-            throw new Error("Board container element not found");
+            if (ultimateBoardContainer instanceof HTMLElement) {
+                this._board = new UltimateBoard(boardSize, ultimateBoardContainer, this);
+            }
+            else {
+                throw new Error("Ultimate Board container element not found");
+            }
         }
     }
     // ゲームを初期化
@@ -28,6 +40,7 @@ export class Game {
         this.loadGameStorage();
         this._board.addClickHandlers();
         this.updateScores();
+        console.log(this._board);
     }
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     continueGame() {
