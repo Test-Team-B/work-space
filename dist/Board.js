@@ -2,7 +2,7 @@ export class Board {
     constructor(size, parentElement = document.querySelector('.board__container'), game) {
         this._size = size;
         this._cells = [];
-        this.game = game;
+        this._game = game;
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement);
         this.addClickHandlers();
@@ -118,6 +118,9 @@ export class Board {
     }
     get size() {
         return this._size;
+    }
+    get game() {
+        return this._game;
     }
     // ボードの状態の取得
     getBoardState() {

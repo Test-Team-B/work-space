@@ -1,15 +1,15 @@
+import { Game } from './Game.js';
 import { Board } from "./Board.js"
 
 class ultimateBoard extends Board {
     miniBoards: Board[];
 
-    constructor(size: number, parentElement: HTMLElement = document.querySelector('#ultimate__board')!) {
-        super(size, parentElement);
+    constructor(size: number, parentElement: HTMLElement = document.querySelector('#ultimate__board')!, game: Game) {
+        super(size, parentElement, game);
         this.miniBoards = this.createMiniBoards(size, parentElement);
     }
 
-    private createMiniBoards(size: number, parentElement: HTMLElement): Board[] {
-        const miniBoards: Board[] = [];
+    private createMiniBoards(size: number, parentElement: HTMLElement): void {
         parentElement.innerHTML = '';   // 親要素の中身を空に初期化
         parentElement.style.display = 'grid';
         parentElement.style.gridTemplateColumns = `repeat(${this.size}, 1fr)`;
@@ -21,9 +21,8 @@ class ultimateBoard extends Board {
             miniBoardElement.dataset.ceeIndex = i.toString();
             parentElement.appendChild(miniBoardElement);
 
-            miniBoards.push(new Board(size, miniBoardElement));
+            this.miniBoards.push(new Board(size, miniBoardElement, this.miniBoards[i].game));
         }
-        return miniBoards;
     }
 
     public markCell(cellIndex: number, mark: string): void {

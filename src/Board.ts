@@ -3,14 +3,14 @@ import { Game } from './Game.js';
 export class Board {
     private _cells: { mark: string, element: HTMLElement, clickHandler?: (event: MouseEvent) => void }[];
     private _size: number;
-    private game: Game;
+    private _game: Game;
 
     protected winningCombinations: number[][];
 
     constructor(size: number, parentElement: HTMLElement | null = document.querySelector('.board__container')!, game: Game) {
         this._size = size;
         this._cells = [];
-        this.game = game;
+        this._game = game;
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement!);
         this.addClickHandlers();
@@ -139,6 +139,10 @@ export class Board {
 
     get size() {
         return this._size;
+    }
+
+    get game() {
+        return this._game;
     }
 
     // ボードの状態の取得

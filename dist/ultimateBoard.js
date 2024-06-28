@@ -1,11 +1,10 @@
 import { Board } from "./Board.js";
 class ultimateBoard extends Board {
-    constructor(size, parentElement = document.querySelector('#ultimate__board')) {
-        super(size, parentElement);
+    constructor(size, parentElement = document.querySelector('#ultimate__board'), game) {
+        super(size, parentElement, game);
         this.miniBoards = this.createMiniBoards(size, parentElement);
     }
     createMiniBoards(size, parentElement) {
-        const miniBoards = [];
         parentElement.innerHTML = ''; // 親要素の中身を空に初期化
         parentElement.style.display = 'grid';
         parentElement.style.gridTemplateColumns = `repeat(${this.size}, 1fr)`;
@@ -15,9 +14,8 @@ class ultimateBoard extends Board {
             miniBoardElement.classList.add('ultimateBoard__container__cell');
             miniBoardElement.dataset.ceeIndex = i.toString();
             parentElement.appendChild(miniBoardElement);
-            miniBoards.push(new Board(size, miniBoardElement));
+            this.miniBoards.push(new Board(size, miniBoardElement, this.miniBoards[i].game));
         }
-        return miniBoards;
     }
     markCell(cellIndex, mark) {
     }
