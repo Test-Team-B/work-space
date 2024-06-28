@@ -45,8 +45,7 @@ nameSettingBtn.addEventListener('click', () => {
 });
 
 const optionsBtn = document.getElementById('options__btn-close');
-// console.log(optionsBtn);
-options.addEventListener('click', () => {
+optionsBtn.addEventListener('click', () => {
   if (options.classList.contains('d-none')) {
     options.classList.remove('d-none');
     options.classList.add('d-flex');

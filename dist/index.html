@@ -12,8 +12,7 @@
 </head>
 
 <body class="vh-100 d-flex flex-column justify-content-center align-items-center">
-
-  <header>
+    
     <!-- navbar (bootstrap) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-brown fixed-top">
       <div class="container">
@@ -56,12 +55,9 @@
         </div>
       </div>
     </nav>
-  </header>
 
-  <main>
-    <!-- Inner container -->
-    <!-- <div class="container mt-0 text-center d-flex flex-wrap justify-content-center align-items-center"> -->
-    <div class="main-container d-flex justify-content-center flex-wrap">
+   <!--------- Nomal Mode --------->
+    <div class="main-container d-none justify-content-center flex-wrap">
       <!-- Scoreboard Section -->
       <div id="scoreboard" class="col-12 col-md-4">
         <div class="scoreboard__player" id="scoreboard__X">
@@ -94,10 +90,154 @@
         </div>
       </div>
     </div>
-  </main>
+
+    <!--------- Ultimate Mode --------->
+    <div class="ultimate-container d-flex justify-content-around">
+
+      <div id="scoreboard">
+        <div class="scoreboard__player" id="scoreboard__X">
+          <h2 class="scoreboard__X__mark">X</h2>
+          <h2 id="scoreboard__X__name">player1</h2>
+          <h2 id="scoreboard__X__score">0</h2>
+        </div>
+
+        <div class="scoreboard__vs">VS</div>
+
+        <div class="scoreboard__player" id="scoreboard__O">
+          <h2 class="scoreboard__O__mark mb-0">O</h2>
+          <h2 id="scoreboard__O__name">player2</h2>
+          <h2 id="scoreboard__O__score">0</h2>
+        </div>
+      </div>
+
+      <div id="ultimate__board">
+        <div class="ultimate__board__container">
+    
+          <div class="ultimate__mini-board__container">
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+          </div>
+
+          <div class="ultimate__mini-board__container">
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+          </div>
+
+          <div class="ultimate__mini-board__container">
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+          </div>
+
+          <div class="ultimate__mini-board__container">
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+          </div>
+
+          <div class="ultimate__mini-board__container">
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+          </div>
+
+          <div class="ultimate__mini-board__container">
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+          </div>
+
+          <div class="ultimate__mini-board__container">
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+          </div>
+
+          <div class="ultimate__mini-board__container">
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+          </div>
+
+          <div class="ultimate__mini-board__container">
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+            <div class="ultimate__mini-board-cell"></div>  
+          </div>
+          
+        </div>
+      </div>
+
+      <div id="info" class="col-md-3 mt-4 d-none flex-column justify-content-center align-items-center">
+        <h2 id="info__message" class="text-center">X's Turn</h2>
+        <div class="info__btns d-flex justify-content-between">
+          <button class="btn btn-secondary btn m-2" id="info__btn__continue">Continue</button>
+          <button class="btn btn-secondary btn m-2" id="info__btn__reset">Reset</button>
+        </div>
+      </div>
+
+    </div>
+
+
 
   <!-- name-setting section -->
-  <div id="name-setting" class="d-flex menu">
+  <div id="name-setting" class="d-none menu">
     <div class="name-setting__board">
       <div class="d-flex justify-content-end pe-3">
         <button type="button" id="name-setting__btn-close" class="btn-close btn-close-white shadow-none"
@@ -150,14 +290,16 @@
             id="options__click-sound">
         </div>
         <!-- レベル選択 -->
-        <div class="options__level-selection-container">
-          <h3 class="border-bottom">Select Game Level</h3>
+        <div class="options__level-selection-container d-flex justify-content-around">
+          <h3 class="border-bottom">Select CPU Level</h3>
           <select class="d-block text-center" id="options__level-selection">
             <option value="3">EASY</option>
             <option value="6">MIDIUM</option>
             <option value="9">HARD</option>
           </select>
+
         </div>
+        <input type="checkbox">CPU</input>
       </div>
 
     </div>
