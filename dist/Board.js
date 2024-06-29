@@ -54,6 +54,10 @@ export class Board {
     }
     // セルにマークをつける
     markCell(cellIndex, mark) {
+        // @audit fixed
+        const mouseclick = new Audio();
+        mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
+        mouseclick.play();
         this._cells[cellIndex].mark = mark;
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;
@@ -89,7 +93,7 @@ export class Board {
                     }
                     else {
                         this.game.switchPlayer();
-                        this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
+                        this.game._winningMessageTextElement.innerText = `${this.game._currentPlayer.name}'s Turn`;
                     }
                     this.game.saveGameStorage();
                 }

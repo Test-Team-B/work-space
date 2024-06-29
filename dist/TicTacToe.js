@@ -24,6 +24,7 @@ class TicTacToe {
     getPlayerNames() {
         const playerXName = document.getElementById('name-setting__form__player1').value || 'Player X';
         const playerOName = document.getElementById('name-setting__form__player2').value || 'Player O';
+        console.log(playerXName, playerOName);
         const isCPUOpponent = true;
         return { playerOName, playerXName, isCPUOpponent };
     }
