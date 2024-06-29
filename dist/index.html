@@ -57,11 +57,11 @@
     </nav>
 
    <!--------- Nomal Mode --------->
-    <div class="main-container d-none justify-content-center flex-wrap">
+    <div class="main-container d-flex justify-content-center flex-wrap">
       <!-- Scoreboard Section -->
       <div id="scoreboard" class="col-12 col-md-4">
         <div class="scoreboard__player" id="scoreboard__X">
-          <h2 class="scoreboard__X__mark">X</h2>
+          <h2 class="scoreboard__mark">X</h2>
           <h2 id="scoreboard__X__name">player1</h2>
           <h2 id="scoreboard__X__score">0</h2>
         </div>
@@ -69,7 +69,7 @@
         <div class="scoreboard__vs">VS</div>
 
         <div class="scoreboard__player" id="scoreboard__O">
-          <h2 class="scoreboard__O__mark mb-0">O</h2>
+          <h2 class="scoreboard__mark">O</h2>
           <h2 id="scoreboard__O__name">player2</h2>
           <h2 id="scoreboard__O__score">0</h2>
         </div>
@@ -92,33 +92,45 @@
     </div>
 
     <!--------- Ultimate Mode --------->
-    <div class="ultimate-container d-flex justify-content-around">
+    <!--  
+        id: ultimate-scoreboard__X-name -> player name: x
+        id: ultimate-scoreboard__X-score -> player score: X 
 
-      <div id="scoreboard">
-        <div class="scoreboard__player" id="scoreboard__X">
-          <h2 class="scoreboard__X__mark">X</h2>
-          <h2 id="scoreboard__X__name">player1</h2>
-          <h2 id="scoreboard__X__score">0</h2>
+        id: ultimate-scoreboard__O-name -> player name: O
+        id: ultimate-scoreboard__O-score -> player score: O
+
+        class: ultimate__board__container -> ボードセクション
+
+        id: ultimate-info__message -> message 
+    -->
+    <div class="ultimate-container d-none">
+
+      <div class="ultimate-inner-container">
+        <div id="ultimate-scoreboard" class="d-flex">
+          <div class="ultimate-scoreboard__player" id="ultimate-scoreboard__X">
+            <h2 class="scoreboard__mark">X</h2>
+            <h2 id="ultimate-scoreboard__X-name">player1</h2>
+            <h2 id="ultimate-scoreboard__X-score">0</h2>
+          </div>
+
+          <div class="scoreboard__vs">VS</div>
+
+          <div class="ultimate-scoreboard__player" id="ultimate-coreboard__O">
+            <h2 class="scoreboard__mark mb-0">O</h2>
+            <h2 id="ultimate-scoreboard__O-name">player2</h2>
+            <h2 id="ultimate-scoreboard__O-score">0</h2>
+          </div>
         </div>
-
-        <div class="scoreboard__vs">VS</div>
-
-        <div class="scoreboard__player" id="scoreboard__O">
-          <h2 class="scoreboard__O__mark mb-0">O</h2>
-          <h2 id="scoreboard__O__name">player2</h2>
-          <h2 id="scoreboard__O__score">0</h2>
-        </div>
-      </div>
 
       <div id="ultimate__board">
         <div class="ultimate__board__container"></div>
       </div>
 
-      <div id="info" class="col-md-3 mt-4 d-none flex-column justify-content-center align-items-center">
-        <h2 id="info__message" class="text-center">X's Turn</h2>
-        <div class="info__btns d-flex justify-content-between">
-          <button class="btn btn-secondary btn m-2" id="info__btn__continue">Continue</button>
-          <button class="btn btn-secondary btn m-2" id="info__btn__reset">Reset</button>
+      <div id="ultimate-info">
+        <div class="ultimate-info__container">
+          <button class="btn btn-secondary btn m-2" id="ultimate-info__btn__continue">Continue</button>
+          <h2 id="ultimate-info__message" class="text-center">X's Turn</h2>
+          <button class="btn btn-secondary btn m-2" id="ultimate-info__btn__reset">Reset</button>
         </div>
       </div>
 
@@ -180,16 +192,21 @@
             id="options__click-sound">
         </div>
         <!-- レベル選択 -->
-        <div class="options__level-selection-container d-flex justify-content-around">
+        <div class="options__level-selection-container d-flex justify-content-center">
           <h3 class="border-bottom">Select CPU Level</h3>
-          <select class="d-block text-center" id="options__level-selection">
-            <option value="3">EASY</option>
-            <option value="6">MEDIUM</option>
-            <option value="9">HARD</option>
-          </select>
-
+            <select class="d-block text-center" id="options__level-selection">
+              <option value="3">EASY</option>
+              <option value="6">MIDIUM</option>
+              <option value="9">HARD</option>
+            </select>
+            <fieldset class="mt-4">
+              <legend class="border-bottom">Play Ultimate Mode</legend>
+              <div>
+                <input type="checkbox" id="Ultimate" name="ultimate" />
+                <label for="ultimate">Ultimate</label>
+              </div>
+            </fieldset>
         </div>
-        <input type="checkbox">CPU</input>
       </div>
 
     </div>
