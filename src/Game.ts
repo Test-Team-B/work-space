@@ -4,6 +4,7 @@ export class Game {
     private _players: { [key: string]: { name: string, mark: string, isCPU: boolean } };
     private _currentPlayer: { name: string, mark: string, isCPU: boolean };
     private _isCPUThinking: boolean = false;
+    private _difficulty: number = 9;
     private _board: Board;
     private _scores: { [key: string]: number };
     private _winningMessageTextElement: HTMLElement;
@@ -75,11 +76,9 @@ export class Game {
     private playCPUTurn(): void {
         this._isCPUThinking = true;
         setTimeout(() => {
-            const emptyCells = this._board.cells.filter(cell => !cell.mark);
-            if (emptyCells.length > 0) {
-                const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                const cellIndex = this._board.cells.indexOf(randomCell);
-                this._board.markCell(cellIndex, this._currentPlayer.mark);
+            const bestMove = this.findBestMove();
+            if (bestMove !== -1) {
+                this._board.markCell(bestMove, this._currentPlayer.mark);
                 if (this.checkWin()) {
                     this.handleEndGame(false);
                 } else if (this.checkDraw()) {
@@ -88,9 +87,66 @@ export class Game {
                     this.switchPlayer();
                 }
                 this.saveGameStorage();
-                this._isCPUThinking = false;
             }
+            this._isCPUThinking = false;
         }, 1000);
+    }
+
+    private findBestMove(): number {
+        let bestScore = -Infinity;
+        let bestMove = -1;
+        const emptyCells = this._board.getEmptyCells();
+
+        for (const move of emptyCells) {
+            this._board.placeMarkTemp(move, this._currentPlayer.mark);
+            const score = this.minimax(0, -Infinity, Infinity, false);
+            this._board.removeMarkTemp(move);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+        }
+
+        return bestMove;
+    }
+
+    private minimax(depth: number, alpha: number, beta: number, isMaximizing: boolean): number {
+        if (depth === this._difficulty || this._board.checkWin() || this._board.checkDraw()) {
+            return this._board.evaluateBoard(this._currentPlayer.mark);
+        }
+
+        const currentMark = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'X' ? 'O' : 'X');
+        const emptyCells = this._board.getEmptyCells();
+
+        if (isMaximizing) {
+            let maxScore = -Infinity;
+            for (const move of emptyCells) {
+                this._board.placeMarkTemp(move, currentMark);
+                const score = this.minimax(depth + 1, alpha, beta, false);
+                this._board.removeMarkTemp(move);
+                maxScore = Math.max(maxScore, score);
+                alpha = Math.max(alpha, score);
+                if (beta <= alpha) break;
+            }
+            return maxScore;
+        } else {
+            let minScore = Infinity;
+            for (const move of emptyCells) {
+                this._board.placeMarkTemp(move, currentMark);
+                const score = this.minimax(depth + 1, alpha, beta, true);
+                this._board.removeMarkTemp(move);
+                minScore = Math.min(minScore, score);
+                beta = Math.min(beta, score);
+                if (beta <= alpha) break;
+            }
+            return minScore;
+        }
+    }
+
+    // 難易度を設定するメソッド
+    public setDifficulty(difficulty: number): void {
+        this._difficulty = difficulty;
     }
 
     // ゲーム結果の表示、スコアの更新

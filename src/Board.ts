@@ -155,4 +155,43 @@ export class Board {
             }
         })
     }
+
+    // 新しいメソッド: ボードの状態を評価する
+    public evaluateBoard(player: string): number {
+        const opponent = player === 'X' ? 'O' : 'X';
+        let score = 0;
+
+        // 勝利状態をチェック
+        if (this.checkWin()) {
+            return this._cells[this.winningCombinations[0][0]].mark === player ? 10 : -10;
+        }
+
+        // 各セルをチェックしてスコアを計算
+        for (let i = 0; i < this._cells.length; i++) {
+            if (this._cells[i].mark === player) {
+                score++;
+            } else if (this._cells[i].mark === opponent) {
+                score--;
+            }
+        }
+
+        return score;
+    }
+
+    // 新しいメソッド: 空いているセルの取得
+    public getEmptyCells(): number[] {
+        return this._cells
+            .map((cell, index) => cell.mark === '' ? index : -1)
+            .filter(index => index !== -1);
+    }
+
+    // 新しいメソッド: 特定のセルにマークを置く（一時的な操作用）
+    public placeMarkTemp(index: number, mark: string): void {
+        this._cells[index].mark = mark;
+    }
+
+    // 新しいメソッド: 特定のセルのマークを削除（一時的な操作用）
+    public removeMarkTemp(index: number): void {
+        this._cells[index].mark = '';
+    }
 }
