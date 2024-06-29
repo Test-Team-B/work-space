@@ -8,6 +8,7 @@ export class Game {
     private _board: Board | UltimateBoard;
     private _scores: { [key: string]: number };
     private _winningMessageTextElement: HTMLElement;
+    private _ultimateWinningMessageTextElement: HTMLElement;
 
     constructor(playerXName: string, playerOName: string, boardSize: number, isCPUOpponent: boolean = false, ultimateBoard: boolean = false) {
         this._players = {
@@ -21,6 +22,7 @@ export class Game {
             'O': 0
         };
         this._winningMessageTextElement = document.getElementById('info__message')!;
+        this._ultimateWinningMessageTextElement = document.getElementById('ultimate-info__message')!;
 
         const boardContainer = document.querySelector('.board__container') as HTMLElement;
         const ultimateBoardContainer = document.querySelector('.ultimate__board__container') as HTMLElement;
@@ -142,15 +144,25 @@ export class Game {
     // スコアボードの更新
     public updateScores(): void {
         console.log("スコアボードの更新")
-        document.getElementById('scoreboard__X__score')!.innerText = `${this._scores['X']}`;
-        document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
+        if (this.board instanceof UltimateBoard) {
+            document.getElementById('ultimate-scoreboard__X-score')!.innerText = `${this._scores['X']}`;
+            document.getElementById('ultimate-scoreboard__O-score')!.innerText = `${this._scores['O']}`;
+        } else {
+            document.getElementById('scoreboard__X__score')!.innerText = `${this._scores['X']}`;
+            document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
+        }
     }
     
     // スコアボードの名前を更新
     private updateScoreBoardNames(): void {
         console.log("スコアボードの名前の更新")
-        document.getElementById('scoreboard__X__name')!.innerText = this._players['X'].name;
-        document.getElementById('scoreboard__O__name')!.innerText = this._players['O'].name;
+        if (this.board instanceof UltimateBoard) {
+            document.getElementById('ultimate-scoreboard__X-name')!.innerText = this._players['X'].name;
+            document.getElementById('ultimate-scoreboard__O-name')!.innerText = this._players['O'].name;
+        } else {
+            document.getElementById('scoreboard__X__name')!.innerText = this._players['X'].name;
+            document.getElementById('scoreboard__O__name')!.innerText = this._players['O'].name;
+        }
     }
     
     // カプセル化、勝ち判定
@@ -181,7 +193,11 @@ export class Game {
     }
     
     get winningMessageTextElement() {
-        return this._winningMessageTextElement
+        if (this.board instanceof UltimateBoard) {
+            return this._ultimateWinningMessageTextElement;
+        } else {
+            return this._winningMessageTextElement;
+        }
     }
     
     get isCPUThinking(): boolean {
