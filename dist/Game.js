@@ -24,6 +24,8 @@ export class Game {
     }
     // ゲームを初期化
     initializeGame() {
+        // @audit
+        this._currentPlayer = this._players['X'];
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         this.loadGameStorage();
         this._board.addClickHandlers();
@@ -73,6 +75,8 @@ export class Game {
                 }
                 else {
                     this.switchPlayer();
+                    // @audit fixed
+                    this._winningMessageTextElement.innerText = `${this._currentPlayer.name}'s Turn`;
                 }
                 this.saveGameStorage();
                 this._isCPUThinking = false;
