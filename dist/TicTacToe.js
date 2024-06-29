@@ -22,7 +22,21 @@ class TicTacToe {
     }
     // プレイヤー名を取得する
     getPlayerNames() {
-        const isCPUOpponent = false;
+        const isCPUOpponent = document.getElementById('options__level-selection').addEventListener('change', () => {
+            const selectValue = this.value;
+
+            switch (selectValue) {
+                case 'EASY':
+                    return true;
+                    break;
+
+                case 'MEDIUM':
+                    break;
+
+                case 'HARD':
+                    break;
+            }
+        });
         const playerXName = document.getElementById('name-setting__form__player1').value || 'Player X';
         const playerOName = (isCPUOpponent) ? "CPU" : document.getElementById('name-setting__form__player2').value || 'Player O';
         console.log("プレイヤーO名前");
@@ -48,7 +62,9 @@ class TicTacToe {
     }
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     startGame(playerXName, playerOName, isCPUOpponent) {
-        const ultimateBoard = true;
+        const ultimateBoard = document.getElementById('Ultimate').checked;
+        console.log("アルティメットチェック")
+        console.log(ultimateBoard);
         this.game = new Game(playerXName, playerOName, boardSize, isCPUOpponent, ultimateBoard);
         this.game.initializeGame();
     }

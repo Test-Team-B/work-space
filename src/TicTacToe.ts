@@ -1,5 +1,4 @@
 import { Game } from './Game.js';
-import { UltimateBoard } from './ultimateBoard.js';
 
 const boardSize = 3;
 
@@ -32,9 +31,29 @@ class TicTacToe {
         this.resetButton.addEventListener('click', () => this._resetGame());
         this.continueButton.addEventListener('click', () => this._continueGame());
     }
+
     // プレイヤー名を取得する
     public getPlayerNames(): { playerXName: string, playerOName: string, isCPUOpponent: boolean } {
-        const isCPUOpponent = false;
+        const levelSelect = (document.getElementById('options__level-selection')as HTMLSelectElement);
+        const selectValue = levelSelect.value;
+
+        let isCPUOpponent = false;
+
+            switch (selectValue) {
+                case 'EASY':
+                    isCPUOpponent = true;
+                    break;
+
+                case 'MEDIUM':
+                    break;
+
+                case 'HARD':
+                    break;
+
+                default:
+                    break;
+            }
+
         const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement).value || 'Player X';
         const playerOName = (isCPUOpponent) ? "CPU" : (document.getElementById('name-setting__form__player2') as HTMLInputElement).value || 'Player O';
         console.log("プレイヤーO名前")
@@ -65,7 +84,9 @@ class TicTacToe {
 
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     private startGame(playerXName: string, playerOName: string, isCPUOpponent: boolean): void {
-        const ultimateBoard = true;
+        const ultimateBoard = (document.getElementById('Ultimate') as HTMLInputElement).checked;
+        console.log("アルティメットチェック")
+        console.log(ultimateBoard);
         this.game = new Game(playerXName, playerOName, boardSize, isCPUOpponent, ultimateBoard);
         this.game.initializeGame();
     }
