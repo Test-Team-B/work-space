@@ -38,7 +38,9 @@ export class Game {
         console.log("initialize!!!")
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         // this.loadGameStorage();
-        if (this._board instanceof Board) {
+        if (this._board instanceof UltimateBoard) {
+            this._board.clearUltimateBoard();
+        } else {
             this._board.clearBoard();
         }
         this.updateScores();
@@ -139,12 +141,14 @@ export class Game {
     
     // スコアボードの更新
     public updateScores(): void {
+        console.log("スコアボードの更新")
         document.getElementById('scoreboard__X__score')!.innerText = `${this._scores['X']}`;
         document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
     }
     
     // スコアボードの名前を更新
     private updateScoreBoardNames(): void {
+        console.log("スコアボードの名前の更新")
         document.getElementById('scoreboard__X__name')!.innerText = this._players['X'].name;
         document.getElementById('scoreboard__O__name')!.innerText = this._players['O'].name;
     }

@@ -2,12 +2,11 @@ const optionsNavbar = document.getElementById('navbar__options');
 const options = document.getElementById('options');
 
 optionsNavbar.addEventListener('click',()=>{
-
   if (options.classList.contains('d-none')) {
     options.classList.remove('d-none');
     options.classList.add('d-flex');
-  } 
-  
+  }
+
   else {
     options.classList.remove('d-flex');
     options.classList.add('d-none');
@@ -22,8 +21,8 @@ navbarNameSettings.addEventListener('click',()=>{
   if (nameSetting.classList.contains('d-none')) {
     nameSetting.classList.remove('d-none');
     nameSetting.classList.add('d-flex');
-  } 
-  
+  }
+
   else {
     nameSetting.classList.remove('d-flex');
     nameSetting.classList.add('d-none');
@@ -31,13 +30,12 @@ navbarNameSettings.addEventListener('click',()=>{
 });
 
 const nameSettingBtn = document.getElementById('name-setting__btn-close');
-// console.log(nameSettingBtn);
 nameSettingBtn.addEventListener('click', () => {
   if (nameSetting.classList.contains('d-none')) {
     nameSetting.classList.remove('d-none');
     nameSetting.classList.add('d-flex');
-  } 
-  
+  }
+
   else {
     nameSetting.classList.remove('d-flex');
     nameSetting.classList.add('d-none');
@@ -49,8 +47,8 @@ optionsBtn.addEventListener('click', () => {
   if (options.classList.contains('d-none')) {
     options.classList.remove('d-none');
     options.classList.add('d-flex');
-  } 
-  
+  }
+
   else {
     options.classList.remove('d-flex');
     options.classList.add('d-none');

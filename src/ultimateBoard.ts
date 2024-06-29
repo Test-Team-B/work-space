@@ -11,7 +11,6 @@ export class UltimateBoard extends Board {
         this.currentBoardIndex = null;
 
         this.createUltimateBoards(size, parentElement, game);
-        this.clearUltimateBoard();
     }
 
     // ultimateBoard の作成、miniBoardをsize個生成し ultimateBoardの grid に当てはめる
@@ -41,18 +40,20 @@ export class UltimateBoard extends Board {
         console.log("アルティメットマークセル")
         this.miniBoards[boardIndex].markCell(cellIndex, mark);
         console.log(this.miniBoards)
-        this.currentBoardIndex = cellIndex;
+        // this.currentBoardIndex = cellIndex;
     }
 
     // ultimateBoardの勝者判定
     public ultimateCheckWin(): boolean {
         console.log("アルティメット・ウィン")
-        
         if (this.currentBoardIndex !== null && this.currentBoardIndex >= 0) {
             // 指定されたミニボードの勝利条件をチェック
-            console.log("今のボード")
+            
+            console.log("次のボード")
             console.log(this.currentBoardIndex)
+            console.log(this.miniBoards[this.currentBoardIndex].cells)
             console.log(this.miniBoards[this.currentBoardIndex].checkWin())
+
             return this.miniBoards[this.currentBoardIndex].checkWin();
         } else {
             return false;
@@ -88,13 +89,16 @@ export class UltimateBoard extends Board {
                     if (!cell.mark && !this.ultimateCheckWin() && !this.ultimateCheckDraw() && !this.game.isCPUThinking) {
                         console.log("アルティメットハンドラー")
                         this.ultimateMarkCell(boardIndex, cellIndex, this.game.currentPlayer.mark);
-                        this.game.saveGameStorage();
+                        console.log("マークセル直後")
+                        console.log(miniBoard.cells)
+                        // this.game.saveGameStorage();
                         if (this.ultimateCheckWin()) {
                             this.game.handleEndGame(false);
                         } else if (this.ultimateCheckDraw()) {
                             this.game.handleEndGame(true)
                         } else {
                             console.log("アルティメットスウィッチ")
+                            this.currentBoardIndex = cellIndex;
                             this.game.switchPlayer();
                             this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
                         }

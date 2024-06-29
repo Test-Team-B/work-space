@@ -61,15 +61,47 @@ export class Board {
         this._cells[cellIndex].element.textContent = mark;
     }
     // 勝者を判定する
+    // public checkWin(): boolean {
+    //     console.log("チエックウィン")
+    //     console.log("Checking win for current player:", this.game.currentPlayer);
+    //     return this.winningCombinations.some(combination => {
+    //         return combination.every(index => {
+    //             const result = this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
+    //             return result;
+    //         });
+    //     });
+    // }
+    // public checkWin(): boolean {
+    //     console.log("チエックウィン");
+    //     console.log("Checking win for current player:", this.game.currentPlayer);
+    //     console.log(this.cells)
+    //     return this.winningCombinations.some(combination => {
+    //         // console.log("チェック-コンビネーション:", combination);
+    //         return combination.every(index => {
+    //             // console.log(`チェック-セル ${index} (mark: ${this._cells[index].mark}) against cell ${combination[0]} (mark: ${this._cells[combination[0]].mark})`);
+    //             const result = this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
+    //             console.log(`Result for index ${index}: ${result}`);
+    //             return result;
+    //         });
+    //     });
+    // }
     checkWin() {
         console.log("チエックウィン");
         console.log("Checking win for current player:", this.game.currentPlayer);
-        return this.winningCombinations.some(combination => {
+        console.log("Cells state:", this._cells);
+        const result = this.winningCombinations.some(combination => {
+            console.log("チェック-コンビネーション:", combination);
             return combination.every(index => {
-                const result = this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
+                const cellMark = this._cells[index].mark;
+                const firstMark = this._cells[combination[0]].mark;
+                const result = cellMark === firstMark && cellMark !== '';
+                console.log(`チェック-セル ${index} (mark: ${cellMark}) against cell ${combination[0]} (mark: ${firstMark})`);
+                console.log(`Result for index ${index}: ${result}`);
                 return result;
             });
         });
+        console.log("Win check result:", result);
+        return result;
     }
     // 全てのセルが空ではない
     checkDraw() {

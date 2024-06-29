@@ -12,7 +12,7 @@ class TicTacToe {
         this.continueButton = document.getElementById('info__btn__continue');
         this.resetButton = document.getElementById('info__btn__reset');
         this.nameBoard = document.getElementById('name-setting');
-        this.loadPlayerName();
+        // this.loadPlayerName();
     }
     // 各ボタンにクリックイベントを付与する
     init() {
@@ -22,9 +22,11 @@ class TicTacToe {
     }
     // プレイヤー名を取得する
     getPlayerNames() {
-        const isCPUOpponent = true;
+        const isCPUOpponent = false;
         const playerXName = document.getElementById('name-setting__form__player1').value || 'Player X';
         const playerOName = (isCPUOpponent) ? "CPU" : document.getElementById('name-setting__form__player2').value || 'Player O';
+        console.log("プレイヤーO名前");
+        console.log(playerOName);
         return { playerOName, playerXName, isCPUOpponent };
     }
     // 名前入力フォームでスタートボタンを押したらフォームが消えゲームがスタートする

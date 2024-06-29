@@ -23,7 +23,7 @@ class TicTacToe {
         this.resetButton = document.getElementById('info__btn__reset')!;
         this.nameBoard = document.getElementById('name-setting')!;
 
-        this.loadPlayerName();
+        // this.loadPlayerName();
     }
 
     // 各ボタンにクリックイベントを付与する
@@ -34,9 +34,11 @@ class TicTacToe {
     }
     // プレイヤー名を取得する
     public getPlayerNames(): { playerXName: string, playerOName: string, isCPUOpponent: boolean } {
-        const isCPUOpponent = true;
+        const isCPUOpponent = false;
         const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement).value || 'Player X';
         const playerOName = (isCPUOpponent) ? "CPU" : (document.getElementById('name-setting__form__player2') as HTMLInputElement).value || 'Player O';
+        console.log("プレイヤーO名前")
+        console.log(playerOName)
         return { playerOName, playerXName, isCPUOpponent };
     }
 
