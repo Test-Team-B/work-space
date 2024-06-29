@@ -29,14 +29,8 @@ export class Game {
         console.log("initialize!!!");
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         // this.loadGameStorage();
-        if (this._board instanceof UltimateBoard) {
-            console.log("アルティメット・クリアボード・アドクリック");
-            // this._board.clearUltimateBoard();
-            // this._board.ultimateAddClickHandlers
-        }
-        else {
+        if (this._board instanceof Board) {
             this._board.clearBoard();
-            this._board.addClickHandlers();
         }
         this.updateScores();
     }
@@ -59,16 +53,9 @@ export class Game {
         this.initializeGame();
     }
     // プレイヤー交代
-    // public switchPlayer(): void {
-    //     this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
-    //     if (this._currentPlayer.isCPU) {
-    //         this.playCPUTurn();
-    //     }
-    // }
     switchPlayer() {
-        console.log(`Current Player before switch: ${this._currentPlayer.name} (isCPU: ${this._currentPlayer.isCPU})`);
+        console.log("スウィッチ");
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
-        console.log(`Current Player after switch: ${this._currentPlayer.name} (isCPU: ${this._currentPlayer.isCPU})`);
         if (this._currentPlayer.isCPU) {
             console.log("CPU's turn");
             this.playCPUTurn();
@@ -78,9 +65,11 @@ export class Game {
         }
     }
     playCPUTurn() {
+        console.log("プレイCPU");
         this._isCPUThinking = true;
         setTimeout(() => {
             let emptyCells = [];
+            console.log("エンプティセルず");
             if (this._board instanceof UltimateBoard) {
                 const boardIndex = this._board.currentBoardIndex !== null ? this._board.currentBoardIndex : Math.floor(Math.random() * this._board.miniBoards.length);
                 this._board.miniBoards[boardIndex].cells.forEach((cell, cellIndex) => {
@@ -100,6 +89,7 @@ export class Game {
                 if (this._board instanceof UltimateBoard) {
                     console.log("アルティメットマーク");
                     this._board.ultimateMarkCell(boardIndex, cellIndex, this._currentPlayer.mark);
+                    console.log("アルティメットマークセルしたよ");
                 }
                 else {
                     this._board.markCell(cellIndex, this._currentPlayer.mark);
@@ -121,6 +111,7 @@ export class Game {
     }
     // ゲーム結果の表示、スコアの更新
     handleEndGame(draw) {
+        console.log("ハンドエンド");
         if (draw) {
             this.winningMessageTextElement.innerText = 'Draw!';
         }

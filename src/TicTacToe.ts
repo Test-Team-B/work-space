@@ -39,18 +39,18 @@ class TicTacToe {
         const playerOName = (isCPUOpponent) ? "CPU" : (document.getElementById('name-setting__form__player2') as HTMLInputElement).value || 'Player O';
         return { playerOName, playerXName, isCPUOpponent };
     }
-    
+
     // 名前入力フォームでスタートボタンを押したらフォームが消えゲームがスタートする
     private submitName(e: Event): void {
         e.preventDefault(); // フォームの送信を防ぐ
-        
+
         const { playerXName, playerOName, isCPUOpponent } = this.getPlayerNames();
         this.startGame(playerXName, playerOName, isCPUOpponent);
-        
+
         this.nameBoard.classList.remove('d-flex');
         this.nameBoard.classList.add('d-none');
     }
-    
+
     // localStorageに保存された名前を読み取る
     private loadPlayerName(): void {
         const saveState = localStorage.getItem('ticTacToeState');
@@ -60,7 +60,7 @@ class TicTacToe {
             (document.getElementById('name-setting__form__player2') as HTMLInputElement).value = state.players.O.name;
         }
     }
-    
+
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     private startGame(playerXName: string, playerOName: string, isCPUOpponent: boolean): void {
         const ultimateBoard = true;

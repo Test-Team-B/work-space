@@ -9,7 +9,7 @@ export class UltimateBoard extends Board {
     }
     // ultimateBoard の作成、miniBoardをsize個生成し ultimateBoardの grid に当てはめる
     createUltimateBoards(size, parentElement, game) {
-        parentElement.innerHTML = ''; // 親要素の中身を空に初期化
+        parentElement.innerHTML = '';
         parentElement.style.display = 'grid';
         parentElement.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
         parentElement.style.gridTemplateRows = `repeat(${size}, 1fr)`;
@@ -27,8 +27,9 @@ export class UltimateBoard extends Board {
         }
     }
     ultimateMarkCell(boardIndex, cellIndex, mark) {
-        console.log(`Marking cell ${cellIndex} in board ${boardIndex} with ${mark}`);
+        console.log("アルティメットマークセル");
         this.miniBoards[boardIndex].markCell(cellIndex, mark);
+        console.log(this.miniBoards);
         this.currentBoardIndex = cellIndex;
     }
     // ultimateBoardの勝者判定
@@ -36,6 +37,9 @@ export class UltimateBoard extends Board {
         console.log("アルティメット・ウィン");
         if (this.currentBoardIndex !== null && this.currentBoardIndex >= 0) {
             // 指定されたミニボードの勝利条件をチェック
+            console.log("今のボード");
+            console.log(this.currentBoardIndex);
+            console.log(this.miniBoards[this.currentBoardIndex].checkWin());
             return this.miniBoards[this.currentBoardIndex].checkWin();
         }
         else {
@@ -44,6 +48,7 @@ export class UltimateBoard extends Board {
         ;
     }
     ultimateCheckDraw() {
+        console.log("アルティメットドロー");
         if (this.currentBoardIndex !== null && this.currentBoardIndex >= 0) {
             // 指定されたミニボードの引き分け条件をチェック
             return this.miniBoards[this.currentBoardIndex].checkDraw();
@@ -65,8 +70,11 @@ export class UltimateBoard extends Board {
                     if (this.currentBoardIndex !== null && this.currentBoardIndex !== boardIndex) {
                         return;
                     }
+                    console.log("クリックハンドラー");
                     if (!cell.mark && !this.ultimateCheckWin() && !this.ultimateCheckDraw() && !this.game.isCPUThinking) {
+                        console.log("アルティメットハンドラー");
                         this.ultimateMarkCell(boardIndex, cellIndex, this.game.currentPlayer.mark);
+                        this.game.saveGameStorage();
                         if (this.ultimateCheckWin()) {
                             this.game.handleEndGame(false);
                         }
@@ -74,6 +82,7 @@ export class UltimateBoard extends Board {
                             this.game.handleEndGame(true);
                         }
                         else {
+                            console.log("アルティメットスウィッチ");
                             this.game.switchPlayer();
                             this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
                         }

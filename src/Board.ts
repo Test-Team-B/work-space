@@ -13,7 +13,6 @@ export class Board {
         this._game = game;
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement!);
-        this.addClickHandlers
     }
 
     // 勝利条件を動的に実装
@@ -59,7 +58,7 @@ export class Board {
     protected createCells(parentElement: HTMLElement): void {
         parentElement.style.gridTemplateColumns = `repeat(${this._size}, 1fr)`;
         parentElement.style.gridTemplateRows = `repeat(${this._size}, 1fr)`;
-        parentElement.innerHTML = "";   // セルのクリア
+        parentElement.innerHTML = "";
 
         for (let i = 0; i < this._size * this._size; i++) {
             const cellElement = document.createElement('div');
@@ -73,42 +72,29 @@ export class Board {
 
     // セルにマークをつける
     public markCell(cellIndex: number, mark: string): void {
-        console.log(`Marking cell ${cellIndex} with ${mark}`);
+        console.log(`ミニマークセル ${cellIndex} with ${mark}`);
         this._cells[cellIndex].mark = mark;
+        console.log("セルマーク")
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;
     }
 
     // 勝者を判定する
-    // public checkWin(): boolean {
-    //     console.log("t1")
-    //     console.log(this.game.currentPlayer)
-    //     return this.winningCombinations.some(combination => {
-    //         return combination.every(index => {
-    //             return this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
-    //         });
-    //     });
-    // }
     public checkWin(): boolean {
+        console.log("チエックウィン")
         console.log("Checking win for current player:", this.game.currentPlayer);
-        // セルの状態を出力
-        this._cells.forEach((cell, index) => {
-            console.log(`Cell ${index}: ${cell.mark}`);
-        });
-    
+
         return this.winningCombinations.some(combination => {
-            console.log("Checking combination:", combination);
             return combination.every(index => {
                 const result = this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
-                console.log(`Index ${index}: ${result}`);
                 return result;
             });
         });
     }
-    
 
     // 全てのセルが空ではない
     public checkDraw(): boolean {
+        console.log("チェックドロー")
         return this._cells.every(_cell => _cell.mark !== '');
     }
 
@@ -121,14 +107,20 @@ export class Board {
                 cell.element.removeEventListener('click', cell.clickHandler);
             }
             const clickHandler = (event: MouseEvent) => {
+                console.log("hhhhhaaaaaaaaaaaa")
                 console.log(`Cell ${index} clicked`);
                 if (!cell.mark && !this.checkWin() && !this.checkDraw() && !this.game.isCPUThinking) {
                     this.markCell(index, this.game.currentPlayer.mark);
+                    console.log("ボードでマークしたよ")
+                    console.log(this._cells)
+                    this.game.saveGameStorage();
                     if (this.checkWin()) {
                         this.game.handleEndGame(false);
                     } else if (this.checkDraw()) {
                         this.game.handleEndGame(true)
                     } else {
+                        console.log("スウィッチ１！！")
+                        console.log(this._cells)
                         this.game.switchPlayer();
                         this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
                     }
@@ -136,6 +128,7 @@ export class Board {
                 }
             };
             // イベントリスナーを再度追加
+            console.log("clickHandler2回目")
             cell.element.addEventListener('click', clickHandler);
             cell.clickHandler = clickHandler;
         })
@@ -143,7 +136,7 @@ export class Board {
 
     // ボードをクリアする
     public clearBoard(): void {
-        console.log("Clearing board");
+        console.log("クリアボード");
         this._cells.forEach(cell => {
             cell.mark = '';
             cell.element.classList.remove('X', 'O');
