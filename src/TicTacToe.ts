@@ -14,6 +14,9 @@ class TicTacToe {
     private resetButton: HTMLElement;
     private nameBoard: HTMLElement;
     private game: Game | null = null;
+    private mainContainer: HTMLElement;
+    private ultimateContainer: HTMLElement;
+    private ultimateCheckBox: HTMLInputElement;
 
 
     constructor() {
@@ -21,6 +24,9 @@ class TicTacToe {
         this.continueButton = document.getElementById('info__btn__continue')!;
         this.resetButton = document.getElementById('info__btn__reset')!;
         this.nameBoard = document.getElementById('name-setting')!;
+        this.mainContainer = document.querySelector('.main-container')!;
+        this.ultimateContainer = document.querySelector('.ultimate-container')!;
+        this.ultimateCheckBox = document.querySelector('#Ultimate')!;
 
         // this.loadPlayerName();
     }
@@ -30,6 +36,7 @@ class TicTacToe {
         this.submitButton.addEventListener('click', (e) => this.submitName(e));
         this.resetButton.addEventListener('click', () => this._resetGame());
         this.continueButton.addEventListener('click', () => this._continueGame());
+        this.ultimateCheckBox.addEventListener('click', () => this.boardModeChange());
     }
 
     // プレイヤー名を取得する
@@ -70,6 +77,26 @@ class TicTacToe {
 
         this.nameBoard.classList.remove('d-flex');
         this.nameBoard.classList.add('d-none');
+
+        this.boardModeChange();
+    }
+
+    private boardModeChange(): void {
+        if (this.ultimateCheckBox.checked) {
+            if (this.mainContainer.classList.contains('d-flex')) {
+                this.mainContainer.classList.remove('d-flex');
+                this.mainContainer.classList.add('d-none');
+            }
+            this.ultimateContainer.classList.remove('d-none');
+            this.ultimateContainer.classList.add('d-flex');
+
+        } else {
+            if (this.ultimateContainer.classList.contains('d-flex')) {
+                this.ultimateContainer.classList.remove('d-flex');
+                this.ultimateContainer.classList.add('d-none');
+            }
+            this.mainContainer.classList.remove('d-none');
+            this.mainContainer.classList.add('d-flex');
     }
 
     // localStorageに保存された名前を読み取る
@@ -84,9 +111,9 @@ class TicTacToe {
 
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     private startGame(playerXName: string, playerOName: string, isCPUOpponent: boolean): void {
-        const ultimateBoard = (document.getElementById('Ultimate') as HTMLInputElement).checked;
         console.log("アルティメットチェック")
-        console.log(ultimateBoard);
+        console.log(this.ultimateCheckBox.checked);
+        const ultimateBoard = this.ultimateCheckBox.checked;
         this.game = new Game(playerXName, playerOName, boardSize, isCPUOpponent, ultimateBoard);
         this.game.initializeGame();
     }

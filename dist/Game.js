@@ -32,6 +32,7 @@ export class Game {
         // this.loadGameStorage();
         if (this._board instanceof UltimateBoard) {
             this._board.clearUltimateBoard();
+            console.log("イニシャライズ・クリアボード");
         }
         else {
             this._board.clearBoard();

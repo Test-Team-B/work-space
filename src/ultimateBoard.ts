@@ -5,7 +5,7 @@ export class UltimateBoard extends Board {
     public miniBoards: Board[];
     public currentBoardIndex: number | null;
 
-    constructor(size: number, parentElement: HTMLElement = document.querySelector('#ultimate__board')!, game: Game) {
+    constructor(size: number, parentElement: HTMLElement = document.querySelector('.ultimate__board__container')!, game: Game) {
         super(size, parentElement, game);
         this.miniBoards = [];
         this.currentBoardIndex = null;
@@ -83,6 +83,7 @@ export class UltimateBoard extends Board {
                 const clickHandler = (event: MouseEvent) => {
                     // 現在のボードではない時クリックしても反応しない
                     if (this.currentBoardIndex !== null && this.currentBoardIndex !== boardIndex) {
+                        console.log("違うボードだよ")
                         return;
                     }
                     console.log("クリックハンドラー")

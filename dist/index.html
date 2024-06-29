@@ -57,7 +57,7 @@
     </nav>
 
    <!--------- Nomal Mode --------->
-    <div class="main-container d-flex justify-content-center flex-wrap">
+    <div class="main-container d-none justify-content-center flex-wrap">
       <!-- Scoreboard Section -->
       <div id="scoreboard" class="col-12 col-md-4">
         <div class="scoreboard__player" id="scoreboard__X">
@@ -105,7 +105,7 @@
     -->
     <div class="ultimate-container d-none">
 
-      <div class="ultimate-inner-container">
+      <div class="ultimate-inner-container flex-wrap">
         <div id="ultimate-scoreboard" class="d-flex">
           <div class="ultimate-scoreboard__player" id="ultimate-scoreboard__X">
             <h2 class="scoreboard__mark">X</h2>
@@ -122,18 +122,18 @@
           </div>
         </div>
 
-      <div id="ultimate__board">
-        <div class="ultimate__board__container"></div>
-      </div>
+        <div id="ultimate__board">
+          <div class="ultimate__board__container"></div>
+        </div>
 
-      <div id="ultimate-info">
-        <div class="ultimate-info__container">
-          <button class="btn btn-secondary btn m-2" id="ultimate-info__btn__continue">Continue</button>
-          <h2 id="ultimate-info__message" class="text-center">X's Turn</h2>
-          <button class="btn btn-secondary btn m-2" id="ultimate-info__btn__reset">Reset</button>
+        <div id="ultimate-info">
+          <div class="ultimate-info__container">
+            <button class="btn btn-secondary btn m-2" id="ultimate-info__btn__continue">Continue</button>
+            <h2 id="ultimate-info__message" class="text-center">X's Turn</h2>
+            <button class="btn btn-secondary btn m-2" id="ultimate-info__btn__reset">Reset</button>
+          </div>
         </div>
       </div>
-
     </div>
 
 
