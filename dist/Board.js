@@ -54,10 +54,16 @@ export class Board {
     }
     // セルにマークをつける
     markCell(cellIndex, mark) {
-        // @audit fixed
+        const optionsClickSound = document.getElementById('click-sound');
         const mouseclick = new Audio();
         mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
         mouseclick.play();
+
+        optionsClickSound.addEventListener('click', (e) => {
+            console.log(e);
+            mouseclick.pause();
+        });
+
         this._cells[cellIndex].mark = mark;
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;

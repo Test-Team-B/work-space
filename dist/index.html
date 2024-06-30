@@ -38,16 +38,16 @@
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end fs-5 align-items-center flex-grow-1 pe-3">
               <!-- Log out  -->
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link active mx-2" aria-current="page" href="#Log Out">Log out</a>
-              </li>
+              </li> -->
               <!--  Name Settings-->
               <li class="nav-item mx-2">
-                <a class="nav-link" id="navbar__name-settings" href="#Name Settings">Name Settings</a>
+                <a class="nav-link active" id="navbar__name-settings" href="#Name Settings">Name Settings</a>
               </li>
               <!-- Options -->
               <li class="nav-item mx-2">
-                <a class="nav-link" id="navbar__options" href="#Options">Options</a>
+                <a class="nav-link active" id="navbar__options" href="#Options">Options</a>
               </li>
             </ul>
           </div>
@@ -57,9 +57,9 @@
     </nav>
 
    <!--------- Nomal Mode --------->
-    <div class="main-container d-flex justify-content-center flex-wrap">
+    <div class="main-container d-flex justify-content-center align-items-end flex-wrap">
       <!-- Scoreboard Section -->
-      <div id="scoreboard" class="col-12 col-md-4">
+      <div id="scoreboard">
         <div class="scoreboard__player" id="scoreboard__X">
           <h2 class="scoreboard__mark">X</h2>
           <h2 id="scoreboard__X__name">player1</h2>
@@ -81,11 +81,11 @@
       </div>
 
       <!-- Info section (message  button) -->
-      <div id="info" class="col-md-3 mt-4 d-flex flex-column justify-content-center align-items-center">
-        <h2 id="info__message" class="text-center">X's Turn</h2>
-        <div class="info__btns d-flex justify-content-between">
+      <div id="info" class=" mt-4 d-flex flex-column justify-content-center align-items-center">        
+        <div class="info__container">
           <!-- <button class="btn btn-secondary btn m-2" id="info__btn__start">Start</button> -->
           <button class="btn btn-secondary btn m-2" id="info__btn__continue">Continue</button>
+          <h2 id="info__message" class="text-center">X's Turn</h2>
           <button class="btn btn-secondary btn m-2" id="info__btn__reset">Reset</button>
         </div>
       </div>
@@ -329,21 +329,7 @@
             <option value="9">HARD</option>
           </select>
         </div>
-
-       
       </div>            
-      <!-- セルがクリックされた時のクリックサウンド、ここで音のon/offをJSを使って実装したい
-      let mouseclick = new Audio();
-      mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav"; 
-      mouseclick.play();
-      これでセルがクリックされた時になります     
-      -->
-      <!-- <div class="options__click-sound-container">
-        <h4 class="border-bottom">Click Sound</h4>
-        <audio controls
-          src="https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav"
-          id="options__click-sound">
-      </div> -->
     </div>
   </div>
 

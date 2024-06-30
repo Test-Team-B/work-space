@@ -69,11 +69,3 @@ optionsCloseBtn.addEventListener('click', () => {
     options.classList.add('d-none');
   }
 });
-
-// const audio = document.getElementById('options__audio');
-
-// optionsCloseBtn.addEventListener('click', (e) => {
-//   audio.pause();
-//   console.log(e);
-//   console.log('paused');
-// })
