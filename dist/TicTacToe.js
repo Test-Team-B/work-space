@@ -11,13 +11,16 @@ class TicTacToe {
         this.submitButton = document.getElementById('name-setting__form__submit');
         this.continueButton = document.getElementById('info__btn__continue');
         this.resetButton = document.getElementById('info__btn__reset');
-        this.ultimateContinueButton = document.getElementById('ultimate-info__btn__continue');
-        this.ultimateResetButton = document.getElementById('ultimate-info__btn__reset');
         this.nameBoard = document.getElementById('name-setting');
         this.mainContainer = document.querySelector('.main-container');
         this.ultimateContainer = document.querySelector('.ultimate-container');
-        this.ultimateCheckBox = document.querySelector('#Ultimate');
+        this.ultimateContinueButton = document.getElementById('ultimate-info__btn__continue');
+        this.ultimateResetButton = document.getElementById('ultimate-info__btn__reset');
+        this.ultimateCheckBox = document.querySelector('#ultimate');
+        this.ultimateNameSettingCheckBox = document.querySelector('#name-setting__select-ultimate');
         this.levelSelect = document.querySelector('#options__level-selection');
+        this.cpuCheckBox = document.querySelector('#name-setting__select-cpu');
+        this.playerONameFormElement = document.getElementById('name-setting__form__player2');
         this.startGame();
         // this.loadPlayerName();
     }
@@ -39,19 +42,36 @@ class TicTacToe {
             this.ultimateResetButton.addEventListener('click', () => this._resetGame());
         }
         if (this.ultimateCheckBox) {
-            this.ultimateCheckBox.addEventListener('change', () => this.gameModeChange());
+            this.ultimateCheckBox.addEventListener('change', () => {
+                const isChecked = this.ultimateCheckBox.checked;
+                this.ultimateNameSettingCheckBox.checked = isChecked;
+                this.gameModeChange();
+            });
+        }
+        if (this.ultimateNameSettingCheckBox) {
+            this.ultimateNameSettingCheckBox.addEventListener('change', () => {
+                const isChecked = this.ultimateNameSettingCheckBox.checked;
+                this.ultimateCheckBox.checked = isChecked;
+                this.gameModeChange();
+            });
         }
         if (this.levelSelect) {
             this.levelSelect.addEventListener('change', () => this.cpuLevelSelect());
+        }
+        if (this.cpuCheckBox) {
+            this.cpuCheckBox.addEventListener('click', () => {
+                this.updatePlayerONameForm();
+                this.startGame();
+            });
         }
     }
     // プレイヤー名を取得する
     getPlayerNames() {
         var _a, _b;
-        const isCPUOpponent = this.cpuLevelSelect();
+        const isCPUOpponent = this.cpuCheckBox.checked ? this.cpuLevelSelect() : false;
         const isUltimate = this.ultimateCheckBox.checked;
         const playerXName = ((_a = document.getElementById('name-setting__form__player1')) === null || _a === void 0 ? void 0 : _a.value) || 'Player X';
-        const playerOName = (isCPUOpponent) ? "CPU" : ((_b = document.getElementById('name-setting__form__player2')) === null || _b === void 0 ? void 0 : _b.value) || 'Player O';
+        const playerOName = ((_b = document.getElementById('name-setting__form__player2')) === null || _b === void 0 ? void 0 : _b.value) || 'Player O';
         return { playerOName, playerXName, isCPUOpponent, isUltimate };
     }
     // 名前入力フォームでスタートボタンを押したらフォームが消えゲームがスタートする
@@ -67,28 +87,34 @@ class TicTacToe {
     // ゲームボードの種類の選択
     gameModeChange() {
         if (this.ultimateCheckBox.checked) {
-            if (this.mainContainer.classList.contains('d-flex')) {
-                this.mainContainer.classList.remove('d-flex');
-                this.mainContainer.classList.add('d-none');
-            }
-            this.ultimateContainer.classList.remove('d-none');
-            this.ultimateContainer.classList.add('d-flex');
+            this.displayChange(this.ultimateContainer, this.mainContainer);
         }
         else {
-            if (this.ultimateContainer.classList.contains('d-flex')) {
-                this.ultimateContainer.classList.remove('d-flex');
-                this.ultimateContainer.classList.add('d-none');
-            }
-            this.mainContainer.classList.remove('d-none');
-            this.mainContainer.classList.add('d-flex');
+            this.displayChange(this.mainContainer, this.ultimateContainer);
         }
         this.startGame();
     }
+    // 画面を消したり表示させたり
+    displayChange(showElement, hideElement) {
+        if (hideElement.classList.contains('d-flex')) {
+            hideElement.classList.remove('d-flex');
+            hideElement.classList.add('d-none');
+        }
+        showElement === null || showElement === void 0 ? void 0 : showElement.classList.remove('d-none');
+        showElement === null || showElement === void 0 ? void 0 : showElement.classList.add('d-flex');
+    }
+    // CPUモードにしたらPlayer2の名前入力フォームにCPUが入る
+    updatePlayerONameForm() {
+        if (this.cpuCheckBox.checked) {
+            this.playerONameFormElement.value = 'CPU'; // チェックが入った場合に表示する文字
+        }
+        else {
+            this.playerONameFormElement.value = ''; // チェックが外れた場合にフォームをクリア
+        }
+    }
     // CPUのレベルの選択
     cpuLevelSelect() {
-        console.log("コンピュータが動きます");
         const selectText = this.levelSelect.options[this.levelSelect.selectedIndex].text;
-        console.log(selectText);
         let isCPUOpponent = false;
         switch (selectText) {
             case 'EASY':
@@ -101,7 +127,6 @@ class TicTacToe {
             default:
                 break;
         }
-        console.log(isCPUOpponent);
         return isCPUOpponent;
     }
     // localStorageに保存された名前を読み取る

@@ -57,20 +57,16 @@ export class Game {
     switchPlayer() {
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
         if (this._currentPlayer.isCPU) {
-            console.log("CPU's turn");
             this.playCPUTurn();
         }
         else {
-            console.log("Human's turn");
         }
     }
     playCPUTurn() {
-        console.log("プレイCPU");
         this._isCPUThinking = true;
         setTimeout(() => {
             let emptyCells = [];
             if (this._board instanceof UltimateBoard) {
-                console.log("アルティメットCPU");
                 const boardIndex = this._board.currentBoardIndex !== null ? this._board.currentBoardIndex : Math.floor(Math.random() * this._board.miniBoards.length);
                 this._board.miniBoards[boardIndex].cells.forEach((cell, cellIndex) => {
                     if (!cell.mark) {
@@ -79,7 +75,6 @@ export class Game {
                 });
             }
             else {
-                console.log("ノーマルボードCPU");
                 emptyCells = this._board.cells
                     .map((cell, index) => ({ boardIndex: 0, cellIndex: index, cell }))
                     .filter(({ cell }) => !cell.mark);
@@ -88,11 +83,9 @@ export class Game {
                 const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
                 const { boardIndex, cellIndex } = randomCell;
                 if (this._board instanceof UltimateBoard) {
-                    console.log("アルティメットマークセルしたよ");
                     this._board.ultimateHandleCellClick(cellIndex, boardIndex);
                 }
                 else {
-                    console.log("ノーマルマークしたよ");
                     this._board.handleCellClick(cellIndex);
                 }
                 this._isCPUThinking = false;
@@ -126,7 +119,6 @@ export class Game {
     }
     // スコアボードの名前を初期化
     updateScoreBoardNames(isUltimateBoard = false) {
-        console.log("スコアボードの名前の更新");
         if (isUltimateBoard) {
             document.getElementById('ultimate-scoreboard__X-name').innerText = this._players['X'].name;
             document.getElementById('ultimate-scoreboard__O-name').innerText = this._players['O'].name;

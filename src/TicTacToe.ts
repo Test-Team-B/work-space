@@ -19,24 +19,35 @@ class TicTacToe {
 
     private nameBoard: HTMLElement;
     private mainContainer: HTMLElement;
+
     private ultimateContainer: HTMLElement;
     private ultimateCheckBox: HTMLInputElement;
+    private ultimateNameSettingCheckBox: HTMLInputElement;
+
     private levelSelect: HTMLSelectElement;
+    private cpuCheckBox: HTMLInputElement;
+
+    private playerONameFormElement: HTMLInputElement;
 
 
     constructor() {
         this.submitButton = document.getElementById('name-setting__form__submit')!;
         this.continueButton = document.getElementById('info__btn__continue')!;
         this.resetButton = document.getElementById('info__btn__reset')!;
-
-        this.ultimateContinueButton = document.getElementById('ultimate-info__btn__continue')!;
-        this.ultimateResetButton = document.getElementById('ultimate-info__btn__reset')!;
-
+        
         this.nameBoard = document.getElementById('name-setting')!;
         this.mainContainer = document.querySelector('.main-container')!;
         this.ultimateContainer = document.querySelector('.ultimate-container')!;
-        this.ultimateCheckBox = document.querySelector('#Ultimate') as HTMLInputElement;
+        
+        this.ultimateContinueButton = document.getElementById('ultimate-info__btn__continue')!;
+        this.ultimateResetButton = document.getElementById('ultimate-info__btn__reset')!;
+        this.ultimateCheckBox = document.querySelector('#ultimate') as HTMLInputElement;
+        this.ultimateNameSettingCheckBox = document.querySelector('#name-setting__select-ultimate') as HTMLInputElement;
+
         this.levelSelect = document.querySelector('#options__level-selection') as HTMLSelectElement;
+        this.cpuCheckBox = document.querySelector('#name-setting__select-cpu') as HTMLInputElement;
+
+        this.playerONameFormElement = document.getElementById('name-setting__form__player2') as HTMLInputElement;
 
         this.startGame();
         // this.loadPlayerName();
@@ -60,19 +71,36 @@ class TicTacToe {
             this.ultimateResetButton.addEventListener('click', () => this._resetGame());
         }
         if (this.ultimateCheckBox) {
-            this.ultimateCheckBox.addEventListener('change', () => this.gameModeChange());
+            this.ultimateCheckBox.addEventListener('change', () => {
+                const isChecked = this.ultimateCheckBox.checked;
+                this.ultimateNameSettingCheckBox.checked = isChecked;
+                this.gameModeChange();
+            });
+        }
+        if (this.ultimateNameSettingCheckBox) {
+            this.ultimateNameSettingCheckBox.addEventListener('change', () => {
+                const isChecked = this.ultimateNameSettingCheckBox.checked;
+                this.ultimateCheckBox.checked = isChecked;
+                this.gameModeChange();
+            })
         }
         if (this.levelSelect) {
             this.levelSelect.addEventListener('change', () => this.cpuLevelSelect());
+        }
+        if (this.cpuCheckBox) {
+            this.cpuCheckBox.addEventListener('click', () => {
+                this.updatePlayerONameForm();
+                this.startGame();
+            });
         }
     }
 
     // プレイヤー名を取得する
     public getPlayerNames(): { playerXName: string, playerOName: string, isCPUOpponent: boolean, isUltimate: boolean} {
-        const isCPUOpponent = this.cpuLevelSelect();
+        const isCPUOpponent = this.cpuCheckBox.checked ? this.cpuLevelSelect() : false;
         const isUltimate = this.ultimateCheckBox.checked;
         const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement)?.value || 'Player X';
-        const playerOName = (isCPUOpponent) ? "CPU" : (document.getElementById('name-setting__form__player2') as HTMLInputElement)?.value || 'Player O';
+        const playerOName = (document.getElementById('name-setting__form__player2') as HTMLInputElement)?.value || 'Player O';
         return { playerOName, playerXName, isCPUOpponent, isUltimate};
     }
 
@@ -92,29 +120,35 @@ class TicTacToe {
     // ゲームボードの種類の選択
     private gameModeChange(): void {
         if (this.ultimateCheckBox.checked) {
-            if (this.mainContainer.classList.contains('d-flex')) {
-                this.mainContainer.classList.remove('d-flex');
-                this.mainContainer.classList.add('d-none');
-            }
-            this.ultimateContainer.classList.remove('d-none');
-            this.ultimateContainer.classList.add('d-flex');
-
+            this.displayChange(this.ultimateContainer, this.mainContainer);
         } else {
-            if (this.ultimateContainer.classList.contains('d-flex')) {
-                this.ultimateContainer.classList.remove('d-flex');
-                this.ultimateContainer.classList.add('d-none');
-            }
-            this.mainContainer.classList.remove('d-none');
-            this.mainContainer.classList.add('d-flex');
+            this.displayChange(this.mainContainer, this.ultimateContainer);
         }
         this.startGame();
     }
 
+    // 画面を消したり表示させたり
+    private displayChange(showElement: HTMLElement | null, hideElement: HTMLElement): void {
+        if (hideElement.classList.contains('d-flex')) {
+            hideElement.classList.remove('d-flex');
+            hideElement.classList.add('d-none');
+        }
+        showElement?.classList.remove('d-none');
+        showElement?.classList.add('d-flex');
+    }
+
+    // CPUモードにしたらPlayer2の名前入力フォームにCPUが入る
+    private updatePlayerONameForm(): void {
+        if (this.cpuCheckBox.checked) {
+            this.playerONameFormElement.value = 'CPU'; // チェックが入った場合に表示する文字
+        } else {
+            this.playerONameFormElement.value = ''; // チェックが外れた場合にフォームをクリア
+        }
+    }
+
     // CPUのレベルの選択
     private cpuLevelSelect(): boolean {
-        console.log("コンピュータが動きます")
         const selectText = this.levelSelect.options[this.levelSelect.selectedIndex].text
-        console.log(selectText)
         let isCPUOpponent = false;
 
         switch (selectText) {
@@ -131,7 +165,6 @@ class TicTacToe {
             default:
                 break;
         }
-        console.log(isCPUOpponent)
         return isCPUOpponent;
     }
 
