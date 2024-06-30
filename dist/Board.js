@@ -55,6 +55,10 @@ export class Board {
     // セルにマークをつける
     markCell(cellIndex, mark) {
         console.log(`ノーマルマークセル ${cellIndex} with ${mark}`);
+        // @audit fixed
+        const mouseclick = new Audio();
+        mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
+        mouseclick.play();
         this._cells[cellIndex].mark = mark;
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;
