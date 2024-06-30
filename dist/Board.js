@@ -152,7 +152,7 @@ export class Board {
         return score;
     }
     // 新しいメソッド: 空いているセルの取得
-    getEmptyCells() {
+    getEmptyCellIndices() {
         return this._cells
             .map((cell, index) => cell.mark === '' ? index : -1)
             .filter(index => index !== -1);
