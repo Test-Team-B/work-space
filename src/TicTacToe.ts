@@ -62,7 +62,7 @@ class TicTacToe {
 
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     private startGame(playerXName: string, playerOName: string, isCPUOpponent: boolean): void {
-        this.game = new Game(playerXName, playerOName, boardSize, isCPUOpponent);
+        this.game = new Game(playerXName, playerOName, boardSize);
         this.game.initializeGame();
     }
 

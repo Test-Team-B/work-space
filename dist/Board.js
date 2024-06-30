@@ -54,10 +54,6 @@ export class Board {
     }
     // セルにマークをつける
     markCell(cellIndex, mark) {
-        // @audit fixed
-        const mouseclick = new Audio();
-        mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
-        mouseclick.play();
         this._cells[cellIndex].mark = mark;
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;
@@ -93,7 +89,7 @@ export class Board {
                     }
                     else {
                         this.game.switchPlayer();
-                        this.game._winningMessageTextElement.innerText = `${this.game._currentPlayer.name}'s Turn`;
+                        this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
                     }
                     this.game.saveGameStorage();
                 }
@@ -135,5 +131,45 @@ export class Board {
                 this._cells[index].element.textContent = cellState.mark;
             }
         });
+    }
+    // 新しいメソッド: ボードの状態を評価する
+    evaluateBoard(player) {
+        const opponent = player === 'X' ? 'O' : 'X';
+        let score = 0;
+        // 勝利状態をチェック
+        if (this.checkWin()) {
+            return this._cells[this.winningCombinations[0][0]].mark === player ? 10 : -10;
+        }
+        // 各セルをチェックしてスコアを計算
+        for (let i = 0; i < this._cells.length; i++) {
+            if (this._cells[i].mark === player) {
+                score++;
+            }
+            else if (this._cells[i].mark === opponent) {
+                score--;
+            }
+        }
+        return score;
+    }
+    // 新しいメソッド: 空いているセルの取得
+    getEmptyCells() {
+        return this._cells
+            .map((cell, index) => cell.mark === '' ? index : -1)
+            .filter(index => index !== -1);
+    }
+    // 新しいメソッド: 特定のセルにマークを置く（一時的な操作用）
+    placeMarkTemp(index, mark) {
+        this._cells[index].mark = mark;
+    }
+    // 新しいメソッド: 特定のセルのマークを削除（一時的な操作用）
+    removeMarkTemp(index) {
+        this._cells[index].mark = '';
+    }
+    getCellByIndex(index) {
+        return this._cells[index];
+    }
+    isCellEmpty(index) {
+        const cell = this.getCellByIndex(index);
+        return cell ? cell.mark === '' : false;
     }
 }

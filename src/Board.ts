@@ -194,4 +194,13 @@ export class Board {
     public removeMarkTemp(index: number): void {
         this._cells[index].mark = '';
     }
+
+    public getCellByIndex(index: number): { mark: string, element: HTMLElement } | undefined {
+        return this._cells[index];
+    }
+
+    public isCellEmpty(index: number): boolean {
+        const cell = this.getCellByIndex(index);
+        return cell ? cell.mark === '' : false;
+    }
 }

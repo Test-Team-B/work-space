@@ -24,7 +24,6 @@ class TicTacToe {
     getPlayerNames() {
         const playerXName = document.getElementById('name-setting__form__player1').value || 'Player X';
         const playerOName = document.getElementById('name-setting__form__player2').value || 'Player O';
-        console.log(playerXName, playerOName);
         const isCPUOpponent = true;
         return { playerOName, playerXName, isCPUOpponent };
     }
@@ -47,7 +46,7 @@ class TicTacToe {
     }
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     startGame(playerXName, playerOName, isCPUOpponent) {
-        this.game = new Game(playerXName, playerOName, boardSize, isCPUOpponent);
+        this.game = new Game(playerXName, playerOName, boardSize);
         this.game.initializeGame();
     }
     // ゲームをコンティニューする、カプセル化
