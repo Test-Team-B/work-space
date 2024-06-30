@@ -9,6 +9,7 @@ export class Game {
     private _scores: { [key: string]: number };
     private _winningMessageTextElement: HTMLElement;
     private _ultimateWinningMessageTextElement: HTMLElement;
+    private ultimateMode: boolean;
 
     constructor(playerXName: string, playerOName: string, boardSize: number, isCPUOpponent: boolean = false, ultimateBoard: boolean = false) {
         this._players = {
@@ -26,11 +27,13 @@ export class Game {
         const boardContainer = document.querySelector('.board__container') as HTMLElement;
         const ultimateBoardContainer = document.querySelector('.ultimate__board__container') as HTMLElement;
 
+        this.ultimateMode = ultimateBoard;
+        console.log("アルティメットかノーマルか")
         this._board = ultimateBoard
             ? new UltimateBoard(boardSize, ultimateBoardContainer, this)
             : new Board(boardSize, boardContainer, this);
 
-        this.updateScoreBoardNames();
+        this.updateScoreBoardNames(ultimateBoard);
     }
 
     // ゲームを初期化
@@ -46,7 +49,7 @@ export class Game {
             console.log("ノーマルクリアボード")
             this._board.clearBoard();
         }
-        this.updateScores();
+        this.updateScores(this.ultimateMode);
     }
 
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
@@ -129,41 +132,53 @@ export class Game {
     }
     
     // ゲーム結果の表示、スコアの更新
-    public handleEndGame(draw: boolean): void {
+    public handleEndGame(draw: boolean, isUltimateBoard: boolean = false): void {
         console.log("ハンドエンド")
         if (draw) {
             this.winningMessageTextElement.innerText = 'Draw!';
         } else {
-            this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
             this._scores[this._currentPlayer.mark]++;
-            this.updateScores();
+            this.updateScores(isUltimateBoard);
+            if (!isUltimateBoard) {
+                console.log("ミニボードで勝ったよ！！")
+                this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
+            }
         }
-        console.log("ウィニングメッセージ")
-        console.log(this.winningMessageTextElement)
     }
     
     // スコアボードの更新
-    public updateScores(): void {
+    public updateScores(isUltimateBoard: boolean = false): void {
         console.log("スコアボードの更新")
-        if (this.board instanceof UltimateBoard) {
+        
+        if (isUltimateBoard) {
+            console.log("アルティメット・スコアボード")
             document.getElementById('ultimate-scoreboard__X-score')!.innerText = `${this._scores['X']}`;
             document.getElementById('ultimate-scoreboard__O-score')!.innerText = `${this._scores['O']}`;
         } else {
             document.getElementById('scoreboard__X__score')!.innerText = `${this._scores['X']}`;
             document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
         }
+        console.log("__________________________終わり")
     }
     
-    // スコアボードの名前を更新
-    private updateScoreBoardNames(): void {
+    // スコアボードの名前を初期化
+    private updateScoreBoardNames(isUltimateBoard: boolean = false): void {
         console.log("スコアボードの名前の更新")
-        if (this.board instanceof UltimateBoard) {
+        if (isUltimateBoard) {
+            console.log("アルティメット・ボードネーム")
             document.getElementById('ultimate-scoreboard__X-name')!.innerText = this._players['X'].name;
             document.getElementById('ultimate-scoreboard__O-name')!.innerText = this._players['O'].name;
         } else {
             document.getElementById('scoreboard__X__name')!.innerText = this._players['X'].name;
             document.getElementById('scoreboard__O__name')!.innerText = this._players['O'].name;
         }
+    }
+
+    // 名前入力画面から名前だけ変更
+    public updatePlayerNames(playerXName: string, playerOName: string): void {
+        this._players['X'].name = playerXName;
+        this._players['O'].name = playerOName;
+        this.updateScoreBoardNames(this.ultimateMode);
     }
     
     // カプセル化、勝ち判定

@@ -84,22 +84,16 @@ export class Board {
 
     // 勝者を判定する
     public checkWin(): boolean {
-        console.log("チエックウィン");
-        console.log("Checking win for current player:", this.game.currentPlayer);
-
-        const result = this.winningCombinations.some(combination => {
+        console.log("チェーックウィン！！")
+        return this.winningCombinations.some(combination => {
             return combination.every(index => {
-                const cellMark = this._cells[index].mark;
-                const firstMark = this._cells[combination[0]].mark;
-                const result = cellMark === firstMark && cellMark !== '';
-                return result;
+                console.log(this.cells[index])
+                const cellMark = this.cells[index].mark;
+                const firstMark = this.cells[combination[0]].mark;
+                return cellMark === firstMark && cellMark !== '';
             });
         });
-
-        console.log("Win check result:", result);
-        return result;
     }
-
 
     // 全てのセルが空ではない
     public checkDraw(): boolean {

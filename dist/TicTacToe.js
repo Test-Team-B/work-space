@@ -11,11 +11,14 @@ class TicTacToe {
         this.submitButton = document.getElementById('name-setting__form__submit');
         this.continueButton = document.getElementById('info__btn__continue');
         this.resetButton = document.getElementById('info__btn__reset');
+        this.ultimateContinueButton = document.getElementById('ultimate-info__btn__continue');
+        this.ultimateResetButton = document.getElementById('ultimate-info__btn__reset');
         this.nameBoard = document.getElementById('name-setting');
         this.mainContainer = document.querySelector('.main-container');
         this.ultimateContainer = document.querySelector('.ultimate-container');
         this.ultimateCheckBox = document.querySelector('#Ultimate');
         this.levelSelect = document.querySelector('#options__level-selection');
+        this.startGame();
         // this.loadPlayerName();
     }
     // 各ボタンにクリックイベントを付与する
@@ -29,6 +32,12 @@ class TicTacToe {
         if (this.continueButton) {
             this.continueButton.addEventListener('click', () => this._continueGame());
         }
+        if (this.ultimateContinueButton) {
+            this.ultimateContinueButton.addEventListener('click', () => this._continueGame());
+        }
+        if (this.ultimateResetButton) {
+            this.ultimateResetButton.addEventListener('click', () => this._resetGame());
+        }
         if (this.ultimateCheckBox) {
             this.ultimateCheckBox.addEventListener('change', () => this.gameModeChange());
         }
@@ -40,19 +49,20 @@ class TicTacToe {
     getPlayerNames() {
         var _a, _b;
         const isCPUOpponent = this.cpuLevelSelect();
+        const isUltimate = this.ultimateCheckBox.checked;
         const playerXName = ((_a = document.getElementById('name-setting__form__player1')) === null || _a === void 0 ? void 0 : _a.value) || 'Player X';
         const playerOName = (isCPUOpponent) ? "CPU" : ((_b = document.getElementById('name-setting__form__player2')) === null || _b === void 0 ? void 0 : _b.value) || 'Player O';
-        console.log("プレイヤーO名前");
-        console.log(playerOName);
-        return { playerOName, playerXName, isCPUOpponent };
+        return { playerOName, playerXName, isCPUOpponent, isUltimate };
     }
     // 名前入力フォームでスタートボタンを押したらフォームが消えゲームがスタートする
     submitName(e) {
         e.preventDefault(); // フォームの送信を防ぐ
-        this.startGame();
+        const { playerXName, playerOName } = this.getPlayerNames();
+        if (this.game) {
+            this.game.updatePlayerNames(playerXName, playerOName);
+        }
         this.nameBoard.classList.remove('d-flex');
         this.nameBoard.classList.add('d-none');
-        this.gameModeChange();
     }
     // ゲームボードの種類の選択
     gameModeChange() {
@@ -102,9 +112,8 @@ class TicTacToe {
     }
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     startGame() {
-        const { playerXName, playerOName, isCPUOpponent } = this.getPlayerNames();
-        const ultimateBoard = this.ultimateCheckBox.checked;
-        this.game = new Game(playerXName, playerOName, boardSize, isCPUOpponent, ultimateBoard);
+        const { playerXName, playerOName, isCPUOpponent, isUltimate } = this.getPlayerNames();
+        this.game = new Game(playerXName, playerOName, boardSize, isCPUOpponent, isUltimate);
         this.game.initializeGame();
     }
     // ゲームをコンティニューする、カプセル化
