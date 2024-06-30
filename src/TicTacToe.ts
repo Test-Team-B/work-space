@@ -84,7 +84,7 @@ class TicTacToe {
         if (this.game) {
             this.game.updatePlayerNames(playerXName, playerOName);
         }
-        
+
         this.nameBoard.classList.remove('d-flex');
         this.nameBoard.classList.add('d-none');
     }
@@ -112,11 +112,12 @@ class TicTacToe {
 
     // CPUのレベルの選択
     private cpuLevelSelect(): boolean {
-        const selectValue = this.levelSelect.value;
-
+        console.log("コンピュータが動きます")
+        const selectText = this.levelSelect.options[this.levelSelect.selectedIndex].text
+        console.log(selectText)
         let isCPUOpponent = false;
 
-        switch (selectValue) {
+        switch (selectText) {
             case 'EASY':
                 isCPUOpponent = true;
                 break;
@@ -130,6 +131,7 @@ class TicTacToe {
             default:
                 break;
         }
+        console.log(isCPUOpponent)
         return isCPUOpponent;
     }
 

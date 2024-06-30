@@ -28,7 +28,6 @@ export class Game {
         const ultimateBoardContainer = document.querySelector('.ultimate__board__container') as HTMLElement;
 
         this.ultimateMode = ultimateBoard;
-        console.log("アルティメットかノーマルか")
         this._board = ultimateBoard
             ? new UltimateBoard(boardSize, ultimateBoardContainer, this)
             : new Board(boardSize, boardContainer, this);
@@ -38,16 +37,13 @@ export class Game {
 
     // ゲームを初期化
     public initializeGame(): void {
-        console.log("initialize!!!")
         // @audit
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         // this.loadGameStorage();
         if (this._board instanceof UltimateBoard) {
-            console.log("アルティメットクリアボード")
             this._board.clearUltimateBoard();
             this._board.miniBoardResult.fill('');
         } else {
-            console.log("ノーマルクリアボード")
             this._board.clearBoard();
         }
         this.updateScores(this.ultimateMode);
@@ -74,7 +70,6 @@ export class Game {
 
     // プレイヤー交代
     public switchPlayer(): void {
-        console.log("スウィッチ")
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
         if (this._currentPlayer.isCPU) {
             console.log("CPU's turn");
@@ -110,23 +105,12 @@ export class Game {
                 const { boardIndex, cellIndex } = randomCell;
 
                 if (this._board instanceof UltimateBoard) {
-                    this._board.ultimateMarkCell(boardIndex, cellIndex, this._currentPlayer.mark);
                     console.log("アルティメットマークセルしたよ")
+                    this._board.ultimateHandleCellClick(cellIndex, boardIndex);
                 } else {
                     console.log("ノーマルマークしたよ")
-                    this._board.markCell(cellIndex, this._currentPlayer.mark);
+                    this._board.handleCellClick(cellIndex);
                 }
-
-                if (this.checkWin()) {
-                    this.handleEndGame(false);
-                } else if (this.checkDraw()) {
-                    this.handleEndGame(true);
-                } else {
-                    this.switchPlayer();
-                    // @audit fixed
-                    this.winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
-                }
-                this.saveGameStorage();
                 this._isCPUThinking = false;
             }
         }, 1000);
@@ -134,14 +118,12 @@ export class Game {
     
     // ゲーム結果の表示、スコアの更新
     public handleEndGame(draw: boolean, isUltimateBoard: boolean = false): void {
-        console.log("ハンドエンド")
         if (draw) {
             this.winningMessageTextElement.innerText = 'Draw!';
         } else {
             this._scores[this._currentPlayer.mark]++;
             this.updateScores(isUltimateBoard);
             if (!isUltimateBoard) {
-                console.log("ミニボードで勝ったよ！！")
                 this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
             }
         }
@@ -149,10 +131,8 @@ export class Game {
     
     // スコアボードの更新
     public updateScores(isUltimateBoard: boolean = false): void {
-        console.log("スコアボードの更新")
         
         if (isUltimateBoard) {
-            console.log("アルティメット・スコアボード")
             document.getElementById('ultimate-scoreboard__X-score')!.innerText = `${this._scores['X']}`;
             document.getElementById('ultimate-scoreboard__O-score')!.innerText = `${this._scores['O']}`;
         } else {
@@ -166,7 +146,6 @@ export class Game {
     private updateScoreBoardNames(isUltimateBoard: boolean = false): void {
         console.log("スコアボードの名前の更新")
         if (isUltimateBoard) {
-            console.log("アルティメット・ボードネーム")
             document.getElementById('ultimate-scoreboard__X-name')!.innerText = this._players['X'].name;
             document.getElementById('ultimate-scoreboard__O-name')!.innerText = this._players['O'].name;
         } else {

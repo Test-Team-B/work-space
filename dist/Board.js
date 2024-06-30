@@ -41,7 +41,6 @@ export class Board {
     }
     // セルを作りクラスとインデックスを付与、マークとエレメントを保持する
     createCells(parentElement) {
-        console.log("ノーマルセル作ったよ");
         parentElement.style.gridTemplateColumns = `repeat(${this._size}, 1fr)`;
         parentElement.style.gridTemplateRows = `repeat(${this._size}, 1fr)`;
         parentElement.innerHTML = "";
@@ -54,7 +53,6 @@ export class Board {
     }
     // セルにマークをつける
     markCell(cellIndex, mark) {
-        console.log(`ノーマルマークセル ${cellIndex} with ${mark}`);
         // @audit fixed
         const mouseclick = new Audio();
         mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
@@ -65,10 +63,8 @@ export class Board {
     }
     // 勝者を判定する
     checkWin() {
-        console.log("チェーックウィン！！");
         return this.winningCombinations.some(combination => {
             return combination.every(index => {
-                console.log(this.cells[index]);
                 const cellMark = this.cells[index].mark;
                 const firstMark = this.cells[combination[0]].mark;
                 return cellMark === firstMark && cellMark !== '';
@@ -77,46 +73,44 @@ export class Board {
     }
     // 全てのセルが空ではない
     checkDraw() {
-        console.log("チェックドロー");
         return this._cells.every(_cell => _cell.mark !== '');
     }
     // クリックイベントの付与
     addClickHandlers() {
-        console.log("Adding click handlers");
         this._cells.forEach((cell, index) => {
             // セルの要素からクリックイベントリスナーを削除
             if (cell.clickHandler) {
                 cell.element.removeEventListener('click', cell.clickHandler);
             }
             const clickHandler = (event) => {
-                console.log("hhhhhaaaaaaaaaaaa");
-                if (!cell.mark && !this.checkWin() && !this.checkDraw() && !this.game.isCPUThinking) {
-                    this.markCell(index, this.game.currentPlayer.mark);
-                    console.log("ボードでマークしたよ");
-                    this.game.saveGameStorage();
-                    if (this.checkWin()) {
-                        this.game.handleEndGame(false);
-                    }
-                    else if (this.checkDraw()) {
-                        this.game.handleEndGame(true);
-                    }
-                    else {
-                        console.log("スウィッチ１！！");
-                        this.game.switchPlayer();
-                        this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
-                    }
-                    this.game.saveGameStorage();
-                }
+                this.handleCellClick(index);
             };
             // イベントリスナーを再度追加
-            console.log("clickHandler2回目");
             cell.element.addEventListener('click', clickHandler);
             cell.clickHandler = clickHandler;
         });
     }
+    // クリックイベントの内容
+    handleCellClick(index) {
+        if (!this._cells[index].mark && !this.checkWin() && !this.checkDraw()) {
+            this.markCell(index, this.game.currentPlayer.mark);
+            this.game.saveGameStorage();
+            if (this.checkWin()) {
+                this.game.handleEndGame(false);
+            }
+            else if (this.checkDraw()) {
+                this.game.handleEndGame(true);
+            }
+            else {
+                this.game.switchPlayer();
+                // @audit fixed
+                this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
+            }
+            this.game.saveGameStorage();
+        }
+    }
     // ボードをクリアする
     clearBoard() {
-        console.log("クリアボード");
         this._cells.forEach(cell => {
             cell.mark = '';
             cell.element.classList.remove('X', 'O');

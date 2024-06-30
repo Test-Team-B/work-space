@@ -13,12 +13,10 @@ export class UltimateBoard extends Board {
         this.miniBoardResult = Array(size * size).fill('');
         this.createUltimateBoards(size, parentElement, game);
 
-        console.log("アルティメットが呼ばれました")
     }
 
     // ultimateBoard の作成、miniBoardをsize個生成し ultimateBoardの grid に当てはめる
     private createUltimateBoards(size: number, parentElement: HTMLElement, game: Game): void {
-        console.log("アルティメットセルを作るよ")
         parentElement.innerHTML = '';
         parentElement.style.display = 'grid';
         parentElement.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
@@ -40,12 +38,10 @@ export class UltimateBoard extends Board {
     }
     
     public ultimateMarkCell(boardIndex: number, cellIndex: number, mark: string): void {
-        console.log("アルティメットマークセル")
         this.miniBoards[boardIndex].markCell(cellIndex, mark);
     }
 
     public ultimateCheckWin(): boolean {
-        console.log("アルティメットモード各ボードのチェーックウィン！！")
         return this.winningCombinations.some(combination => {
             return combination.every(index => {
                 const mark = this.miniBoardResult[index];
@@ -56,12 +52,10 @@ export class UltimateBoard extends Board {
     }
 
     public ultimateCheckDraw(): boolean {
-        console.log("アルティメットドロー")
         return this.miniBoardResult.every(mark => mark !== '');
     }
 
     public ultimateAddClickHandlers(): void {
-        console.log("アルティメット・アドクリック")
         this.miniBoards.forEach((miniBoard, boardIndex) => {
             miniBoard.cells.forEach((cell, cellIndex) => {
                 // セルの要素からクリックイベントリスナーを削除
@@ -71,47 +65,7 @@ export class UltimateBoard extends Board {
 
                 const clickHandler = (event: MouseEvent) => {
                     // 現在のボードではない時クリックしても反応しない
-                    if (this.currentBoardIndex !== null && this.currentBoardIndex !== boardIndex) {
-                        alert("違うボードだよ");    // 後でミニボードの色を変化させて実装
-                        return;
-                    }
-                    if (this.miniBoardResult[boardIndex]) {
-                        alert("勝敗のついているボードだよ");    // 後で実装
-                        return;
-                    }
-                    
-                    if (!cell.mark
-                        && !this.ultimateCheckWin()
-                        && !this.ultimateCheckDraw()
-                        && !this.game.isCPUThinking
-                        && !this.miniBoardResult[boardIndex]) {
-                        console.log("アルティメットハンドラー")
-                        this.ultimateMarkCell(boardIndex, cellIndex, this.game.currentPlayer.mark);
-
-                        if (miniBoard.checkWin()) {
-                            console.log("勝った人のマークを配列に格納しているよ")
-                            this.miniBoardResult[boardIndex] = this.game.currentPlayer.mark;
-                            this.currentBoardIndex = null;  // 勝った人は次のボードを好きに選べる
-                            this.ultimateHandleEndGame(false);
-
-                            if (this.ultimateCheckWin()) {
-                                console.log("アルティメット勝敗確認TRUE")
-                        }
-                        } else if (this.ultimateCheckDraw()) {
-                            this.ultimateHandleEndGame(true);
-                        } else if (this.miniBoardResult) {
-                            console.log("アルティメットスウィッチ")
-                            if (!this.miniBoardResult[cellIndex]) {
-                                this.currentBoardIndex = cellIndex;
-                            }
-                            else {
-                                this.currentBoardIndex = null;
-                            }
-                            this.game.switchPlayer();
-                            this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
-                        }
-                        this.game.saveGameStorage();
-                    }
+                    this.ultimateHandleCellClick(cellIndex, boardIndex)
                 }
                 // イベントリスナーを再度追加
                 cell.element.addEventListener('click', clickHandler);
@@ -120,9 +74,48 @@ export class UltimateBoard extends Board {
         });
     }
 
+    public ultimateHandleCellClick(cellIndex: number, boardIndex: number) {
+        if (this.currentBoardIndex !== null && this.currentBoardIndex !== boardIndex) {
+            alert("違うボードだよ");    // 後でミニボードの色を変化させて実装
+            return;
+        }
+        if (this.miniBoardResult[boardIndex]) {
+            alert("勝敗のついているボードだよ");    // 後で実装
+            return;
+        }
+        
+        if (!this.cells[cellIndex].mark
+            && !this.ultimateCheckWin()
+            && !this.ultimateCheckDraw()
+            && !this.miniBoardResult[boardIndex]) {
+            this.ultimateMarkCell(boardIndex, cellIndex, this.game.currentPlayer.mark);
+
+            if (this.miniBoards[boardIndex].checkWin()) {
+                this.miniBoardResult[boardIndex] = this.game.currentPlayer.mark;
+                this.currentBoardIndex = null;  // 勝った人は次のボードを好きに選べる
+                this.ultimateHandleEndGame(false);
+
+                if (this.ultimateCheckWin()) {
+                    alert(`${this.game.currentPlayer.name}'s Win!`);    // 後で実装
+            }
+            } else if (this.ultimateCheckDraw()) {
+                this.ultimateHandleEndGame(true);
+            } else if (this.miniBoardResult) {
+                if (!this.miniBoardResult[cellIndex]) {
+                    this.currentBoardIndex = cellIndex;
+                }
+                else {
+                    this.currentBoardIndex = null;
+                }
+                this.game.switchPlayer();
+                this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
+            }
+            this.game.saveGameStorage();
+        }
+    }
+
     // アルティメットボードだった場合の旗を立てる
     private ultimateHandleEndGame(draw: boolean): void {
-        console.log("アルティメット・ハンドルエンド")
         this.game.handleEndGame(draw, true);
     }
 
@@ -132,7 +125,6 @@ export class UltimateBoard extends Board {
 
     // ボードをクリアする
     public clearUltimateBoard(): void {
-        console.log("アルティメット・クリアボード")
         this.miniBoards.forEach(miniBoard => miniBoard.clearBoard());
         this.currentBoardIndex = null;
         this.ultimateAddClickHandlers();
