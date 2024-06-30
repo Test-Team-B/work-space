@@ -77,7 +77,6 @@ export class Board {
         mouseclick.play();
 
         optionsClickSound.addEventListener('click', (e) => {
-            console.log(e);
             mouseclick.pause();
         });
         this._cells[cellIndex].mark = mark;
@@ -121,7 +120,6 @@ export class Board {
     public handleCellClick(index: number): void {
         if (!this._cells[index].mark && !this.checkWin() && !this.checkDraw()) {
             this.markCell(index, this.game.currentPlayer.mark);
-            this.game.saveGameStorage();
             if (this.checkWin()) {
                 this.game.handleEndGame(false);
             } else if (this.checkDraw()) {
@@ -174,6 +172,7 @@ export class Board {
                 this._cells[index].element.classList.add(cellState.mark);
                 this._cells[index].element.textContent = cellState.mark;
             }
-        })
+        });
+        this.addClickHandlers();
     }
 }
