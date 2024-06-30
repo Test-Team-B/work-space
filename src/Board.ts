@@ -7,12 +7,12 @@ export class Board {
 
     protected winningCombinations: number[][];
 
-    constructor(size: number, parentElement: HTMLElement | null = document.querySelector('.board__container')!, game: Game) {
+    constructor(size: number, parentElement: HTMLElement | null = document.querySelector('.board__container'), game: Game) {
         this._size = size;
         this._cells = [];
         this._game = game;
         this.winningCombinations = this.generateWinningCombinations(size);
-        this.createCells(parentElement!);
+        this.createCells(parentElement as HTMLElement);
     }
 
     // 勝利条件を動的に実装
@@ -56,6 +56,7 @@ export class Board {
 
     // セルを作りクラスとインデックスを付与、マークとエレメントを保持する
     protected createCells(parentElement: HTMLElement): void {
+        console.log("ノーマルセル作ったよ")
         parentElement.style.gridTemplateColumns = `repeat(${this._size}, 1fr)`;
         parentElement.style.gridTemplateRows = `repeat(${this._size}, 1fr)`;
         parentElement.innerHTML = "";
@@ -63,7 +64,6 @@ export class Board {
         for (let i = 0; i < this._size * this._size; i++) {
             const cellElement = document.createElement('div');
             cellElement.classList.add('board__container__cell');
-            cellElement.dataset.cellIndex = i.toString();
             parentElement.appendChild(cellElement);
 
             this._cells.push({ mark: '', element: cellElement })
@@ -72,63 +72,30 @@ export class Board {
 
     // セルにマークをつける
     public markCell(cellIndex: number, mark: string): void {
-        console.log(`ミニマークセル ${cellIndex} with ${mark}`);
+        console.log(`ノーマルマークセル ${cellIndex} with ${mark}`);
         this._cells[cellIndex].mark = mark;
-        console.log("セルマーク")
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;
     }
 
     // 勝者を判定する
-    // public checkWin(): boolean {
-    //     console.log("チエックウィン")
-    //     console.log("Checking win for current player:", this.game.currentPlayer);
-
-    //     return this.winningCombinations.some(combination => {
-    //         return combination.every(index => {
-    //             const result = this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
-    //             return result;
-    //         });
-    //     });
-    // }
-
-    // public checkWin(): boolean {
-    //     console.log("チエックウィン");
-    //     console.log("Checking win for current player:", this.game.currentPlayer);
-
-    //     console.log(this.cells)
-    //     return this.winningCombinations.some(combination => {
-    //         // console.log("チェック-コンビネーション:", combination);
-    //         return combination.every(index => {
-    //             // console.log(`チェック-セル ${index} (mark: ${this._cells[index].mark}) against cell ${combination[0]} (mark: ${this._cells[combination[0]].mark})`);
-    //             const result = this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
-    //             console.log(`Result for index ${index}: ${result}`);
-    //             return result;
-    //         });
-    //     });
-    // }
-    
     public checkWin(): boolean {
         console.log("チエックウィン");
         console.log("Checking win for current player:", this.game.currentPlayer);
-        console.log("Cells state:", this._cells);
-        
+
         const result = this.winningCombinations.some(combination => {
-            console.log("チェック-コンビネーション:", combination);
             return combination.every(index => {
                 const cellMark = this._cells[index].mark;
                 const firstMark = this._cells[combination[0]].mark;
                 const result = cellMark === firstMark && cellMark !== '';
-                console.log(`チェック-セル ${index} (mark: ${cellMark}) against cell ${combination[0]} (mark: ${firstMark})`);
-                console.log(`Result for index ${index}: ${result}`);
                 return result;
             });
         });
-        
+
         console.log("Win check result:", result);
         return result;
     }
-    
+
 
     // 全てのセルが空ではない
     public checkDraw(): boolean {
@@ -146,11 +113,9 @@ export class Board {
             }
             const clickHandler = (event: MouseEvent) => {
                 console.log("hhhhhaaaaaaaaaaaa")
-                console.log(`Cell ${index} clicked`);
                 if (!cell.mark && !this.checkWin() && !this.checkDraw() && !this.game.isCPUThinking) {
                     this.markCell(index, this.game.currentPlayer.mark);
                     console.log("ボードでマークしたよ")
-                    console.log(this._cells)
                     this.game.saveGameStorage();
                     if (this.checkWin()) {
                         this.game.handleEndGame(false);
@@ -158,7 +123,6 @@ export class Board {
                         this.game.handleEndGame(true)
                     } else {
                         console.log("スウィッチ１！！")
-                        console.log(this._cells)
                         this.game.switchPlayer();
                         this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
                     }

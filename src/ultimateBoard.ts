@@ -10,11 +10,13 @@ export class UltimateBoard extends Board {
         this.miniBoards = [];
         this.currentBoardIndex = null;
 
+        console.log("アルティメットが呼ばれました")
         this.createUltimateBoards(size, parentElement, game);
     }
 
     // ultimateBoard の作成、miniBoardをsize個生成し ultimateBoardの grid に当てはめる
     private createUltimateBoards(size: number, parentElement: HTMLElement, game: Game): void {
+        console.log("アルティメットセルを作るよ")
         parentElement.innerHTML = '';
         parentElement.style.display = 'grid';
         parentElement.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
@@ -23,7 +25,6 @@ export class UltimateBoard extends Board {
         for (let i = 0; i < size * size; i++) {
             const miniBoardElement = document.createElement('div');
             miniBoardElement.classList.add('ultimate__mini-board__container');
-            miniBoardElement.dataset.cellIndex = i.toString();
             parentElement.appendChild(miniBoardElement);
 
             const miniBoard = new Board(size, miniBoardElement, game)
@@ -39,8 +40,6 @@ export class UltimateBoard extends Board {
     public ultimateMarkCell(boardIndex: number, cellIndex: number, mark: string): void {
         console.log("アルティメットマークセル")
         this.miniBoards[boardIndex].markCell(cellIndex, mark);
-        console.log(this.miniBoards)
-        // this.currentBoardIndex = cellIndex;
     }
 
     // ultimateBoardの勝者判定
@@ -48,12 +47,6 @@ export class UltimateBoard extends Board {
         console.log("アルティメット・ウィン")
         if (this.currentBoardIndex !== null && this.currentBoardIndex >= 0) {
             // 指定されたミニボードの勝利条件をチェック
-            
-            console.log("次のボード")
-            console.log(this.currentBoardIndex)
-            console.log(this.miniBoards[this.currentBoardIndex].cells)
-            console.log(this.miniBoards[this.currentBoardIndex].checkWin())
-
             return this.miniBoards[this.currentBoardIndex].checkWin();
         } else {
             return false;
@@ -86,12 +79,10 @@ export class UltimateBoard extends Board {
                         console.log("違うボードだよ")
                         return;
                     }
-                    console.log("クリックハンドラー")
+
                     if (!cell.mark && !this.ultimateCheckWin() && !this.ultimateCheckDraw() && !this.game.isCPUThinking) {
                         console.log("アルティメットハンドラー")
                         this.ultimateMarkCell(boardIndex, cellIndex, this.game.currentPlayer.mark);
-                        console.log("マークセル直後")
-                        console.log(miniBoard.cells)
                         // this.game.saveGameStorage();
                         if (this.ultimateCheckWin()) {
                             this.game.handleEndGame(false);

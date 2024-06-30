@@ -54,3 +54,4 @@ optionsBtn.addEventListener('click', () => {
     options.classList.add('d-none');
   }
 });
+

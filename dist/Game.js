@@ -8,7 +8,6 @@ export class Game {
             'O': { name: playerOName, mark: 'O', isCPU: isCPUOpponent }
         };
         this._currentPlayer = this._players['X'];
-        this._board = ultimateBoard ? new Board(boardSize, undefined, this) : new UltimateBoard(boardSize, undefined, this);
         this._scores = {
             'X': 0,
             'O': 0
@@ -17,12 +16,9 @@ export class Game {
         this._ultimateWinningMessageTextElement = document.getElementById('ultimate-info__message');
         const boardContainer = document.querySelector('.board__container');
         const ultimateBoardContainer = document.querySelector('.ultimate__board__container');
-        if (ultimateBoard) {
-            this._board = new UltimateBoard(boardSize, ultimateBoardContainer, this);
-        }
-        else {
-            this._board = new Board(boardSize, boardContainer, this);
-        }
+        this._board = ultimateBoard
+            ? new UltimateBoard(boardSize, ultimateBoardContainer, this)
+            : new Board(boardSize, boardContainer, this);
         this.updateScoreBoardNames();
     }
     // ゲームを初期化
@@ -31,10 +27,11 @@ export class Game {
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         // this.loadGameStorage();
         if (this._board instanceof UltimateBoard) {
+            console.log("アルティメットクリアボード");
             this._board.clearUltimateBoard();
-            console.log("イニシャライズ・クリアボード");
         }
         else {
+            console.log("ノーマルクリアボード");
             this._board.clearBoard();
         }
         this.updateScores();
@@ -42,7 +39,11 @@ export class Game {
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     continueGame() {
         this.initializeGame();
-        this._board.clearBoard();
+    }
+    // ゲームをリスタート
+    resetGame() {
+        this.resetScores();
+        this.initializeGame();
     }
     // スコアをリセット
     resetScores() {
@@ -50,12 +51,6 @@ export class Game {
             'X': 0,
             'O': 0
         };
-    }
-    // ゲームをリスタート
-    resetGame() {
-        this._board.clearBoard();
-        this.resetScores();
-        this.initializeGame();
     }
     // プレイヤー交代
     switchPlayer() {
@@ -74,8 +69,8 @@ export class Game {
         this._isCPUThinking = true;
         setTimeout(() => {
             let emptyCells = [];
-            console.log("エンプティセルず");
             if (this._board instanceof UltimateBoard) {
+                console.log("アルティメットCPU");
                 const boardIndex = this._board.currentBoardIndex !== null ? this._board.currentBoardIndex : Math.floor(Math.random() * this._board.miniBoards.length);
                 this._board.miniBoards[boardIndex].cells.forEach((cell, cellIndex) => {
                     if (!cell.mark) {
@@ -84,6 +79,7 @@ export class Game {
                 });
             }
             else {
+                console.log("ノーマルボードCPU");
                 emptyCells = this._board.cells
                     .map((cell, index) => ({ boardIndex: 0, cellIndex: index, cell }))
                     .filter(({ cell }) => !cell.mark);
@@ -92,11 +88,11 @@ export class Game {
                 const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
                 const { boardIndex, cellIndex } = randomCell;
                 if (this._board instanceof UltimateBoard) {
-                    console.log("アルティメットマーク");
                     this._board.ultimateMarkCell(boardIndex, cellIndex, this._currentPlayer.mark);
                     console.log("アルティメットマークセルしたよ");
                 }
                 else {
+                    console.log("ノーマルマークしたよ");
                     this._board.markCell(cellIndex, this._currentPlayer.mark);
                 }
                 if (this.checkWin()) {
