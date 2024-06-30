@@ -49,6 +49,7 @@ class TicTacToe {
                 const isChecked = this.ultimateNameSettingCheckBox.checked;
                 this.ultimateCheckBox.checked = isChecked;
                 this.gameModeChange();
+                this.handleUltimateCheckBox();
             });
         }
         if (this.levelSelect) {
@@ -110,7 +111,7 @@ class TicTacToe {
     }
     // アルティメットチェックボックスにチェックを入れるとlocalStorageが消える警告を出す
     handleUltimateCheckBox() {
-        const userConfirmed = confirm("この操作を行うと、現在のボードがクリアされます。続行しますか？");
+        const userConfirmed = confirm("この操作を行うと、現在のボード履歴がクリアされます。続行しますか？");
         if (userConfirmed) {
             this._resetGame();
             const isChecked = this.ultimateCheckBox.checked;
