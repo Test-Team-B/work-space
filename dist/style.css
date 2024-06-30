@@ -256,13 +256,13 @@
 }
 
 .menu__board__title {
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
 }
 
 /*** Navbar - Name Settings ***/
 #name-setting .name-setting__board {
-  height: 65%;
-  width: 60%; 
+  height: 80vh;
+  width: 60vw; 
   text-align: center;
   background-color: var(--bg-menu-board);
   color: var(--color-yellow);
@@ -271,12 +271,33 @@
   box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
 }
 
+.name-setting__board__content {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+
+.name-setting__board__checkbox-container {
+  padding-top: 1.4rem;
+  display: flex;
+  justify-content: space-around;
+  width: 60%;
+}
+
+#name-setting .name-setting__board form {
+  height: 65%;
+}
+
 #name-setting .name-setting__board form input {
   margin: 1.25rem;
-  font-size: 2rem;
-  padding: 0.625rem 1.25rem;
+  font-size: 1.2rem;
+  padding: 0.625rem 0.625rem;
   border-radius: 1rem;
   width: 100%;
+  height: 15%;
   font-weight: bold;
 }
 
@@ -289,9 +310,13 @@ input[type="submit"]:hover {
 }
 
 @media (max-width: 991px) {
-  #name-setting .name-setting__board {
-    height: 65%;
-    width: 80%; 
+  .menu__board__title {
+    font-size: 1.7rem;
+  }
+
+  #name-setting .name-setting__board form {
+    height: 55%;
+    width: 60%;
   }
 
   #name-setting .name-setting__board form input {
@@ -301,8 +326,8 @@ input[type="submit"]:hover {
 
 /*** Navbar - Options ***/
 #options .options__board {
-  height: 80%;
-  width: 70%; 
+  height: 80vh;
+  width: 75vw; 
   text-align: center;
   background-color: var(--bg-menu-board);
   color: var(--color-yellow);
@@ -311,33 +336,46 @@ input[type="submit"]:hover {
   box-shadow: 0 0 0.938rem var(--bg-box-shadow), inset 0 0 0.938rem var(--bg-box-shadow);
 }
 
-#options h1{
+.options__board__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.options__board__checkbox-container {
   width: 80%;
+  display: flex;
+  justify-content: space-around;
+  border-bottom: dashed white;
+  padding-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .options__audio-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 80%;
-  margin-bottom: 4rem;
+  width: 65%;
+  margin-bottom: 2rem;
+  height: 15%;
 }
 
 #options__audio {
   width: 70%;
 }
 
-.options__click-sound-container {
+/* .options__click-sound-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 80%;
   margin-bottom: 4rem;
-}
+} */
 
-#options__click-sound {
+/* #options__click-sound {
   width: 60%;
-}
+} */
 
 .options__level-selection-container {
   display: flex;
@@ -353,20 +391,22 @@ input[type="submit"]:hover {
   padding: 0.7rem;
   font-weight: bold;
   width: 50%;
+  margin-bottom: 1.5rem;
 }
 
+
 @media (max-width: 991px) {
-  #options .options__board {
-    height: 80%;
-    width: 80%; 
+  .options__board__checkbox-container {
+    width: 100%;
   }
 
-  .options__audio-container {
-    margin-bottom: 2.5rem;
+  .options__board__checkbox-container legend{
+    font-size: 1rem;
   }
-  
-  .options__click-sound-container {
-    margin-bottom: 3rem;
+
+  #options__audio {
+    width: 100%;
+    height: 40%;
   }
 }
 

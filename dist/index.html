@@ -257,8 +257,18 @@
           data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
 
-      <div class="d-flex flex-column justify-content-center align-items-center">
+      <div class="name-setting__board__content">
         <h1 class="menu__board__title border-bottom">Enter player names</h1>
+        <div class="name-setting__board__checkbox-container">
+          <div>
+            <input type="checkbox" id="name-setting__select-ultimate" name="ultimate" />
+            <label for="name-setting__select-ultimate">ULTIMATE MODE</label>
+          </div>
+          <div>
+            <input type="checkbox" id="name-setting__select-cpu" name="ultimate" />
+            <label for="name-setting__select-cpu">CPU MODE</label>
+          </div>
+        </div>
         <form class="d-flex flex-column align-items-center">
           <label class="d-none" for="name-setting__form__player1">Player 1</label>
           <input id="name-setting__form__player1" type="text" name="player1" placeholder="player 1 ..." maxlength="7"
@@ -270,6 +280,7 @@
 
           <input id="name-setting__form__submit" type="submit" value="Start Game" />
         </form>
+        
       </div>
     </div>
   </div>
@@ -282,44 +293,57 @@
           data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
 
-      <div class="d-flex flex-column justify-content-center align-items-center">
+      <div class="options__board__content">
         <h1 class="menu__board__title border-bottom">Options</h1>
+
+        <div class="options__board__checkbox-container">
+          <fieldset>
+            <legend class="border-bottom">Play Ultimate Mode</legend>
+              <div>
+                <input type="checkbox" id="ultimate" name="ultimate" />
+                <label for="ultimate">Ultimate</label>
+              </div>
+          </fieldset>
+          <fieldset>
+            <legend class="border-bottom">Click Sound</legend>
+              <div>
+                <input type="checkbox" id="click-sound" name="click-sound" />
+                <label for="click-sound">Mute</label>
+              </div>
+          </fieldset>
+        </div>
+
         <!-- ゲームサウンド仮で実装 -->
         <div class="options__audio-container">
-          <h3 class="border-bottom">Audio</h3>
+          <h4 class="border-bottom">Audio</h4>
           <!-- 自由に再生：contruls 自動再生：autoplay ミュート：muted ループ：loop -->
           <audio controls src="./test-audio.mp3" id="options__audio">
         </div>
-        <!-- セルがクリックされた時のクリックサウンド、ここで音のon/offをJSを使って実装したい
-        let mouseclick = new Audio();
-        mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav"; 
-        mouseclick.play();
-        これでセルがクリックされた時になります     
-        -->
-        <div class="options__click-sound-container">
-          <h3 class="border-bottom">Click Sound</h3>
-          <audio controls
-            src="https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav"
-            id="options__click-sound">
-        </div>
+
         <!-- レベル選択 -->
         <div class="options__level-selection-container d-flex justify-content-center">
-          <h3 class="border-bottom">Select CPU Level</h3>
-            <select class="d-block text-center" id="options__level-selection">
-              <option value="3">EASY</option>
-              <option value="6">MIDIUM</option>
-              <option value="9">HARD</option>
-            </select>
-            <fieldset class="mt-4">
-              <legend class="border-bottom">Play Ultimate Mode</legend>
-              <div>
-                <input type="checkbox" id="Ultimate" name="ultimate" />
-                <label for="ultimate">Ultimate</label>
-              </div>
-            </fieldset>
+          <h4 class="border-bottom">Select CPU Level</h4>
+          <select class="d-block text-center" id="options__level-selection">
+            <option value="3">EASY</option>
+            <option value="6">MIDIUM</option>
+            <option value="9">HARD</option>
+          </select>
         </div>
-      </div>
 
+       
+      </div>            
+      <!-- セルがクリックされた時のクリックサウンド、ここで音のon/offをJSを使って実装したい
+      let mouseclick = new Audio();
+      mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav"; 
+      mouseclick.play();
+      これでセルがクリックされた時になります     
+      -->
+      <!-- <div class="options__click-sound-container">
+        <h4 class="border-bottom">Click Sound</h4>
+        <audio controls
+          src="https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav"
+          id="options__click-sound">
+      </div> -->
     </div>
   </div>
 
