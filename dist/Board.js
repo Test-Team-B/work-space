@@ -58,7 +58,6 @@ export class Board {
         mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
         mouseclick.play();
         optionsClickSound.addEventListener('click', (e) => {
-            console.log(e);
             mouseclick.pause();
         });
         this._cells[cellIndex].mark = mark;
@@ -98,7 +97,6 @@ export class Board {
     handleCellClick(index) {
         if (!this._cells[index].mark && !this.checkWin() && !this.checkDraw()) {
             this.markCell(index, this.game.currentPlayer.mark);
-            this.game.saveGameStorage();
             if (this.checkWin()) {
                 this.game.handleEndGame(false);
             }
@@ -148,5 +146,6 @@ export class Board {
                 this._cells[index].element.textContent = cellState.mark;
             }
         });
+        this.addClickHandlers();
     }
 }

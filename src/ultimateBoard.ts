@@ -5,12 +5,14 @@ export class UltimateBoard extends Board {
     public miniBoards: Board[];
     public currentBoardIndex: number | null;
     public miniBoardResult: string[];
+    public parentElement: HTMLElement;
 
-    constructor(size: number, parentElement: HTMLElement = document.querySelector('.ultimate__board__container')!, game: Game) {
+    constructor(size: number, parentElement: HTMLElement, game: Game) {
         super(size, parentElement, game);
         this.miniBoards = [];
         this.currentBoardIndex = null;
         this.miniBoardResult = Array(size * size).fill('');
+        this.parentElement  = document.querySelector('.ultimate__board__container') as HTMLElement;
         this.createUltimateBoards(size, parentElement, game);
 
     }
@@ -130,17 +132,15 @@ export class UltimateBoard extends Board {
         this.ultimateAddClickHandlers();
     }
     
-    // public ultimateClearBoard(): void {
-    //     this.miniBoards.forEach(miniBoard => miniBoard.clearBoard());
-    // }
+    // localStorage
+    public getUltimateBoardState(): { mark: string }[][] {
+        return this.miniBoards.map(miniBoard => miniBoard.getBoardState());
+    }
 
-    // public getUltimateBoardState(): { mark: string }[][] {
-    //     return this.miniBoards.map(miniBoard => miniBoard.getBoardState());
-    // }
-
-    // public setUltimateBoardState(state: { mark: string; }[][]): void {
-    //     state.forEach((miniBoardState, boardIndex) => {
-    //         this.miniBoards[boardIndex].setBoardState(miniBoardState);
-    //     });
-    // }
+    public setUltimateBoardState(state: { mark: string }[][]): void {
+        state.forEach((miniBoardState, boardIndex) => {
+            this.miniBoards[boardIndex].setBoardState(miniBoardState);
+        });
+        this.ultimateAddClickHandlers();
+    }
 }

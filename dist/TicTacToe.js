@@ -22,7 +22,7 @@ class TicTacToe {
         this.cpuCheckBox = document.querySelector('#name-setting__select-cpu');
         this.playerONameFormElement = document.getElementById('name-setting__form__player2');
         this.startGame();
-        // this.loadPlayerName();
+        this.loadPlayerName();
     }
     // 各ボタンにクリックイベントを付与する
     init() {
@@ -42,11 +42,7 @@ class TicTacToe {
             this.ultimateResetButton.addEventListener('click', () => this._resetGame());
         }
         if (this.ultimateCheckBox) {
-            this.ultimateCheckBox.addEventListener('change', () => {
-                const isChecked = this.ultimateCheckBox.checked;
-                this.ultimateNameSettingCheckBox.checked = isChecked;
-                this.gameModeChange();
-            });
+            this.ultimateCheckBox.addEventListener('change', () => this.handleUltimateCheckBox());
         }
         if (this.ultimateNameSettingCheckBox) {
             this.ultimateNameSettingCheckBox.addEventListener('change', () => {
@@ -110,6 +106,16 @@ class TicTacToe {
         }
         else {
             this.playerONameFormElement.value = ''; // チェックが外れた場合にフォームをクリア
+        }
+    }
+    // アルティメットチェックボックスにチェックを入れるとlocalStorageが消える警告を出す
+    handleUltimateCheckBox() {
+        const userConfirmed = confirm("この操作を行うと、現在のボードがクリアされます。続行しますか？");
+        if (userConfirmed) {
+            this._resetGame();
+            const isChecked = this.ultimateCheckBox.checked;
+            this.ultimateNameSettingCheckBox.checked = isChecked;
+            this.gameModeChange();
         }
     }
     // CPUのレベルの選択

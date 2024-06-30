@@ -1,10 +1,11 @@
 import { Board } from "./Board.js";
 export class UltimateBoard extends Board {
-    constructor(size, parentElement = document.querySelector('.ultimate__board__container'), game) {
+    constructor(size, parentElement, game) {
         super(size, parentElement, game);
         this.miniBoards = [];
         this.currentBoardIndex = null;
         this.miniBoardResult = Array(size * size).fill('');
+        this.parentElement = document.querySelector('.ultimate__board__container');
         this.createUltimateBoards(size, parentElement, game);
     }
     // ultimateBoard の作成、miniBoardをsize個生成し ultimateBoardの grid に当てはめる
@@ -106,6 +107,16 @@ export class UltimateBoard extends Board {
     clearUltimateBoard() {
         this.miniBoards.forEach(miniBoard => miniBoard.clearBoard());
         this.currentBoardIndex = null;
+        this.ultimateAddClickHandlers();
+    }
+    // localStorage
+    getUltimateBoardState() {
+        return this.miniBoards.map(miniBoard => miniBoard.getBoardState());
+    }
+    setUltimateBoardState(state) {
+        state.forEach((miniBoardState, boardIndex) => {
+            this.miniBoards[boardIndex].setBoardState(miniBoardState);
+        });
         this.ultimateAddClickHandlers();
     }
 }
