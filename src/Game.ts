@@ -119,6 +119,7 @@ export class Game {
                     this.handleEndGame(true);
                 } else {
                     this.switchPlayer();
+                    // @audit fixed
                     this.winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
                 }
                 this.saveGameStorage();
