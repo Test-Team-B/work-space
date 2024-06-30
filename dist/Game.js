@@ -24,6 +24,7 @@ export class Game {
     // ゲームを初期化
     initializeGame() {
         console.log("initialize!!!");
+        // @audit
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         // this.loadGameStorage();
         if (this._board instanceof UltimateBoard) {
