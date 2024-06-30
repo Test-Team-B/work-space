@@ -45,6 +45,7 @@ export class Game {
         if (this._board instanceof UltimateBoard) {
             console.log("アルティメットクリアボード")
             this._board.clearUltimateBoard();
+            this._board.miniBoardResult.fill('');
         } else {
             console.log("ノーマルクリアボード")
             this._board.clearBoard();
