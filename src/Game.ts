@@ -211,13 +211,14 @@ export class Game {
     // }
 
     private trueMinimaxLogic(depth: number, isMaximizing: boolean, alpha: number, beta: number): number {
-        if (depth === this._board.size || this.checkWin() || this.checkDraw()) {
-            if (this.checkWin()) {
-                return isMaximizing ? (this._board.size ** 2 + 1) - depth : depth - (this._board.size ** 2 + 1);
-            } else if (this.checkDraw()) {
-                return 0;
-            }
+
+        if (this.checkWin()) {
+            return isMaximizing ? (this._board.size ** 2 + 1) - depth : depth - (this._board.size ** 2 + 1);
         }
+        if (this.checkDraw() || depth === this._board.size ** 2) {
+            return 0;
+        }
+
         const emptyCells = this._board.getEmptyCellIndices();
         if (isMaximizing) {
             let bestScore = -Infinity;
@@ -229,6 +230,8 @@ export class Game {
                 alpha = Math.max(alpha, bestScore);
 
                 console.log("alfa: " + alpha);
+                console.log("isMaximizing: " + this._board.placeMarkTemp(move, isMaximizing ? "X" : "O"));
+                console.log("info: " + console.log(`Depth: ${depth}, Move: ${move}, Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`));
 
                 if (beta <= alpha) break;
 

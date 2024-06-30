@@ -155,13 +155,11 @@ export class Game {
     //     this.makeMove(bestMove);
     // }
     trueMinimaxLogic(depth, isMaximizing, alpha, beta) {
-        if (depth === this._board.size || this.checkWin() || this.checkDraw()) {
-            if (this.checkWin()) {
-                return isMaximizing ? (this._board.size ** 2 + 1) - depth : depth - (this._board.size ** 2 + 1);
-            }
-            else if (this.checkDraw()) {
-                return 0;
-            }
+        if (this.checkWin()) {
+            return isMaximizing ? (this._board.size ** 2 + 1) - depth : depth - (this._board.size ** 2 + 1);
+        }
+        if (this.checkDraw() || depth === this._board.size ** 2) {
+            return 0;
         }
         const emptyCells = this._board.getEmptyCellIndices();
         if (isMaximizing) {
@@ -173,6 +171,8 @@ export class Game {
                 bestScore = Math.max(score, bestScore);
                 alpha = Math.max(alpha, bestScore);
                 console.log("alfa: " + alpha);
+                console.log("isMaximizing: " + this._board.placeMarkTemp(move, isMaximizing ? "X" : "O"));
+                console.log("info: " + console.log(`Depth: ${depth}, Move: ${move}, Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`));
                 if (beta <= alpha)
                     break;
             }
