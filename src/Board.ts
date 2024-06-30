@@ -1,19 +1,18 @@
-import { Game } from './Game';
+import { Game } from './Game.js';
 
 export class Board {
     private _cells: { mark: string, element: HTMLElement, clickHandler?: (event: MouseEvent) => void }[];
     private _size: number;
-    private game: Game;
+    private _game: Game;
 
     protected winningCombinations: number[][];
 
-    constructor(size: number, parentElement: HTMLElement | null = document.querySelector('.board__container')!, game: Game) {
+    constructor(size: number, parentElement: HTMLElement | null = document.querySelector('.board__container'), game: Game) {
         this._size = size;
         this._cells = [];
-        this.game = game;
+        this._game = game;
         this.winningCombinations = this.generateWinningCombinations(size);
-        this.createCells(parentElement!);
-        this.addClickHandlers();
+        this.createCells(parentElement as HTMLElement);
     }
 
     // 勝利条件を動的に実装
@@ -58,12 +57,12 @@ export class Board {
     // セルを作りクラスとインデックスを付与、マークとエレメントを保持する
     protected createCells(parentElement: HTMLElement): void {
         parentElement.style.gridTemplateColumns = `repeat(${this._size}, 1fr)`;
-        parentElement.innerHTML = "";   // セルのクリア
+        parentElement.style.gridTemplateRows = `repeat(${this._size}, 1fr)`;
+        parentElement.innerHTML = "";
 
         for (let i = 0; i < this._size * this._size; i++) {
             const cellElement = document.createElement('div');
             cellElement.classList.add('board__container__cell');
-            cellElement.dataset.ceeIndex = i.toString();
             parentElement.appendChild(cellElement);
 
             this._cells.push({ mark: '', element: cellElement })
@@ -72,21 +71,31 @@ export class Board {
 
     // セルにマークをつける
     public markCell(cellIndex: number, mark: string): void {
+        const optionsClickSound = document.getElementById('click-sound')!;
+        const mouseclick = new Audio();
+        mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
+        mouseclick.play();
+
+        optionsClickSound.addEventListener('click', (e) => {
+            mouseclick.pause();
+        });
         this._cells[cellIndex].mark = mark;
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;
     }
 
     // 勝者を判定する
-    // 勝者条件のどれかの配列(some)、マークが存在し全て同じ(every)
     public checkWin(): boolean {
         return this.winningCombinations.some(combination => {
             return combination.every(index => {
-                return this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
+                const cellMark = this.cells[index].mark;
+                const firstMark = this.cells[combination[0]].mark;
+                return cellMark === firstMark && cellMark !== '';
             });
         });
     }
-    // 全てのセルが空ではない(every)
+
+    // 全てのセルが空ではない
     public checkDraw(): boolean {
         return this._cells.every(_cell => _cell.mark !== '');
     }
@@ -99,23 +108,29 @@ export class Board {
                 cell.element.removeEventListener('click', cell.clickHandler);
             }
             const clickHandler = (event: MouseEvent) => {
-                if (!cell.mark && !this.game.checkWin() && !this.game.checkDraw() && !this.game.isCPUThinking) {
-                    this.game.board.markCell(index, this.game.currentPlayer.mark);
-                    if (this.game.checkWin()) {
-                        this.game.handleEndGame(false);
-                    } else if (this.game.checkDraw()) {
-                        this.game.handleEndGame(true)
-                    } else {
-                        this.game.switchPlayer();
-                        this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
-                    }
-                    this.game.saveGameStorage();
-                }
+                this.handleCellClick(index);
             };
             // イベントリスナーを再度追加
             cell.element.addEventListener('click', clickHandler);
             cell.clickHandler = clickHandler;
         })
+    }
+
+    // クリックイベントの内容
+    public handleCellClick(index: number): void {
+        if (!this._cells[index].mark && !this.checkWin() && !this.checkDraw()) {
+            this.markCell(index, this.game.currentPlayer.mark);
+            if (this.checkWin()) {
+                this.game.handleEndGame(false);
+            } else if (this.checkDraw()) {
+                this.game.handleEndGame(true)
+            } else {
+                this.game.switchPlayer();
+                // @audit fixed
+                this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
+            }
+            this.game.saveGameStorage();
+        }
     }
 
     // ボードをクリアする
@@ -140,6 +155,10 @@ export class Board {
         return this._size;
     }
 
+    get game() {
+        return this._game;
+    }
+
     // ボードの状態の取得
     public getBoardState(): { mark: string }[] {
         return this._cells.map(cell => ({ mark: cell.mark }));
@@ -153,6 +172,7 @@ export class Board {
                 this._cells[index].element.classList.add(cellState.mark);
                 this._cells[index].element.textContent = cellState.mark;
             }
-        })
+        });
+        this.addClickHandlers();
     }
 }

@@ -38,16 +38,16 @@
           <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end fs-5 align-items-center flex-grow-1 pe-3">
               <!-- Log out  -->
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link active mx-2" aria-current="page" href="#Log Out">Log out</a>
-              </li>
+              </li> -->
               <!--  Name Settings-->
               <li class="nav-item mx-2">
-                <a class="nav-link" id="navbar__name-settings" href="#Name Settings">Name Settings</a>
+                <a class="nav-link active" id="navbar__name-settings" href="#Name Settings">Name Settings</a>
               </li>
               <!-- Options -->
               <li class="nav-item mx-2">
-                <a class="nav-link" id="navbar__options" href="#Options">Options</a>
+                <a class="nav-link active" id="navbar__options" href="#Options">Options</a>
               </li>
             </ul>
           </div>
@@ -57,9 +57,9 @@
     </nav>
 
    <!--------- Nomal Mode --------->
-    <div class="main-container d-none justify-content-center flex-wrap">
+    <div class="main-container d-flex justify-content-center align-items-end flex-wrap">
       <!-- Scoreboard Section -->
-      <div id="scoreboard" class="col-12 col-md-4">
+      <div id="scoreboard">
         <div class="scoreboard__player" id="scoreboard__X">
           <h2 class="scoreboard__mark">X</h2>
           <h2 id="scoreboard__X__name">player1</h2>
@@ -81,11 +81,11 @@
       </div>
 
       <!-- Info section (message  button) -->
-      <div id="info" class="col-md-3 mt-4 d-flex flex-column justify-content-center align-items-center">
-        <h2 id="info__message" class="text-center">X's Turn</h2>
-        <div class="info__btns d-flex justify-content-between">
+      <div id="info" class=" mt-4 d-flex flex-column justify-content-center align-items-center">        
+        <div class="info__container">
           <!-- <button class="btn btn-secondary btn m-2" id="info__btn__start">Start</button> -->
           <button class="btn btn-secondary btn m-2" id="info__btn__continue">Continue</button>
+          <h2 id="info__message" class="text-center">X's Turn</h2>
           <button class="btn btn-secondary btn m-2" id="info__btn__reset">Reset</button>
         </div>
       </div>
@@ -103,9 +103,9 @@
 
         id: ultimate-info__message -> message 
     -->
-    <div class="ultimate-container d-flex">
+    <div class="ultimate-container d-none">
 
-      <div class="ultimate-inner-container">
+      <div class="ultimate-inner-container flex-wrap">
         <div id="ultimate-scoreboard" class="d-flex">
           <div class="ultimate-scoreboard__player" id="ultimate-scoreboard__X">
             <h2 class="scoreboard__mark">X</h2>
@@ -123,128 +123,17 @@
         </div>
 
         <div id="ultimate__board">
-          <div class="ultimate__board__container">
+          <div class="ultimate__board__container"></div>
+        </div>
 
-            <div class="ultimate__mini-board__container">
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-            </div>
-
-            <div class="ultimate__mini-board__container">
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-            </div>
-
-            <div class="ultimate__mini-board__container">
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-            </div>
-
-            <div class="ultimate__mini-board__container">
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-            </div>
-
-            <div class="ultimate__mini-board__container">
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-            </div>
-
-            <div class="ultimate__mini-board__container">
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-            </div>
-
-            <div class="ultimate__mini-board__container">
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-            </div>
-
-            <div class="ultimate__mini-board__container">
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-            </div>
-
-            <div class="ultimate__mini-board__container">
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-              <div class="ultimate__mini-board-cell"></div>  
-            </div>
-            
+        <div id="ultimate-info">
+          <div class="ultimate-info__container">
+            <button class="btn btn-secondary btn m-2" id="ultimate-info__btn__continue">Continue</button>
+            <h2 id="ultimate-info__message" class="text-center">X's Turn</h2>
+            <button class="btn btn-secondary btn m-2" id="ultimate-info__btn__reset">Reset</button>
           </div>
         </div>
       </div>
-
-      <div id="ultimate-info">
-        <div class="ultimate-info__container">
-          <button class="btn btn-secondary btn m-2" id="ultimate-info__btn__continue">Continue</button>
-          <h2 id="ultimate-info__message" class="text-center">X's Turn</h2>
-          <button class="btn btn-secondary btn m-2" id="ultimate-info__btn__reset">Reset</button>
-        </div>
-      </div>
-
     </div>
 
 
@@ -257,19 +146,30 @@
           data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
 
-      <div class="d-flex flex-column justify-content-center align-items-center">
+      <div class="name-setting__board__content">
         <h1 class="menu__board__title border-bottom">Enter player names</h1>
+        <div class="name-setting__board__checkbox-container">
+          <div>
+            <input type="checkbox" id="name-setting__select-ultimate" name="ultimate" />
+            <label for="name-setting__select-ultimate">ULTIMATE MODE</label>
+          </div>
+          <div>
+            <input type="checkbox" id="name-setting__select-cpu" name="ultimate" />
+            <label for="name-setting__select-cpu">CPU MODE</label>
+          </div>
+        </div>
         <form class="d-flex flex-column align-items-center">
-          <label class="d-none" for="name-setting__form__player1">Player 1</label>
+          <label class="d-flex" for="name-setting__form__player1">Player 1</label>
           <input id="name-setting__form__player1" type="text" name="player1" placeholder="player 1 ..." maxlength="7"
             required />
 
-          <label class="d-none" for="name-setting__form__player2">Player2</label>
+          <label class="d-flex" for="name-setting__form__player2">Player2</label>
           <input id="name-setting__form__player2" type="text" name="player2" placeholder="player 2 ..." maxlength="7"
             required />
 
           <input id="name-setting__form__submit" type="submit" value="Start Game" />
         </form>
+        
       </div>
     </div>
   </div>
@@ -282,48 +182,54 @@
           data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
 
-      <div class="d-flex flex-column justify-content-center align-items-center">
+      <div class="options__board__content">
         <h1 class="menu__board__title border-bottom">Options</h1>
+
+        <div class="options__board__checkbox-container">
+          <fieldset>
+            <legend class="border-bottom">Play Ultimate Mode</legend>
+              <div>
+                <input type="checkbox" id="ultimate" name="ultimate" />
+                <label for="ultimate">Ultimate</label>
+              </div>
+          </fieldset>
+          <fieldset>
+            <legend class="border-bottom">Click Sound</legend>
+              <div>
+                <input type="checkbox" id="click-sound" name="click-sound" />
+                <label for="click-sound">Mute</label>
+              </div>
+          </fieldset>
+        </div>
+
         <!-- ゲームサウンド仮で実装 -->
         <div class="options__audio-container">
-          <h3 class="border-bottom">Audio</h3>
+          <h4 class="border-bottom">Audio</h4>
           <!-- 自由に再生：contruls 自動再生：autoplay ミュート：muted ループ：loop -->
           <audio controls src="./test-audio.mp3" id="options__audio">
         </div>
-        <!-- セルがクリックされた時のクリックサウンド、ここで音のon/offをJSを使って実装したい
-        let mouseclick = new Audio();
-        mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav"; 
-        mouseclick.play();
-        これでセルがクリックされた時になります     
-        -->
-        <div class="options__click-sound-container">
-          <h3 class="border-bottom">Click Sound</h3>
-          <audio controls
-            src="https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav"
-            id="options__click-sound">
-        </div>
+
         <!-- レベル選択 -->
         <div class="options__level-selection-container d-flex justify-content-center">
           <h3 class="border-bottom">Select CPU Level</h3>
             <select class="d-block text-center" id="options__level-selection">
               <option value="3">EASY</option>
-              <option value="6">MIDIUM</option>
+              <option value="6">MEDIUM</option>
               <option value="9">HARD</option>
             </select>
-            <fieldset class="mt-4">
+            <!-- <fieldset class="mt-4">
               <legend class="border-bottom">Play Ultimate Mode</legend>
               <div>
                 <input type="checkbox" id="Ultimate" name="ultimate" />
                 <label for="ultimate">Ultimate</label>
               </div>
-            </fieldset>
+            </fieldset> -->
         </div>
-      </div>
-
+      </div>            
     </div>
   </div>
-  <!-- テストでnavbar用のJSファイルを作った -->
-  <script type="module" src="./test.js"></script>
+
+  <script type="module" src="./navbar.js"></script>
   <script type="module" src="./TicTacToe.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
