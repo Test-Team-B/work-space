@@ -60,32 +60,22 @@ export class Game {
     }
     playCPUTurn() {
         this._isCPUThinking = true;
-        console.log("thinking -> true");
         setTimeout(() => {
             const bestMove = this.findBestMove();
-            console.log("bestMove");
             if (bestMove !== -1) {
                 this._board.markCell(bestMove, this._currentPlayer.mark);
-                console.log("markCell");
                 if (this.checkWin()) {
-                    console.log("checkWin");
                     this.handleEndGame(false);
-                    console.log("handleEndGame");
                 }
                 else if (this.checkDraw()) {
-                    console.log("checkWin");
                     this.handleEndGame(true);
-                    console.log("handleEndGame");
                 }
                 else {
                     this.switchPlayer();
-                    console.log("switchPlayer");
                 }
                 this.saveGameStorage();
-                console.log("saveGameStorage");
             }
             this._isCPUThinking = false;
-            console.log("CPUthinking -> false");
         }, 1000);
     }
     findBestMove() {
@@ -106,11 +96,9 @@ export class Game {
     minimax(depth, alpha, beta, isMaximizing) {
         if (this._board.checkWin()) {
             const winner = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
-            console.log(`checkWin: true, Winner: ${winner}`);
-            return isMaximizing ? depth - 10 : 10 - depth; // スコアの計算も修正
+            return isMaximizing ? depth - (this._board.size + 1) ** 2 : (this._board.size ** 2 + 1) - depth;
         }
         else if (this._board.checkDraw() || depth === this._board.size ** 2) {
-            console.log(`checkDraw: ${this._board.checkDraw()}, MaxDepth: ${depth === this._board.size ** 2}`);
             return 0;
         }
         const currentMark = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
@@ -123,10 +111,7 @@ export class Game {
                 this._board.removeMarkTemp(move);
                 maxScore = Math.max(maxScore, score);
                 alpha = Math.max(alpha, maxScore);
-                // console.log("isMaximizing: " + isMaximizing);
-                // console.log(`Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`);
                 if (beta <= alpha) {
-                    // console.log(`Pruning at depth ${depth}`);
                     break;
                 }
                 ;
@@ -141,10 +126,7 @@ export class Game {
                 this._board.removeMarkTemp(move);
                 minScore = Math.min(minScore, score);
                 beta = Math.min(beta, minScore);
-                // console.log("isMaximizing: " + isMaximizing);
-                // console.log(`Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`);
                 if (beta <= alpha) {
-                    // console.log(`Pruning at depth ${depth}`);
                     break;
                 }
                 ;
