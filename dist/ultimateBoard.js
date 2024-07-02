@@ -93,7 +93,7 @@ export class UltimateBoard extends Board {
                 this.game.switchPlayer();
                 this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
             }
-            this.game.saveGameStorage();
+            // this.game.saveGameStorage();
         }
     }
     // アルティメットボードだった場合の旗を立てる
@@ -111,10 +111,14 @@ export class UltimateBoard extends Board {
     }
     // localStorage
     getUltimateBoardState() {
+        console.log("アルティメット・ゲットボード");
+        console.log(this.miniBoards.map(miniBoard => miniBoard.getBoardState()));
         return this.miniBoards.map(miniBoard => miniBoard.getBoardState());
     }
-    setUltimateBoardState(state) {
-        state.forEach((miniBoardState, boardIndex) => {
+    setUltimateBoardState(boards) {
+        console.log("アルティメット・セットボード");
+        console.log(boards);
+        boards.forEach((miniBoardState, boardIndex) => {
             this.miniBoards[boardIndex].setBoardState(miniBoardState);
         });
         this.ultimateAddClickHandlers();

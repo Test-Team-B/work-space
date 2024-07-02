@@ -112,7 +112,7 @@ export class UltimateBoard extends Board {
                 this.game.switchPlayer();
                 this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
             }
-            this.game.saveGameStorage();
+            // this.game.saveGameStorage();
         }
     }
 
@@ -134,11 +134,15 @@ export class UltimateBoard extends Board {
     
     // localStorage
     public getUltimateBoardState(): { mark: string }[][] {
+        console.log("アルティメット・ゲットボード")
+        console.log(this.miniBoards.map(miniBoard => miniBoard.getBoardState()))
         return this.miniBoards.map(miniBoard => miniBoard.getBoardState());
     }
 
-    public setUltimateBoardState(state: { mark: string }[][]): void {
-        state.forEach((miniBoardState, boardIndex) => {
+    public setUltimateBoardState(boards: { mark: string }[][]): void {
+        console.log("アルティメット・セットボード");
+        console.log(boards);
+        boards.forEach((miniBoardState, boardIndex) => {
             this.miniBoards[boardIndex].setBoardState(miniBoardState);
         });
         this.ultimateAddClickHandlers();

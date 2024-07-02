@@ -80,6 +80,7 @@ export class Board {
     }
     // クリックイベントの付与
     addClickHandlers() {
+        console.log("アド・クリックハンドラ");
         this._cells.forEach((cell, index) => {
             // セルの要素からクリックイベントリスナーを削除
             if (cell.clickHandler) {
@@ -92,6 +93,7 @@ export class Board {
             cell.element.addEventListener('click', clickHandler);
             cell.clickHandler = clickHandler;
         });
+        this.game.saveGameStorage();
     }
     // クリックイベントの内容
     handleCellClick(index) {
@@ -123,6 +125,23 @@ export class Board {
         });
         this.addClickHandlers();
     }
+    // ボードの状態の取得
+    getBoardState() {
+        console.log("ゲット・ボードステイト");
+        return this._cells.map(cell => ({ mark: cell.mark }));
+    }
+    // ボードの状態の復元
+    setBoardState(state) {
+        console.log("セット・ボードステイト");
+        state.forEach((cellState, index) => {
+            if (cellState.mark) {
+                this._cells[index].mark = cellState.mark;
+                this._cells[index].element.classList.add(cellState.mark);
+                this._cells[index].element.textContent = cellState.mark;
+            }
+        });
+        this.addClickHandlers();
+    }
     // ゲッター
     get cells() {
         return this._cells;
@@ -132,20 +151,5 @@ export class Board {
     }
     get game() {
         return this._game;
-    }
-    // ボードの状態の取得
-    getBoardState() {
-        return this._cells.map(cell => ({ mark: cell.mark }));
-    }
-    // ボードの状態の復元
-    setBoardState(state) {
-        state.forEach((cellState, index) => {
-            if (cellState.mark) {
-                this._cells[index].mark = cellState.mark;
-                this._cells[index].element.classList.add(cellState.mark);
-                this._cells[index].element.textContent = cellState.mark;
-            }
-        });
-        this.addClickHandlers();
     }
 }

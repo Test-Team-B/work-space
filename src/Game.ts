@@ -12,6 +12,7 @@ export class Game {
     private ultimateMode: boolean;
 
     constructor(playerXName: string, playerOName: string, boardSize: number, isCPUOpponent: boolean = false, ultimateBoard: boolean = false) {
+        console.log("Gameコンストラクタ")
         this._players = {
             'X': { name: playerXName, mark: 'X', isCPU: false },
             'O': { name: playerOName, mark: 'O', isCPU: isCPUOpponent }
@@ -37,23 +38,26 @@ export class Game {
 
     // ゲームを初期化
     public initializeGame(): void {
+        console.log("ゲームクラス・イニシャライズゲーム")
         // @audit
-        this._currentPlayer = this._players['X'];
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
-
-        this.loadGameStorage();
         this.handleAddClick();
-        this.updateScores(this.ultimateMode);
     }
 
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     public continueGame(): void {
+        console.log("コンティニューゲーム")
         this.initializeGame();
         this.handleClearBoard();
+        if (this._currentPlayer.isCPU) {
+            this.playCPUTurn();
+            console.log("CPUターン")
+        }
     }
 
     // ゲームをリスタート
     public resetGame(): void {
+        console.log("リセットゲーム")
         this.resetScores();
         this.initializeGame();
         this.handleClearBoard();
@@ -61,6 +65,7 @@ export class Game {
 
     // クリアボードの条件分け
     public handleClearBoard(): void {
+        console.log("ハンドルクリアボード")
         if (this._board instanceof UltimateBoard) {
             this._board.clearUltimateBoard();
             this._board.miniBoardResult.fill('');
@@ -90,13 +95,18 @@ export class Game {
     // プレイヤー交代
     public switchPlayer(): void {
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
+        console.log("スウィッチプレイヤ")
+        console.log(this._currentPlayer)
         if (this._currentPlayer.isCPU) {
             this.playCPUTurn();
+            console.log("CPUターン")
         } else {
+            console.log("人間のターン")
         }
     }
 
     public playCPUTurn(): void {
+        console.log("CPUプレイ")
         this._isCPUThinking = true;
         setTimeout(() => {
             let emptyCells: { boardIndex: number, cellIndex: number, cell: { mark: string, element: HTMLElement }}[] = [];
@@ -126,6 +136,7 @@ export class Game {
                 this._isCPUThinking = false;
             }
         }, 1000);
+        this.saveGameStorage();
     }
     
     // ゲーム結果の表示、スコアの更新
@@ -169,17 +180,50 @@ export class Game {
         this._players['O'].name = playerOName;
         this.updateScoreBoardNames(this.ultimateMode);
     }
-    
-    // カプセル化、勝ち判定
-    public checkWin(): boolean {
-        return this._board.checkWin();
+
+    // localStorageに保存
+    public saveGameStorage() {
+        console.log("セーブ・ローカルストレージ")
+        const gameState = {
+            players: this._players,
+            currentPlayer: this._currentPlayer,
+            isCPU: this._players.O.isCPU,
+            isUltimate: this.ultimateMode,
+            scores: this._scores,
+            board: this._board instanceof UltimateBoard ? this._board.getUltimateBoardState() : this._board.getBoardState(),
+        }
+        console.log("セーブしました")
+        console.log(gameState.board)
+        localStorage.setItem('ticTacToeState', JSON.stringify(gameState));
     }
-    
-    // カプセル化、引き分け判定
-    public checkDraw(): boolean {
-        return this._board.checkDraw();
+
+    // localStorageから取得
+    public loadGameStorage() {
+        console.log("ロード・ローカルストレージ!!!!!!!!!!")
+        const gameState = localStorage.getItem('ticTacToeState');
+        if (gameState) {
+            const state = JSON.parse(gameState);
+            this._players = state.players;
+            this._currentPlayer = state.currentPlayer;
+            this._players.O.isCPU = state.isCPU;
+            this.ultimateMode = state.isUltimate;
+            this._scores = state.scores;
+            console.log(state.board);
+            if (this.ultimateMode) {
+                console.log("アルティメット・ローカルストレージ")
+                const ultimateBoardContainer = document.querySelector('.ultimate__board__container') as HTMLElement;
+                this._board = new UltimateBoard(this._board.size, ultimateBoardContainer, this);
+                (this._board as UltimateBoard).setUltimateBoardState(state.board);
+            } else {
+                console.log("ノーマル・ローカルストレージ")
+                const boardContainer = document.querySelector('.board__container') as HTMLElement;
+                this._board = new Board(this._board.size, boardContainer, this);
+                this._board.setBoardState(state.board);
+            }
+            console.log(state.board);
+        }
     }
-    
+      
     // ゲッター
     get players() {
         return this._players;
@@ -198,7 +242,7 @@ export class Game {
     }
     
     get winningMessageTextElement() {
-        if (this.board instanceof UltimateBoard) {
+        if (this.ultimateMode) {
             return this._ultimateWinningMessageTextElement;
         } else {
             return this._winningMessageTextElement;
@@ -217,36 +261,5 @@ export class Game {
     set board(board: Board) {
         this._board = board;
     }
-
-    // localStorageに保存
-    public saveGameStorage() {
-        const gameState = {
-            players: this._players,
-            currentPlayer: this._currentPlayer,
-            scores: this._scores,
-            board: this._board instanceof UltimateBoard ? this._board.getUltimateBoardState() : this._board.getBoardState(),
-        }
-        localStorage.setItem('ticTacToeState', JSON.stringify(gameState));
-    }
-
-    // localStorageから取得
-    public loadGameStorage() {
-        const gameState = localStorage.getItem('ticTacToeState');
-        if (gameState) {
-            const state = JSON.parse(gameState);
-            this._players = state.players;
-            this._currentPlayer = state.currentPlayer
-            this._scores = state.scores;
-            
-            if (this.ultimateMode) {
-                const ultimateBoardContainer = document.querySelector('.ultimate__board__container') as HTMLElement;
-                this._board = new UltimateBoard(this._board.size, ultimateBoardContainer, this);
-                (this._board as UltimateBoard).setUltimateBoardState(state.board);
-            } else {
-                const boardContainer = document.querySelector('.board__container') as HTMLElement;
-                this._board = new Board(this._board.size, boardContainer, this);
-                this._board.setBoardState(state.board);
-            }
-        }
-    }
 }
+
