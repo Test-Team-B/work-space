@@ -1,5 +1,5 @@
 # Tic-Tac-Tao
-Tic-Tac-Taoと実装していきます
+Tic-Tac-Taoを実装していきます
 
 ## 機能
 - ユーザー対戦機能
