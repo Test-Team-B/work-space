@@ -1,66 +1,39 @@
 import { Board } from "./Board.js";
-import { UltimateBoard } from "./ultimateBoard.js";
 export class Game {
-    constructor(playerXName, playerOName, boardSize, isCPUOpponent = false, ultimateBoard = false) {
+    constructor(playerXName, playerOName, boardSize, difficulty = 'easy') {
         this._isCPUThinking = false;
         this._players = {
             'X': { name: playerXName, mark: 'X', isCPU: false },
-            'O': { name: playerOName, mark: 'O', isCPU: isCPUOpponent }
+            'O': { name: playerOName, mark: 'O', isCPU: true }
         };
         this._currentPlayer = this._players['X'];
+        this._board = new Board(boardSize, undefined, this);
         this._scores = {
             'X': 0,
             'O': 0
         };
         this._winningMessageTextElement = document.getElementById('info__message');
-        this._ultimateWinningMessageTextElement = document.getElementById('ultimate-info__message');
+        this.updateScoreBoardNames();
         const boardContainer = document.querySelector('.board__container');
-        const ultimateBoardContainer = document.querySelector('.ultimate__board__container');
-        this.ultimateMode = ultimateBoard;
-        this._board = ultimateBoard
-            ? new UltimateBoard(boardSize, ultimateBoardContainer, this)
-            : new Board(boardSize, boardContainer, this);
-        this.updateScoreBoardNames(ultimateBoard);
+        if (boardContainer instanceof HTMLElement) {
+            this._board = new Board(boardSize, boardContainer, this);
+        }
+        else {
+            throw new Error("Board container element not found");
+        }
+        this._difficulty = difficulty;
     }
     // ゲームを初期化
     initializeGame() {
-        // @audit
-        this._currentPlayer = this._players['X'];
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         this.loadGameStorage();
-        this.handleAddClick();
-        this.updateScores(this.ultimateMode);
+        this._board.addClickHandlers();
+        this.updateScores();
     }
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     continueGame() {
         this.initializeGame();
-        this.handleClearBoard();
-    }
-    // ゲームをリスタート
-    resetGame() {
-        this.resetScores();
-        this.initializeGame();
-        this.handleClearBoard();
-    }
-    // クリアボードの条件分け
-    handleClearBoard() {
-        if (this._board instanceof UltimateBoard) {
-            this._board.clearUltimateBoard();
-            this._board.miniBoardResult.fill('');
-        }
-        else {
-            this._board.clearBoard();
-        }
-    }
-    // クリックイベント付与の場合分け
-    handleAddClick() {
-        if (this._board instanceof UltimateBoard) {
-            this._board.ultimateAddClickHandlers();
-            this._board.miniBoardResult.fill('');
-        }
-        else {
-            this._board.addClickHandlers();
-        }
+        this._board.clearBoard();
     }
     // スコアをリセット
     resetScores() {
@@ -69,85 +42,118 @@ export class Game {
             'O': 0
         };
     }
+    // ゲームをリスタート
+    resetGame() {
+        this._board.clearBoard();
+        this.resetScores();
+        this.initializeGame();
+    }
     // プレイヤー交代
     switchPlayer() {
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
         if (this._currentPlayer.isCPU) {
             this.playCPUTurn();
         }
-        else {
-        }
+    }
+    get isCPUThinking() {
+        return this._isCPUThinking;
     }
     playCPUTurn() {
         this._isCPUThinking = true;
         setTimeout(() => {
-            let emptyCells = [];
-            if (this._board instanceof UltimateBoard) {
-                const boardIndex = this._board.currentBoardIndex !== null ? this._board.currentBoardIndex : Math.floor(Math.random() * this._board.miniBoards.length);
-                this._board.miniBoards[boardIndex].cells.forEach((cell, cellIndex) => {
-                    if (!cell.mark) {
-                        emptyCells.push({ boardIndex, cellIndex, cell });
-                    }
-                });
-            }
-            else {
-                emptyCells = this._board.cells
-                    .map((cell, index) => ({ boardIndex: 0, cellIndex: index, cell }))
-                    .filter(({ cell }) => !cell.mark);
-            }
-            if (emptyCells.length > 0) {
-                const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                const { boardIndex, cellIndex } = randomCell;
-                if (this._board instanceof UltimateBoard) {
-                    this._board.ultimateHandleCellClick(cellIndex, boardIndex);
+            const bestMove = this.findBestMove();
+            if (bestMove !== -1) {
+                this._board.markCell(bestMove, this._currentPlayer.mark);
+                if (this.checkWin()) {
+                    this.handleEndGame(false);
+                }
+                else if (this.checkDraw()) {
+                    this.handleEndGame(true);
                 }
                 else {
-                    this._board.handleCellClick(cellIndex);
+                    this.switchPlayer();
                 }
-                this._isCPUThinking = false;
+                this.saveGameStorage();
             }
+            this._isCPUThinking = false;
         }, 1000);
     }
+    findBestMove() {
+        let bestScore = -Infinity;
+        let bestMove = -1;
+        const emptyCells = this._board.getEmptyCells();
+        for (const move of emptyCells) {
+            this._board.placeMarkTemp(move, this._currentPlayer.mark);
+            const score = this.minimax(0, -Infinity, Infinity, false);
+            this._board.removeMarkTemp(move);
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+        }
+        return bestMove;
+    }
+    minimax(depth, alpha, beta, isMaximizing) {
+        if (this._board.checkWin()) {
+            const winner = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
+            return isMaximizing ? depth - (this._board.size + 1) ** 2 : (this._board.size ** 2 + 1) - depth;
+        }
+        else if (this._board.checkDraw() || depth === this._board.size ** 2) {
+            return 0;
+        }
+        const currentMark = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
+        const emptyCells = this._board.getEmptyCells();
+        if (isMaximizing) {
+            let maxScore = -Infinity;
+            for (const move of emptyCells) {
+                this._board.placeMarkTemp(move, currentMark);
+                const score = this.minimax(depth + 1, alpha, beta, false);
+                this._board.removeMarkTemp(move);
+                maxScore = Math.max(maxScore, score);
+                alpha = Math.max(alpha, maxScore);
+                if (beta <= alpha) {
+                    break;
+                }
+                ;
+            }
+            return maxScore;
+        }
+        else {
+            let minScore = Infinity;
+            for (const move of emptyCells) {
+                this._board.placeMarkTemp(move, currentMark);
+                const score = this.minimax(depth + 1, alpha, beta, true);
+                this._board.removeMarkTemp(move);
+                minScore = Math.min(minScore, score);
+                beta = Math.min(beta, minScore);
+                if (beta <= alpha) {
+                    break;
+                }
+                ;
+            }
+            return minScore;
+        }
+    }
     // ゲーム結果の表示、スコアの更新
-    handleEndGame(draw, isUltimateBoard = false) {
+    handleEndGame(draw) {
         if (draw) {
             this.winningMessageTextElement.innerText = 'Draw!';
         }
         else {
+            this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
             this._scores[this._currentPlayer.mark]++;
-            this.updateScores(isUltimateBoard);
-            if (!isUltimateBoard) {
-                this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
-            }
+            this.updateScores();
         }
     }
     // スコアボードの更新
-    updateScores(isUltimateBoard = false) {
-        if (isUltimateBoard) {
-            document.getElementById('ultimate-scoreboard__X-score').innerText = `${this._scores['X']}`;
-            document.getElementById('ultimate-scoreboard__O-score').innerText = `${this._scores['O']}`;
-        }
-        else {
-            document.getElementById('scoreboard__X__score').innerText = `${this._scores['X']}`;
-            document.getElementById('scoreboard__O__score').innerText = `${this._scores['O']}`;
-        }
+    updateScores() {
+        document.getElementById('scoreboard__X__score').innerText = `${this._scores['X']}`;
+        document.getElementById('scoreboard__O__score').innerText = `${this._scores['O']}`;
     }
-    // スコアボードの名前を初期化
-    updateScoreBoardNames(isUltimateBoard = false) {
-        if (isUltimateBoard) {
-            document.getElementById('ultimate-scoreboard__X-name').innerText = this._players['X'].name;
-            document.getElementById('ultimate-scoreboard__O-name').innerText = this._players['O'].name;
-        }
-        else {
-            document.getElementById('scoreboard__X__name').innerText = this._players['X'].name;
-            document.getElementById('scoreboard__O__name').innerText = this._players['O'].name;
-        }
-    }
-    // 名前入力画面から名前だけ変更
-    updatePlayerNames(playerXName, playerOName) {
-        this._players['X'].name = playerXName;
-        this._players['O'].name = playerOName;
-        this.updateScoreBoardNames(this.ultimateMode);
+    // スコアボードの名前を更新
+    updateScoreBoardNames() {
+        document.getElementById('scoreboard__X__name').innerText = this._players['X'].name;
+        document.getElementById('scoreboard__O__name').innerText = this._players['O'].name;
     }
     // カプセル化、勝ち判定
     checkWin() {
@@ -171,15 +177,7 @@ export class Game {
         return this._scores;
     }
     get winningMessageTextElement() {
-        if (this.board instanceof UltimateBoard) {
-            return this._ultimateWinningMessageTextElement;
-        }
-        else {
-            return this._winningMessageTextElement;
-        }
-    }
-    get isCPUThinking() {
-        return this._isCPUThinking;
+        return this._winningMessageTextElement;
     }
     // セッター
     set currentPlayers(player) {
@@ -194,7 +192,7 @@ export class Game {
             players: this._players,
             currentPlayer: this._currentPlayer,
             scores: this._scores,
-            board: this._board instanceof UltimateBoard ? this._board.getUltimateBoardState() : this._board.getBoardState(),
+            board: this._board.getBoardState()
         };
         localStorage.setItem('ticTacToeState', JSON.stringify(gameState));
     }
@@ -206,16 +204,7 @@ export class Game {
             this._players = state.players;
             this._currentPlayer = state.currentPlayer;
             this._scores = state.scores;
-            if (this.ultimateMode) {
-                const ultimateBoardContainer = document.querySelector('.ultimate__board__container');
-                this._board = new UltimateBoard(this._board.size, ultimateBoardContainer, this);
-                this._board.setUltimateBoardState(state.board);
-            }
-            else {
-                const boardContainer = document.querySelector('.board__container');
-                this._board = new Board(this._board.size, boardContainer, this);
-                this._board.setBoardState(state.board);
-            }
+            this._board.setBoardState(state.board);
         }
     }
 }

@@ -14,7 +14,7 @@ export class Game {
     constructor(playerXName: string, playerOName: string, boardSize: number, isCPUOpponent: boolean = false, ultimateBoard: boolean = false) {
         this._players = {
             'X': { name: playerXName, mark: 'X', isCPU: false },
-            'O': { name: playerOName, mark: 'O', isCPU: isCPUOpponent }
+            'O': { name: playerOName, mark: 'O', isCPU: true }
         }
         this._currentPlayer = this._players['X'];
         this._scores = {
@@ -99,35 +99,84 @@ export class Game {
     public playCPUTurn(): void {
         this._isCPUThinking = true;
         setTimeout(() => {
-            let emptyCells: { boardIndex: number, cellIndex: number, cell: { mark: string, element: HTMLElement }}[] = [];
-
-            if (this._board instanceof UltimateBoard) {
-                const boardIndex = this._board.currentBoardIndex !== null ? this._board.currentBoardIndex : Math.floor(Math.random() * this._board.miniBoards.length);
-                this._board.miniBoards[boardIndex].cells.forEach((cell, cellIndex) => {
-                    if (!cell.mark) {
-                        emptyCells.push({ boardIndex, cellIndex, cell });
-                    }
-                });
-            } else {
-                emptyCells = this._board.cells
-                    .map((cell, index) => ({ boardIndex: 0, cellIndex: index, cell}))
-                    .filter(({ cell }) => !cell.mark);
-            }
-
-            if (emptyCells.length > 0) {
-                const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                const { boardIndex, cellIndex } = randomCell;
-
-                if (this._board instanceof UltimateBoard) {
-                    this._board.ultimateHandleCellClick(cellIndex, boardIndex);
+            const bestMove = this.findBestMove();
+            if (bestMove !== -1) {
+                this._board.markCell(bestMove, this._currentPlayer.mark);
+                if (this.checkWin()) {
+                    this.handleEndGame(false);
+                } else if (this.checkDraw()) {
+                    this.handleEndGame(true);
                 } else {
-                    this._board.handleCellClick(cellIndex);
+
+                    this.switchPlayer();
                 }
-                this._isCPUThinking = false;
+                this.saveGameStorage();
             }
+            this._isCPUThinking = false;
         }, 1000);
     }
-    
+
+    private findBestMove(): number {
+        let bestScore = -Infinity;
+        let bestMove = -1;
+        const emptyCells = this._board.getEmptyCells();
+
+        for (const move of emptyCells) {
+            this._board.placeMarkTemp(move, this._currentPlayer.mark);
+            const score = this.minimax(0, -Infinity, Infinity, false);
+            this._board.removeMarkTemp(move);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+        }
+
+        return bestMove;
+    }
+
+    private minimax(depth: number, alpha: number, beta: number, isMaximizing: boolean): number {
+        if (this._board.checkWin()) {
+            const winner = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
+            return isMaximizing ? depth - (this._board.size + 1) ** 2 : (this._board.size ** 2 + 1) - depth;
+        } else if (this._board.checkDraw() || depth === this._board.size ** 2) {
+            return 0;
+        }
+
+
+        const currentMark = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
+        const emptyCells = this._board.getEmptyCells();
+
+        if (isMaximizing) {
+            let maxScore = -Infinity;
+            for (const move of emptyCells) {
+                this._board.placeMarkTemp(move, currentMark);
+                const score = this.minimax(depth + 1, alpha, beta, false);
+                this._board.removeMarkTemp(move);
+                maxScore = Math.max(maxScore, score);
+                alpha = Math.max(alpha, maxScore);
+                if (beta <= alpha) {
+                    break
+                };
+            }
+            return maxScore;
+        } else {
+            let minScore = Infinity;
+            for (const move of emptyCells) {
+                this._board.placeMarkTemp(move, currentMark);
+                const score = this.minimax(depth + 1, alpha, beta, true);
+                this._board.removeMarkTemp(move);
+                minScore = Math.min(minScore, score);
+                beta = Math.min(beta, minScore);
+                if (beta <= alpha) {
+                    break
+                };
+            }
+
+            return minScore;
+        }
+    }
+
     // ゲーム結果の表示、スコアの更新
     public handleEndGame(draw: boolean, isUltimateBoard: boolean = false): void {
         if (draw) {
@@ -140,7 +189,7 @@ export class Game {
             }
         }
     }
-    
+
     // スコアボードの更新
     public updateScores(isUltimateBoard: boolean = false): void {
         if (isUltimateBoard) {
@@ -151,7 +200,7 @@ export class Game {
             document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
         }
     }
-    
+
     // スコアボードの名前を初期化
     private updateScoreBoardNames(isUltimateBoard: boolean = false): void {
         if (isUltimateBoard) {
@@ -169,17 +218,17 @@ export class Game {
         this._players['O'].name = playerOName;
         this.updateScoreBoardNames(this.ultimateMode);
     }
-    
+
     // カプセル化、勝ち判定
     public checkWin(): boolean {
         return this._board.checkWin();
     }
-    
+
     // カプセル化、引き分け判定
     public checkDraw(): boolean {
         return this._board.checkDraw();
     }
-    
+
     // ゲッター
     get players() {
         return this._players;
@@ -188,15 +237,15 @@ export class Game {
     get currentPlayer() {
         return this._currentPlayer;
     }
-    
+
     get board() {
         return this._board;
     }
-    
+
     get scores() {
         return this._scores;
     }
-    
+
     get winningMessageTextElement() {
         if (this.board instanceof UltimateBoard) {
             return this._ultimateWinningMessageTextElement;
@@ -204,7 +253,7 @@ export class Game {
             return this._winningMessageTextElement;
         }
     }
-    
+
     get isCPUThinking(): boolean {
         return this._isCPUThinking;
     }
@@ -237,7 +286,7 @@ export class Game {
             this._players = state.players;
             this._currentPlayer = state.currentPlayer
             this._scores = state.scores;
-            
+
             if (this.ultimateMode) {
                 const ultimateBoardContainer = document.querySelector('.ultimate__board__container') as HTMLElement;
                 this._board = new UltimateBoard(this._board.size, ultimateBoardContainer, this);

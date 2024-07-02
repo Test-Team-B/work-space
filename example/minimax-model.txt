@@ -1,0 +1,168 @@
+import * as readline from 'readline';
+
+class TicTacToe {
+    private board: string[];
+    private currentPlayer: string;
+
+    constructor() {
+        this.board = Array(9).fill('');
+        this.currentPlayer = 'X';
+    }
+
+    private switchPlayer(): void {
+        this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+    }
+
+    private checkWinner(): string | null {
+        const winPatterns = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],  // Rows
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],  // Columns
+            [0, 4, 8], [2, 4, 6]              // Diagonals
+        ];
+
+        for (const pattern of winPatterns) {
+            const [a, b, c] = pattern;
+            if (this.board[a] && this.board[a] === this.board[b] && this.board[a] === this.board[c]) {
+                return this.board[a];
+            }
+        }
+
+        return this.board.includes('') ? null : 'Tie';
+    }
+
+    private minimax(depth: number, isMaximizing: boolean, alpha: number, beta: number): number {
+        const result = this.checkWinner();
+        if (result !== null) {
+            return result === 'X' ? 10 - depth : result === 'O' ? depth - 10 : 0;
+        }
+
+        if (isMaximizing) {
+            let bestScore = -Infinity;
+            for (let i = 0; i < 9; i++) {
+                if (this.board[i] === '') {
+                    this.board[i] = 'X';
+                    const score = this.minimax(depth + 1, false, alpha, beta);
+                    this.board[i] = '';
+                    bestScore = Math.max(score, bestScore);
+                    alpha = Math.max(alpha, bestScore);
+
+                    console.log("isMaximizing: " + isMaximizing);
+                    console.log(`info: Depth: ${depth}, Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`);
+
+                    if (beta <= alpha) break;
+                }
+            }
+            return bestScore;
+        } else {
+            let bestScore = Infinity;
+            for (let i = 0; i < 9; i++) {
+                if (this.board[i] === '') {
+                    this.board[i] = 'O';
+                    const score = this.minimax(depth + 1, true, alpha, beta);
+                    this.board[i] = '';
+                    bestScore = Math.min(score, bestScore);
+                    beta = Math.min(beta, bestScore);
+                    if (beta <= alpha) break;
+                }
+            }
+            return bestScore;
+        }
+    }
+
+    private getBestMove(): number {
+        let bestScore = -Infinity;
+        let move = -1;
+        for (let i = 0; i < 9; i++) {
+            if (this.board[i] === '') {
+                this.board[i] = 'X';
+                const score = this.minimax(0, false, -Infinity, Infinity);
+                this.board[i] = '';
+                if (score > bestScore) {
+                    bestScore = score;
+                    move = i;
+                }
+            }
+        }
+        console.log("bestScore: " + bestScore);
+        console.log("bestMove: " + move);
+        return move;
+    }
+
+    public makeMove(position: number): boolean {
+        if (position < 0 || position > 8 || this.board[position] !== '') {
+            return false;
+        }
+        this.board[position] = this.currentPlayer;
+        this.switchPlayer();
+        return true;
+    }
+
+    public cpuMove(): void {
+        const bestMove = this.getBestMove();
+        this.makeMove(bestMove);
+    }
+
+    public isGameOver(): boolean {
+        return this.checkWinner() !== null;
+    }
+
+    public getWinner(): string | null {
+        return this.checkWinner();
+    }
+
+    public printBoard(): void {
+        for (let i = 0; i < 9; i += 3) {
+            console.log(this.board.slice(i, i + 3).join(' | '));
+            if (i < 6) console.log('---------');
+        }
+    }
+}
+
+async function getUserInput(prompt: string): Promise<string> {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    return new Promise(resolve => rl.question(prompt, ans => {
+        rl.close();
+        resolve(ans);
+    }));
+}
+
+async function playGame() {
+    const game = new TicTacToe();
+
+    while (!game.isGameOver()) {
+        game.printBoard();
+        console.log("Your turn (0-8):");
+
+        let validMove = false;
+        while (!validMove) {
+            const userInput = await getUserInput("Enter your move: ");
+            const userMove = parseInt(userInput);
+
+            if (isNaN(userMove) || userMove < 0 || userMove > 8) {
+                console.log("Invalid input. Please enter a number between 0 and 8.");
+            } else if (game.makeMove(userMove)) {
+                validMove = true;
+                if (!game.isGameOver()) {
+                    console.log("CPU's turn:");
+                    game.cpuMove();
+                }
+            } else {
+                console.log("That position is already taken. Try again.");
+            }
+        }
+    }
+
+    game.printBoard();
+    const winner = game.getWinner();
+    if (winner === 'Tie') {
+        console.log("It's a tie!");
+    } else {
+        console.log(`${winner} wins!`);
+    }
+}
+
+playGame();

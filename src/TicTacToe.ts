@@ -34,11 +34,11 @@ class TicTacToe {
         this.submitButton = document.getElementById('name-setting__form__submit')!;
         this.continueButton = document.getElementById('info__btn__continue')!;
         this.resetButton = document.getElementById('info__btn__reset')!;
-        
+
         this.nameBoard = document.getElementById('name-setting')!;
         this.mainContainer = document.querySelector('.main-container')!;
         this.ultimateContainer = document.querySelector('.ultimate-container')!;
-        
+
         this.ultimateContinueButton = document.getElementById('ultimate-info__btn__continue')!;
         this.ultimateResetButton = document.getElementById('ultimate-info__btn__reset')!;
         this.ultimateCheckBox = document.querySelector('#ultimate') as HTMLInputElement;
@@ -93,12 +93,12 @@ class TicTacToe {
     }
 
     // プレイヤー名を取得する
-    public getPlayerNames(): { playerXName: string, playerOName: string, isCPUOpponent: boolean, isUltimate: boolean} {
+    public getPlayerNames(): { playerXName: string, playerOName: string, isCPUOpponent: boolean, isUltimate: boolean } {
         const isCPUOpponent = this.cpuCheckBox.checked ? this.cpuLevelSelect() : false;
         const isUltimate = this.ultimateCheckBox.checked;
         const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement)?.value || 'Player X';
         const playerOName = (document.getElementById('name-setting__form__player2') as HTMLInputElement)?.value || 'Player O';
-        return { playerOName, playerXName, isCPUOpponent, isUltimate};
+        return { playerOName, playerXName, isCPUOpponent, isUltimate };
     }
 
     // 名前入力フォームでスタートボタンを押したらフォームが消えゲームがスタートする
