@@ -105,9 +105,9 @@ export class Game {
     }
     minimax(depth, alpha, beta, isMaximizing) {
         if (this.checkWin()) {
-            return isMaximizing ? (this._board.size ** 2 + 1) - depth : depth - (this._board.size ** 2 + 1);
+            return isMaximizing ? 10 - depth : depth - 10;
         }
-        if (this.checkDraw() || depth === this._board.size ** 2) {
+        else if (this.checkDraw() || depth === this._board.size ** 2) {
             return 0;
         }
         const currentMark = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
@@ -119,10 +119,14 @@ export class Game {
                 const score = this.minimax(depth + 1, alpha, beta, false);
                 this._board.removeMarkTemp(move);
                 maxScore = Math.max(maxScore, score);
-                alpha = Math.max(alpha, score);
-                console.log("alpha: " + alpha);
-                if (beta <= alpha)
+                alpha = Math.max(alpha, maxScore);
+                console.log("isMaximizing: " + isMaximizing);
+                console.log(`Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`);
+                if (beta <= alpha) {
+                    console.log(`Pruning at depth ${depth}`);
                     break;
+                }
+                ;
             }
             return maxScore;
         }
@@ -133,11 +137,15 @@ export class Game {
                 const score = this.minimax(depth + 1, alpha, beta, true);
                 this._board.removeMarkTemp(move);
                 minScore = Math.min(minScore, score);
-                beta = Math.min(beta, score);
-                if (beta <= alpha)
+                beta = Math.min(beta, minScore);
+                console.log("isMaximizing: " + isMaximizing);
+                console.log(`Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`);
+                if (beta <= alpha) {
+                    console.log(`Pruning at depth ${depth}`);
                     break;
+                }
+                ;
             }
-            console.log("beta: " + beta);
             return minScore;
         }
     }
