@@ -1,49 +1,82 @@
 import { Board } from "./Board.js"
+import { UltimateBoard } from "./ultimateBoard.js"
 
 export class Game {
     private _players: { [key: string]: { name: string, mark: string, isCPU: boolean } };
     private _currentPlayer: { name: string, mark: string, isCPU: boolean };
     private _isCPUThinking: boolean = false;
-    private _difficulty: 'easy' | 'hard';
-    private _board: Board;
+    private _board: Board | UltimateBoard;
     private _scores: { [key: string]: number };
     private _winningMessageTextElement: HTMLElement;
+    private _ultimateWinningMessageTextElement: HTMLElement;
+    private ultimateMode: boolean;
 
-    constructor(playerXName: string, playerOName: string, boardSize: number, difficulty: 'easy' | 'hard' = 'easy') {
+    constructor(playerXName: string, playerOName: string, boardSize: number, isCPUOpponent: boolean = false, ultimateBoard: boolean = false) {
         this._players = {
             'X': { name: playerXName, mark: 'X', isCPU: false },
             'O': { name: playerOName, mark: 'O', isCPU: true }
         }
         this._currentPlayer = this._players['X'];
-        this._board = new Board(boardSize, undefined, this);
         this._scores = {
             'X': 0,
             'O': 0
         };
         this._winningMessageTextElement = document.getElementById('info__message')!;
-        this.updateScoreBoardNames();
-        const boardContainer = document.querySelector('.board__container');
-        if (boardContainer instanceof HTMLElement) {
-            this._board = new Board(boardSize, boardContainer, this);
-        } else {
-            throw new Error("Board container element not found");
-        }
-        this._difficulty = difficulty;
-    }
+        this._ultimateWinningMessageTextElement = document.getElementById('ultimate-info__message')!;
 
+        const boardContainer = document.querySelector('.board__container') as HTMLElement;
+        const ultimateBoardContainer = document.querySelector('.ultimate__board__container') as HTMLElement;
+
+        this.ultimateMode = ultimateBoard;
+        this._board = ultimateBoard
+            ? new UltimateBoard(boardSize, ultimateBoardContainer, this)
+            : new Board(boardSize, boardContainer, this);
+
+        this.updateScoreBoardNames(ultimateBoard);
+    }
 
     // ゲームを初期化
     public initializeGame(): void {
+        // @audit
+        this._currentPlayer = this._players['X'];
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
+
         this.loadGameStorage();
-        this._board.addClickHandlers();
-        this.updateScores();
+        this.handleAddClick();
+        this.updateScores(this.ultimateMode);
     }
 
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     public continueGame(): void {
         this.initializeGame();
-        this._board.clearBoard();
+        this.handleClearBoard();
+    }
+
+    // ゲームをリスタート
+    public resetGame(): void {
+        this.resetScores();
+        this.initializeGame();
+        this.handleClearBoard();
+    }
+
+    // クリアボードの条件分け
+    public handleClearBoard(): void {
+        if (this._board instanceof UltimateBoard) {
+            this._board.clearUltimateBoard();
+            this._board.miniBoardResult.fill('');
+        } else {
+            this._board.clearBoard();
+        }
+    }
+
+    // クリックイベント付与の場合分け
+    public handleAddClick(): void {
+        if (this._board instanceof UltimateBoard) {
+            this._board.ultimateAddClickHandlers();
+            this._board.miniBoardResult.fill('');
+        } else {
+            this._board.addClickHandlers();
+        }
     }
 
     // スコアをリセット
@@ -54,27 +87,16 @@ export class Game {
         };
     }
 
-    // ゲームをリスタート
-    public resetGame(): void {
-        this._board.clearBoard();
-        this.resetScores();
-        this.initializeGame();
-    }
-
     // プレイヤー交代
     public switchPlayer(): void {
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
-
         if (this._currentPlayer.isCPU) {
             this.playCPUTurn();
+        } else {
         }
     }
 
-    public get isCPUThinking(): boolean {
-        return this._isCPUThinking;
-    }
-
-    private playCPUTurn(): void {
+    public playCPUTurn(): void {
         this._isCPUThinking = true;
         setTimeout(() => {
             const bestMove = this.findBestMove();
@@ -156,26 +178,45 @@ export class Game {
     }
 
     // ゲーム結果の表示、スコアの更新
-    public handleEndGame(draw: boolean): void {
+    public handleEndGame(draw: boolean, isUltimateBoard: boolean = false): void {
         if (draw) {
             this.winningMessageTextElement.innerText = 'Draw!';
         } else {
-            this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
             this._scores[this._currentPlayer.mark]++;
-            this.updateScores();
+            this.updateScores(isUltimateBoard);
+            if (!isUltimateBoard) {
+                this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
+            }
         }
     }
 
     // スコアボードの更新
-    public updateScores(): void {
-        document.getElementById('scoreboard__X__score')!.innerText = `${this._scores['X']}`;
-        document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
+    public updateScores(isUltimateBoard: boolean = false): void {
+        if (isUltimateBoard) {
+            document.getElementById('ultimate-scoreboard__X-score')!.innerText = `${this._scores['X']}`;
+            document.getElementById('ultimate-scoreboard__O-score')!.innerText = `${this._scores['O']}`;
+        } else {
+            document.getElementById('scoreboard__X__score')!.innerText = `${this._scores['X']}`;
+            document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
+        }
     }
 
-    // スコアボードの名前を更新
-    private updateScoreBoardNames(): void {
-        document.getElementById('scoreboard__X__name')!.innerText = this._players['X'].name;
-        document.getElementById('scoreboard__O__name')!.innerText = this._players['O'].name;
+    // スコアボードの名前を初期化
+    private updateScoreBoardNames(isUltimateBoard: boolean = false): void {
+        if (isUltimateBoard) {
+            document.getElementById('ultimate-scoreboard__X-name')!.innerText = this._players['X'].name;
+            document.getElementById('ultimate-scoreboard__O-name')!.innerText = this._players['O'].name;
+        } else {
+            document.getElementById('scoreboard__X__name')!.innerText = this._players['X'].name;
+            document.getElementById('scoreboard__O__name')!.innerText = this._players['O'].name;
+        }
+    }
+
+    // 名前入力画面から名前だけ変更
+    public updatePlayerNames(playerXName: string, playerOName: string): void {
+        this._players['X'].name = playerXName;
+        this._players['O'].name = playerOName;
+        this.updateScoreBoardNames(this.ultimateMode);
     }
 
     // カプセル化、勝ち判定
@@ -206,7 +247,15 @@ export class Game {
     }
 
     get winningMessageTextElement() {
-        return this._winningMessageTextElement
+        if (this.board instanceof UltimateBoard) {
+            return this._ultimateWinningMessageTextElement;
+        } else {
+            return this._winningMessageTextElement;
+        }
+    }
+
+    get isCPUThinking(): boolean {
+        return this._isCPUThinking;
     }
 
     // セッター
@@ -224,7 +273,7 @@ export class Game {
             players: this._players,
             currentPlayer: this._currentPlayer,
             scores: this._scores,
-            board: this._board.getBoardState()
+            board: this._board instanceof UltimateBoard ? this._board.getUltimateBoardState() : this._board.getBoardState(),
         }
         localStorage.setItem('ticTacToeState', JSON.stringify(gameState));
     }
@@ -237,7 +286,16 @@ export class Game {
             this._players = state.players;
             this._currentPlayer = state.currentPlayer
             this._scores = state.scores;
-            this._board.setBoardState(state.board);
+
+            if (this.ultimateMode) {
+                const ultimateBoardContainer = document.querySelector('.ultimate__board__container') as HTMLElement;
+                this._board = new UltimateBoard(this._board.size, ultimateBoardContainer, this);
+                (this._board as UltimateBoard).setUltimateBoardState(state.board);
+            } else {
+                const boardContainer = document.querySelector('.board__container') as HTMLElement;
+                this._board = new Board(this._board.size, boardContainer, this);
+                this._board.setBoardState(state.board);
+            }
         }
     }
 }
