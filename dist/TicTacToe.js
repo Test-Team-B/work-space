@@ -1,6 +1,4 @@
 import { Game } from './Game.js';
-import { Board } from './Board.js';
-import { UltimateBoard } from './ultimateBoard.js';
 const boardSize = 3;
 // HTML の初期文書が完全に読み込まれた時点で初期化
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,7 +27,6 @@ class TicTacToe {
             const state = JSON.parse(saveState);
             console.log(state);
         }
-        // this.loadPlayBoard();
         this.startGame();
     }
     // 各ボタンにクリックイベントを付与する
@@ -46,25 +43,27 @@ class TicTacToe {
     }
     // 名前入力フォームでスタートボタンを押したらフォームが消えゲームがスタートする
     submitName(e) {
-        e.preventDefault(); // フォームの送信を防ぐ
+        e.preventDefault();
         this.createGame();
+        this.gameModeChange();
+        this.updateCPUCheck();
         if (this.game) {
             const playerXName = this.game.players.X.name;
             const playerOName = this.game.players.O.name;
             this.game.updatePlayerNames(playerXName, playerOName);
-            this.gameModeChange();
-            this.updateCPUCheck();
-            this.game.saveGameStorage();
         }
         this.toggleElementVisibility(this.nameBoard, false);
     }
     // ゲームインスタンスの作成
     createGame() {
-        var _a, _b;
+        var _a, _b, _c;
+        console.log("クリエイトゲーム");
+        console.log((_a = this.game) === null || _a === void 0 ? void 0 : _a.board);
         const isCPUOpponent = this.cpuCheckBox.checked ? this.cpuLevelSelect() : false;
         const isUltimate = this.ultimateCheckBox.checked;
-        const playerXName = ((_a = document.getElementById('name-setting__form__player1')) === null || _a === void 0 ? void 0 : _a.value) || 'Player X';
-        const playerOName = ((_b = document.getElementById('name-setting__form__player2')) === null || _b === void 0 ? void 0 : _b.value) || 'Player O';
+        console.log(this.ultimateCheckBox.checked);
+        const playerXName = ((_b = document.getElementById('name-setting__form__player1')) === null || _b === void 0 ? void 0 : _b.value) || 'Player X';
+        const playerOName = ((_c = document.getElementById('name-setting__form__player2')) === null || _c === void 0 ? void 0 : _c.value) || 'Player O';
         return new Game(playerXName, playerOName, boardSize, isCPUOpponent, isUltimate);
     }
     // ゲームボードの種類の選択
@@ -75,7 +74,6 @@ class TicTacToe {
         else {
             this.displayChange(this.mainContainer, this.ultimateContainer);
         }
-        this.startGame();
     }
     // 画面を消したり表示させたり
     displayChange(showElement, hideElement) {
@@ -122,52 +120,22 @@ class TicTacToe {
         }
         return isCPUOpponent;
     }
-    // localStorageに保存された名前を読み取る
-    loadPlayBoard() {
-        console.log("ローカルプレイヤーネーム");
-        const saveState = localStorage.getItem('ticTacToeState');
-        if (saveState) {
-            const state = JSON.parse(saveState);
-            console.log(state.isCPU);
-            document.getElementById('name-setting__form__player1').value = state.players.X.name;
-            document.getElementById('name-setting__form__player2').value = state.players.O.name;
-            this.cpuCheckBox.checked = state.players.O.isCPU;
-            console.log(state.isUltimate);
-            this.ultimateNameSettingCheckBox.checked = state.isUltimate;
-            this.handleUltimateCheckBox(this.ultimateNameSettingCheckBox);
-            if (state.isUltimate) {
-                console.log("アルティメット・ローカルストレージ");
-                const ultimateBoardContainer = document.querySelector('.ultimate__board__container');
-                this.board = new UltimateBoard(boardSize, ultimateBoardContainer, this.game);
-                this.board.setUltimateBoardState(state.board);
-            }
-            else {
-                console.log("ノーマル・ローカルストレージ");
-                const boardContainer = document.querySelector('.board__container');
-                this.board = new Board(boardSize, boardContainer, this.game);
-                this.board.setBoardState(state.board);
-            }
-        }
-    }
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     startGame() {
         console.log("スタートゲーム");
         this.game = this.createGame();
         this.game.initializeGame();
-        this.game.saveGameStorage();
     }
     // ゲームをコンティニューする、カプセル化
     _continueGame() {
-        var _a, _b;
+        var _a;
         (_a = this.game) === null || _a === void 0 ? void 0 : _a.continueGame();
-        (_b = this.game) === null || _b === void 0 ? void 0 : _b.saveGameStorage();
     }
     // ゲームをlocalStorageを含めリセットする、カプセル化
     _resetGame() {
-        var _a, _b;
+        var _a;
         console.log("リセット・ローカルストレージ");
         localStorage.removeItem('ticTacToeState');
         (_a = this.game) === null || _a === void 0 ? void 0 : _a.resetGame();
-        (_b = this.game) === null || _b === void 0 ? void 0 : _b.saveGameStorage();
     }
 }

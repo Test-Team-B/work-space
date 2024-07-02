@@ -13,6 +13,7 @@ export class Board {
         this._game = game;
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement as HTMLElement);
+        this.addClickHandlers();
     }
 
     // 勝利条件を動的に実装
@@ -115,7 +116,8 @@ export class Board {
             cell.element.addEventListener('click', clickHandler);
             cell.clickHandler = clickHandler;
         })
-        this.game.saveGameStorage();
+        // this.game?.saveGameStorage();
+        console.log(this._cells)
     }
 
     // クリックイベントの内容
@@ -131,7 +133,7 @@ export class Board {
                 // @audit fixed
                 this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
             }
-            this.game.saveGameStorage();
+            // this.game.saveGameStorage();
         }
     }
 
@@ -157,6 +159,7 @@ export class Board {
     // ボードの状態の復元
     public setBoardState(state: { mark: string }[]): void {
         console.log("セット・ボードステイト")
+        console.log(state)
         state.forEach((cellState, index) => {
             if (cellState.mark) {
                 this._cells[index].mark = cellState.mark;
@@ -165,6 +168,7 @@ export class Board {
             }
         });
         this.addClickHandlers();
+        console.log(this._cells)
     }
 
         // ゲッター

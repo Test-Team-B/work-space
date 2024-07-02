@@ -4,6 +4,7 @@ export class Game {
     constructor(playerXName, playerOName, boardSize, isCPUOpponent = false, ultimateBoard = false) {
         this._isCPUThinking = false;
         console.log("Gameコンストラクタ");
+        console.log(ultimateBoard);
         this._players = {
             'X': { name: playerXName, mark: 'X', isCPU: false },
             'O': { name: playerOName, mark: 'O', isCPU: isCPUOpponent }
@@ -22,12 +23,17 @@ export class Game {
             ? new UltimateBoard(boardSize, ultimateBoardContainer, this)
             : new Board(boardSize, boardContainer, this);
         this.updateScoreBoardNames(ultimateBoard);
+        console.log(this._board);
     }
     // ゲームを初期化
     initializeGame() {
         console.log("ゲームクラス・イニシャライズゲーム");
         // @audit
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
+        console.log(this._board);
+        // this.loadGameStorage();
+        console.log("ロード後");
+        console.log(this._board);
         this.handleAddClick();
     }
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
@@ -60,7 +66,8 @@ export class Game {
     }
     // クリックイベント付与の場合分け
     handleAddClick() {
-        if (this._board instanceof UltimateBoard) {
+        if (this.ultimateMode) {
+            console.log("アルテメットハンドラアドクリック");
             this._board.ultimateAddClickHandlers();
             this._board.miniBoardResult.fill('');
         }
@@ -118,7 +125,7 @@ export class Game {
                 this._isCPUThinking = false;
             }
         }, 1000);
-        this.saveGameStorage();
+        // this.saveGameStorage();
     }
     // ゲーム結果の表示、スコアの更新
     handleEndGame(draw, isUltimateBoard = false) {
@@ -160,48 +167,6 @@ export class Game {
         this._players['X'].name = playerXName;
         this._players['O'].name = playerOName;
         this.updateScoreBoardNames(this.ultimateMode);
-    }
-    // localStorageに保存
-    saveGameStorage() {
-        console.log("セーブ・ローカルストレージ");
-        const gameState = {
-            players: this._players,
-            currentPlayer: this._currentPlayer,
-            isCPU: this._players.O.isCPU,
-            isUltimate: this.ultimateMode,
-            scores: this._scores,
-            board: this._board instanceof UltimateBoard ? this._board.getUltimateBoardState() : this._board.getBoardState(),
-        };
-        console.log("セーブしました");
-        console.log(gameState.board);
-        localStorage.setItem('ticTacToeState', JSON.stringify(gameState));
-    }
-    // localStorageから取得
-    loadGameStorage() {
-        console.log("ロード・ローカルストレージ!!!!!!!!!!");
-        const gameState = localStorage.getItem('ticTacToeState');
-        if (gameState) {
-            const state = JSON.parse(gameState);
-            this._players = state.players;
-            this._currentPlayer = state.currentPlayer;
-            this._players.O.isCPU = state.isCPU;
-            this.ultimateMode = state.isUltimate;
-            this._scores = state.scores;
-            console.log(state.board);
-            if (this.ultimateMode) {
-                console.log("アルティメット・ローカルストレージ");
-                const ultimateBoardContainer = document.querySelector('.ultimate__board__container');
-                this._board = new UltimateBoard(this._board.size, ultimateBoardContainer, this);
-                this._board.setUltimateBoardState(state.board);
-            }
-            else {
-                console.log("ノーマル・ローカルストレージ");
-                const boardContainer = document.querySelector('.board__container');
-                this._board = new Board(this._board.size, boardContainer, this);
-                this._board.setBoardState(state.board);
-            }
-            console.log(state.board);
-        }
     }
     // ゲッター
     get players() {

@@ -7,6 +7,7 @@ export class UltimateBoard extends Board {
         this.miniBoardResult = Array(size * size).fill('');
         this.parentElement = document.querySelector('.ultimate__board__container');
         this.createUltimateBoards(size, parentElement, game);
+        this.ultimateAddClickHandlers();
     }
     // ultimateBoard の作成、miniBoardをsize個生成し ultimateBoardの grid に当てはめる
     createUltimateBoards(size, parentElement, game) {
@@ -42,6 +43,7 @@ export class UltimateBoard extends Board {
         return this.miniBoardResult.every(mark => mark !== '');
     }
     ultimateAddClickHandlers() {
+        console.log("アルティメット・アドクリックハンドラ");
         this.miniBoards.forEach((miniBoard, boardIndex) => {
             miniBoard.cells.forEach((cell, cellIndex) => {
                 // セルの要素からクリックイベントリスナーを削除
@@ -93,8 +95,8 @@ export class UltimateBoard extends Board {
                 this.game.switchPlayer();
                 this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
             }
-            // this.game.saveGameStorage();
         }
+        // this.game.saveGameStorage();
     }
     // アルティメットボードだった場合の旗を立てる
     ultimateHandleEndGame(draw) {
