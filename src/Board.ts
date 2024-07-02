@@ -86,6 +86,7 @@ export class Board {
             });
         });
     }
+
     // 全てのセルが空ではない(every)
     public checkDraw(): boolean {
         return this._cells.every(_cell => _cell.mark !== '');

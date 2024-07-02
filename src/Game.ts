@@ -141,11 +141,15 @@ export class Game {
     }
 
     private minimax(depth: number, alpha: number, beta: number, isMaximizing: boolean): number {
-        if (this.checkWin()) {
-            return isMaximizing ? 10 - depth : depth - 10;
-        } else if (this.checkDraw() || depth === this._board.size ** 2) {
+        if (this._board.checkWin()) {
+            const winner = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
+            console.log(`checkWin: true, Winner: ${winner}`);
+            return isMaximizing ? depth - 10 : 10 - depth; // スコアの計算も修正
+        } else if (this._board.checkDraw() || depth === this._board.size ** 2) {
+            console.log(`checkDraw: ${this._board.checkDraw()}, MaxDepth: ${depth === this._board.size ** 2}`);
             return 0;
         }
+
 
         const currentMark = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
         const emptyCells = this._board.getEmptyCells();
@@ -159,12 +163,12 @@ export class Game {
                 maxScore = Math.max(maxScore, score);
                 alpha = Math.max(alpha, maxScore);
 
-                console.log("isMaximizing: " + isMaximizing);
-                console.log(`Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`);
+                // console.log("isMaximizing: " + isMaximizing);
+                // console.log(`Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`);
 
                 if (beta <= alpha) {
 
-                    console.log(`Pruning at depth ${depth}`);
+                    // console.log(`Pruning at depth ${depth}`);
 
                     break
                 };
@@ -180,12 +184,12 @@ export class Game {
                 beta = Math.min(beta, minScore);
 
 
-                console.log("isMaximizing: " + isMaximizing);
-                console.log(`Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`);
+                // console.log("isMaximizing: " + isMaximizing);
+                // console.log(`Score: ${score}, Alpha: ${alpha}, Beta: ${beta}`);
 
                 if (beta <= alpha) {
 
-                    console.log(`Pruning at depth ${depth}`);
+                    // console.log(`Pruning at depth ${depth}`);
 
                     break
                 };
