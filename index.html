@@ -159,11 +159,11 @@
           </div>
         </div>
         <form class="d-flex flex-column align-items-center">
-          <label class="d-flex" for="name-setting__form__player1">Player 1</label>
+          <label class="d-none" for="name-setting__form__player1">Player 1</label>
           <input id="name-setting__form__player1" type="text" name="player1" placeholder="player 1 ..." maxlength="7"
             required />
 
-          <label class="d-flex" for="name-setting__form__player2">Player2</label>
+          <label class="d-none" for="name-setting__form__player2">Player2</label>
           <input id="name-setting__form__player2" type="text" name="player2" placeholder="player 2 ..." maxlength="7"
             required />
 
@@ -206,7 +206,7 @@
         <div class="options__audio-container">
           <h4 class="border-bottom">Audio</h4>
           <!-- 自由に再生：contruls 自動再生：autoplay ミュート：muted ループ：loop -->
-          <audio controls src="./test-audio.mp3" id="options__audio">
+          <audio controls src="./dist/test-audio.mp3" id="options__audio">
         </div>
 
         <!-- レベル選択 -->

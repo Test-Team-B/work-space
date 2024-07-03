@@ -1,18 +1,19 @@
 import { Game } from './Game.js';
 
 export class Board {
+    private _game: Game;
     private _cells: { mark: string, element: HTMLElement, clickHandler?: (event: MouseEvent) => void }[];
     private _size: number;
-    private _game: Game;
 
     protected winningCombinations: number[][];
 
     constructor(size: number, parentElement: HTMLElement | null = document.querySelector('.board__container'), game: Game) {
-        this._size = size;
-        this._cells = [];
         this._game = game;
+        this._cells = [];
+        this._size = size;
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement as HTMLElement);
+        this.addClickHandlers();
     }
 
     // 勝利条件を動的に実装
@@ -100,6 +101,19 @@ export class Board {
         return this._cells.every(_cell => _cell.mark !== '');
     }
 
+    // ボードをクリアする
+    public clearBoard(): void {
+        this._cells.forEach(cell => {
+            cell.mark = '';
+            cell.element.classList.remove('X', 'O');
+            cell.element.textContent = '';
+            if (cell.clickHandler) {
+                cell.element.removeEventListener('click', cell.clickHandler);
+            }
+        });
+        this.addClickHandlers();
+    }
+
     // クリックイベントの付与
     public addClickHandlers(): void {
         this._cells.forEach((cell, index) => {
@@ -129,34 +143,8 @@ export class Board {
                 // @audit fixed
                 this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
             }
-            this.game.saveGameStorage();
         }
-    }
-
-    // ボードをクリアする
-    public clearBoard(): void {
-        this._cells.forEach(cell => {
-            cell.mark = '';
-            cell.element.classList.remove('X', 'O');
-            cell.element.textContent = '';
-            if (cell.clickHandler) {
-                cell.element.removeEventListener('click', cell.clickHandler);
-            }
-        });
-        this.addClickHandlers();
-    }
-
-    // ゲッター
-    get cells() {
-        return this._cells;
-    }
-
-    get size() {
-        return this._size;
-    }
-
-    get game() {
-        return this._game;
+        this.game.saveGameStorage();
     }
 
     // ボードの状態の取得
@@ -184,21 +172,26 @@ export class Board {
     }
 
     // 新しいメソッド: 特定のセルにマークを置く（一時的な操作用）
-    public placeMarkTemp(index: number, mark: string): void {
-        this._cells[index].mark = mark;
-    }
+    // public placeMarkTemp(index: number, mark: string): void {
+    //     this._cells[index].mark = mark;
+    // }
 
     // 新しいメソッド: 特定のセルのマークを削除（一時的な操作用）
-    public removeMarkTemp(index: number): void {
-        this._cells[index].mark = '';
-    }
+    // public removeMarkTemp(index: number): void {
+    //     this._cells[index].mark = '';
+    // }
 
-    public getCellByIndex(index: number): { mark: string, element: HTMLElement } | undefined {
-        return this._cells[index];
-    }
+      // ゲッター
+      get cells() {
+          return this._cells;
+      }
 
-    public isCellEmpty(index: number): boolean {
-        const cell = this.getCellByIndex(index);
-        return cell ? cell.mark === '' : false;
-    }
+      get size() {
+          return this._size;
+      }
+
+      get game() {
+          return this._game;
+      }
+    
 }

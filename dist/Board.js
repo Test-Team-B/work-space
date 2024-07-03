@@ -1,8 +1,8 @@
 export class Board {
     constructor(size, parentElement = document.querySelector('.board__container'), game) {
-        this._size = size;
+        this._game = game;
         this._cells = [];
-        this.game = game;
+        this._size = size;
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement);
         this.addClickHandlers();
@@ -71,6 +71,18 @@ export class Board {
     checkDraw() {
         return this._cells.every(_cell => _cell.mark !== '');
     }
+    // ボードをクリアする
+    clearBoard() {
+        this._cells.forEach(cell => {
+            cell.mark = '';
+            cell.element.classList.remove('X', 'O');
+            cell.element.textContent = '';
+            if (cell.clickHandler) {
+                cell.element.removeEventListener('click', cell.clickHandler);
+            }
+        });
+        this.addClickHandlers();
+    }
     // クリックイベントの付与
     addClickHandlers() {
         this._cells.forEach((cell, index) => {
@@ -99,24 +111,23 @@ export class Board {
             cell.clickHandler = clickHandler;
         });
     }
-    // ボードをクリアする
-    clearBoard() {
-        this._cells.forEach(cell => {
-            cell.mark = '';
-            cell.element.classList.remove('X', 'O');
-            cell.element.textContent = '';
-            if (cell.clickHandler) {
-                cell.element.removeEventListener('click', cell.clickHandler);
+    // クリックイベントの内容
+    handleCellClick(index) {
+        if (!this._cells[index].mark && !this.checkWin() && !this.checkDraw()) {
+            this.markCell(index, this.game.currentPlayer.mark);
+            if (this.checkWin()) {
+                this.game.handleEndGame(false);
             }
-        });
-        this.addClickHandlers();
-    }
-    // ゲッター
-    get cells() {
-        return this._cells;
-    }
-    get size() {
-        return this._size;
+            else if (this.checkDraw()) {
+                this.game.handleEndGame(true);
+            }
+            else {
+                this.game.switchPlayer();
+                // @audit fixed
+                this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
+            }
+        }
+        this.game.saveGameStorage();
     }
     // ボードの状態の取得
     getBoardState() {
@@ -152,5 +163,29 @@ export class Board {
     isCellEmpty(index) {
         const cell = this.getCellByIndex(index);
         return cell ? cell.mark === '' : false;
+    }
+    // 新しいメソッド: 空いているセルの取得
+    getEmptyCells() {
+        return this._cells
+            .map((cell, index) => cell.mark === '' ? index : -1)
+            .filter(index => index !== -1);
+    }
+    // 新しいメソッド: 特定のセルにマークを置く（一時的な操作用）
+    // public placeMarkTemp(index: number, mark: string): void {
+    //     this._cells[index].mark = mark;
+    // }
+    // 新しいメソッド: 特定のセルのマークを削除（一時的な操作用）
+    // public removeMarkTemp(index: number): void {
+    //     this._cells[index].mark = '';
+    // }
+    // ゲッター
+    get cells() {
+        return this._cells;
+    }
+    get size() {
+        return this._size;
+    }
+    get game() {
+        return this._game;
     }
 }
