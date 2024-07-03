@@ -1,4 +1,5 @@
 import { Board } from "./Board.js";
+import { UltimateBoard } from "./ultimateBoard.js";
 export class Game {
     constructor(playerXName, playerOName, boardSize, isCPUMode = null, ultimateBoard = false) {
         this._isCPUThinking = false;
@@ -117,14 +118,25 @@ export class Game {
     playEasyCPU() {
         this._isCPUThinking = true;
         setTimeout(() => {
-            const bestMove = this.findBestMove();
-            if (bestMove !== -1) {
-                this._board.markCell(bestMove, this._currentPlayer.mark);
-                if (this.checkWin()) {
-                    this.handleEndGame(false);
-                }
-                else if (this.checkDraw()) {
-                    this.handleEndGame(true);
+            let emptyCells = [];
+            if (this._board instanceof UltimateBoard) {
+                const boardIndex = this._board.currentBoardIndex !== null ? this._board.currentBoardIndex : Math.floor(Math.random() * this._board.miniBoards.length);
+                this._board.miniBoards[boardIndex].cells.forEach((cell, cellIndex) => {
+                    if (!cell.mark) {
+                        emptyCells.push({ boardIndex, cellIndex, cell });
+                    }
+                });
+            }
+            else {
+                emptyCells = this._board.cells
+                    .map((cell, index) => ({ boardIndex: 0, cellIndex: index, cell }))
+                    .filter(({ cell }) => !cell.mark);
+            }
+            if (emptyCells.length > 0) {
+                const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                const { boardIndex, cellIndex } = randomCell;
+                if (this._board instanceof UltimateBoard) {
+                    this._board.ultimateHandleCellClick(cellIndex, boardIndex);
                 }
                 else {
                     this.switchPlayer();
@@ -172,7 +184,6 @@ export class Game {
         return bestMove;
     }
     minimax(depth, alpha, beta, isMaximizing) {
-        console.log("ミニマックス");
         if (this._board.checkWin()) {
             const winner = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
             return isMaximizing ? depth - (this._board.size + 1) ** 2 : (this._board.size ** 2 + 1) - depth;

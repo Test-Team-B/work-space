@@ -43,27 +43,35 @@ export class Board {
     // セルを作りクラスとインデックスを付与、マークとエレメントを保持する
     createCells(parentElement) {
         parentElement.style.gridTemplateColumns = `repeat(${this._size}, 1fr)`;
-        parentElement.innerHTML = ""; // セルのクリア
+        parentElement.style.gridTemplateRows = `repeat(${this._size}, 1fr)`;
+        parentElement.innerHTML = "";
         for (let i = 0; i < this._size * this._size; i++) {
             const cellElement = document.createElement('div');
             cellElement.classList.add('board__container__cell');
-            cellElement.dataset.ceeIndex = i.toString();
             parentElement.appendChild(cellElement);
             this._cells.push({ mark: '', element: cellElement });
         }
     }
     // セルにマークをつける
     markCell(cellIndex, mark) {
+        const optionsClickSound = document.getElementById('click-sound');
+        const mouseclick = new Audio();
+        mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
+        mouseclick.play();
+        optionsClickSound.addEventListener('click', (e) => {
+            mouseclick.pause();
+        });
         this._cells[cellIndex].mark = mark;
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;
     }
     // 勝者を判定する
-    // 勝者条件のどれかの配列(some)、マークが存在し全て同じ(every)
     checkWin() {
         return this.winningCombinations.some(combination => {
             return combination.every(index => {
-                return this._cells[index].mark === this._cells[combination[0]].mark && this._cells[index].mark !== '';
+                const cellMark = this.cells[index].mark;
+                const firstMark = this.cells[combination[0]].mark;
+                return cellMark === firstMark && cellMark !== '';
             });
         });
     }
@@ -91,20 +99,7 @@ export class Board {
                 cell.element.removeEventListener('click', cell.clickHandler);
             }
             const clickHandler = (event) => {
-                if (!cell.mark && !this.game.checkWin() && !this.game.checkDraw() && !this.game.isCPUThinking) {
-                    this.game.board.markCell(index, this.game.currentPlayer.mark);
-                    if (this.game.checkWin()) {
-                        this.game.handleEndGame(false);
-                    }
-                    else if (this.game.checkDraw()) {
-                        this.game.handleEndGame(true);
-                    }
-                    else {
-                        this.game.switchPlayer();
-                        this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
-                    }
-                    this.game.saveGameStorage();
-                }
+                this.handleCellClick(index);
             };
             // イベントリスナーを再度追加
             cell.element.addEventListener('click', clickHandler);
@@ -142,27 +137,7 @@ export class Board {
                 this._cells[index].element.textContent = cellState.mark;
             }
         });
-    }
-    // 新しいメソッド: 空いているセルの取得
-    getEmptyCells() {
-        return this._cells
-            .map((cell, index) => cell.mark === '' ? index : -1)
-            .filter(index => index !== -1);
-    }
-    // 新しいメソッド: 特定のセルにマークを置く（一時的な操作用）
-    placeMarkTemp(index, mark) {
-        this._cells[index].mark = mark;
-    }
-    // 新しいメソッド: 特定のセルのマークを削除（一時的な操作用）
-    removeMarkTemp(index) {
-        this._cells[index].mark = '';
-    }
-    getCellByIndex(index) {
-        return this._cells[index];
-    }
-    isCellEmpty(index) {
-        const cell = this.getCellByIndex(index);
-        return cell ? cell.mark === '' : false;
+        this.addClickHandlers();
     }
     // 新しいメソッド: 空いているセルの取得
     getEmptyCells() {
