@@ -161,10 +161,12 @@ export class Game {
                 if (this._board instanceof UltimateBoard) {
                     this._board.ultimateHandleCellClick(cellIndex, boardIndex);
                 } else {
-                    this._board.handleCellClick(cellIndex);
+
+                    this.switchPlayer();
                 }
-                this._isCPUThinking = false;
+                this.saveGameStorage();
             }
+            this._isCPUThinking = false;
         }, 1000);
     }
 
@@ -198,7 +200,6 @@ export class Game {
             this.board.cells[move].mark = this._currentPlayer.mark;
             const score = this.minimax(0, -Infinity, Infinity, false);
             this.board.cells[move].mark = '';
-
             if (score > bestScore) {
                 bestScore = score;
                 bestMove = move;
@@ -209,14 +210,12 @@ export class Game {
     }
 
     private minimax(depth: number, alpha: number, beta: number, isMaximizing: boolean): number {
-        console.log("ミニマックス")
         if (this._board.checkWin()) {
             const winner = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
             return isMaximizing ? depth - (this._board.size + 1) ** 2 : (this._board.size ** 2 + 1) - depth;
         } else if (this._board.checkDraw() || depth === this._board.size ** 2) {
             return 0;
         }
-
         const currentMark = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
         const emptyCells = this._board.getEmptyCells();
 
@@ -324,7 +323,7 @@ export class Game {
         ? new UltimateBoard(boardSize, ultimateBoardContainer, this)
         : new Board(boardSize, boardContainer, this);
     }
-    
+
     // ゲッター
     get players() {
         return this._players;
@@ -333,19 +332,19 @@ export class Game {
     get currentPlayer() {
         return this._currentPlayer;
     }
-    
+
     get board() {
         return this._board;
     }
-    
+
     get scores() {
         return this._scores;
     }
-    
+
     get winningMessageTextElement() {
         return this.ultimateMode ? this._ultimateWinningMessageTextElement : this._winningMessageTextElement;
     }
-    
+
     get isCPUThinking(): boolean {
         return this._isCPUThinking;
     }

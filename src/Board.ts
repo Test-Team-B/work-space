@@ -96,7 +96,7 @@ export class Board {
         });
     }
 
-    // 全てのセルが空ではない
+    // 全てのセルが空ではない(every)
     public checkDraw(): boolean {
         return this._cells.every(_cell => _cell.mark !== '');
     }
@@ -181,17 +181,17 @@ export class Board {
     //     this._cells[index].mark = '';
     // }
 
-        // ゲッター
-        get cells() {
-            return this._cells;
-        }
-    
-        get size() {
-            return this._size;
-        }
-    
-        get game() {
-            return this._game;
-        }
+      // ゲッター
+      get cells() {
+          return this._cells;
+      }
+
+      get size() {
+          return this._size;
+      }
+
+      get game() {
+          return this._game;
+      }
     
 }
