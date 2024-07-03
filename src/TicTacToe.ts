@@ -62,7 +62,9 @@ class TicTacToe {
         if (normalState) {
             let state = JSON.parse(normalState);
             (document.getElementById('name-setting__form__player1') as HTMLInputElement).value = state.players.X.name;
-            (document.getElementById('name-setting__form__player2') as HTMLInputElement).value = state.players.O.name;
+            if (state.players.O.name !== "CPU") {
+                (document.getElementById('name-setting__form__player2') as HTMLInputElement).value = state.players.O.name;
+            }
         }
     }
 
@@ -70,7 +72,6 @@ class TicTacToe {
     private submitName(e: Event): void {
         e.preventDefault();
         this.gameModeChange();
-        this.updateCPUCheck();
         this.toggleElementVisibility(this.nameBoard, false);
         this.startGame();
     }
@@ -101,11 +102,11 @@ class TicTacToe {
     
     // ゲームインスタンスの作成
     public createGame(): Game {
-        const isCPUOpponent = this.cpuCheckBox.checked ? this.cpuLevelSelect() : false;
+        const isCPUMode = this.cpuLevelSelect();
         const isUltimate = this.ultimateCheckBox.checked;
         const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement).value || 'Player X';
         const playerOName = (document.getElementById('name-setting__form__player2') as HTMLInputElement).value || 'Player O';
-        return new Game(playerXName, playerOName, boardSize, isCPUOpponent, isUltimate);
+        return new Game(playerXName, playerOName, boardSize, isCPUMode, isUltimate);
     }
 
     // ゲームボード画面の選択
@@ -141,29 +142,33 @@ class TicTacToe {
 
     // CPUモードにしたらPlayer2の名前入力フォームにCPUが入る
     private updateCPUCheck(): void {
-        this.playerONameFormElement.value = this.cpuCheckBox.checked ? 'CPU' : (document.getElementById('name-setting__form__player2') as HTMLInputElement).value;
+        this.playerONameFormElement.value = this.cpuCheckBox.checked ? 'CPU' : '';
     }
 
     // CPUのレベルの選択
-    private cpuLevelSelect(): boolean {
-        const selectText = this.levelSelect.options[this.levelSelect.selectedIndex].text
-        let isCPUOpponent = false;
-
-        switch (selectText) {
-            case 'EASY':
-                isCPUOpponent = true;
-                break;
-
-            case 'MEDIUM':
-                break;
-
-            case 'HARD':
-                break;
-
-            default:
-                break;
+    private cpuLevelSelect(): string | null {
+        let isCPUMode = null;
+        if (this.cpuCheckBox.checked) {
+            const selectText = this.levelSelect.options[this.levelSelect.selectedIndex].text
+    
+            switch (selectText) {
+                case 'EASY':
+                    isCPUMode = "easy";
+                    break;
+    
+                case 'MEDIUM':
+                    isCPUMode = "medium";
+                    break;
+    
+                case 'HARD':
+                    isCPUMode = "hard";
+                    break;
+    
+                default:
+                    break;
+            }
         }
-        return isCPUOpponent;
+        return isCPUMode;
     }
 }
 

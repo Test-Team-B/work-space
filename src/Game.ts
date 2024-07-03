@@ -2,8 +2,8 @@ import { Board } from "./Board.js";
 import { UltimateBoard } from "./ultimateBoard.js";
 
 export class Game {
-    private _players: { [key: string]: { name: string, mark: string, isCPU: boolean } };
-    private _currentPlayer: { name: string, mark: string, isCPU: boolean };
+    private _players: { [key: string]: { name: string, mark: string, isCPU: string | null } };
+    private _currentPlayer: { name: string, mark: string, isCPU: string | null };
     private _isCPUThinking: boolean = false;
     private _board: Board | UltimateBoard;
     private _scores: { [key: string]: number };
@@ -11,10 +11,10 @@ export class Game {
     private _ultimateWinningMessageTextElement: HTMLElement;
     private ultimateMode: boolean;
 
-    constructor(playerXName: string, playerOName: string, boardSize: number, isCPUOpponent: boolean = false, ultimateBoard: boolean = false) {
+    constructor(playerXName: string, playerOName: string, boardSize: number, isCPUMode: string | null = null, ultimateBoard: boolean = false) {
         this._players = {
-            'X': { name: playerXName, mark: 'X', isCPU: false },
-            'O': { name: playerOName, mark: 'O', isCPU: isCPUOpponent }
+            'X': { name: playerXName, mark: 'X', isCPU: null },
+            'O': { name: playerOName, mark: 'O', isCPU: isCPUMode }
         };
         this._scores = {
             'X': 0,
@@ -117,6 +117,26 @@ export class Game {
     }
 
     public playCPUTurn(): void {
+        switch (this._currentPlayer.isCPU) {
+            case 'easy':
+                this.playEasyCPU();
+                break;
+
+            case 'medium':
+                
+                break;
+
+            case 'hard':
+                this.playHardCPU();
+                break;
+
+            default:
+                this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
+                break;
+        }
+    }
+
+    public playEasyCPU(): void {
         this._isCPUThinking = true;
         setTimeout(() => {
             let emptyCells: { boardIndex: number, cellIndex: number, cell: { mark: string, element: HTMLElement }}[] = [];
@@ -146,6 +166,87 @@ export class Game {
                 this._isCPUThinking = false;
             }
         }, 1000);
+    }
+
+    public playHardCPU(): void {
+        console.log("ハードモード")
+        this._isCPUThinking = true;
+        setTimeout(() => {
+            const bestMove = this.findBestMove();
+            if (bestMove !== -1) {
+                this._board.markCell(bestMove, this._currentPlayer.mark);
+                if (this.board.checkWin()) {
+                    this.handleEndGame(false);
+                } else if (this.board.checkDraw()) {
+                    this.handleEndGame(true);
+                } else {
+                    this.switchPlayer();
+                }
+                this.saveGameStorage();
+            }
+            this._isCPUThinking = false;
+        }, 1000);
+    }
+
+    private findBestMove(): number {
+        console.log("ファインドベストブーム")
+        let bestScore = -Infinity;
+        let bestMove = -1;
+        const emptyCells = this._board.getEmptyCells();
+
+        for (const move of emptyCells) {
+            this.board.cells[move].mark = this._currentPlayer.mark;
+            const score = this.minimax(0, -Infinity, Infinity, false);
+            this.board.cells[move].mark = '';
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+        }
+
+        return bestMove;
+    }
+
+    private minimax(depth: number, alpha: number, beta: number, isMaximizing: boolean): number {
+        console.log("ミニマックス")
+        if (this._board.checkWin()) {
+            const winner = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
+            return isMaximizing ? depth - (this._board.size + 1) ** 2 : (this._board.size ** 2 + 1) - depth;
+        } else if (this._board.checkDraw() || depth === this._board.size ** 2) {
+            return 0;
+        }
+
+        const currentMark = isMaximizing ? this._currentPlayer.mark : (this._currentPlayer.mark === 'O' ? 'X' : 'O');
+        const emptyCells = this._board.getEmptyCells();
+
+        if (isMaximizing) {
+            let maxScore = -Infinity;
+            for (const move of emptyCells) {
+                this.board.cells[move].mark = currentMark;
+                const score = this.minimax(depth + 1, alpha, beta, false);
+                this.board.cells[move].mark = '';
+                maxScore = Math.max(maxScore, score);
+                alpha = Math.max(alpha, maxScore);
+                if (beta <= alpha) {
+                    break;
+                }
+            }
+            return maxScore;
+        } else {
+            let minScore = Infinity;
+            for (const move of emptyCells) {
+                this.board.cells[move].mark = currentMark;
+                const score = this.minimax(depth + 1, alpha, beta, true);
+                this.board.cells[move].mark = '';
+                minScore = Math.min(minScore, score);
+                beta = Math.min(beta, minScore);
+                if (beta <= alpha) {
+                    break;
+                }
+            }
+            return minScore;
+        }
     }
     
     // ゲーム結果の表示、スコアの更新
@@ -250,7 +351,7 @@ export class Game {
     }
     
     // セッター
-    set currentPlayers(player: { name: string, mark: string, isCPU: boolean }) {
+    set currentPlayers(player: { name: string, mark: string, isCPU: string | null }) {
         this._currentPlayer = player;
     }
     
