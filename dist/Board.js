@@ -1,8 +1,8 @@
 export class Board {
     constructor(size, parentElement = document.querySelector('.board__container'), game) {
-        this._size = size;
-        this._cells = [];
         this._game = game;
+        this._cells = [];
+        this._size = size;
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement);
         this.addClickHandlers();
@@ -79,9 +79,20 @@ export class Board {
     checkDraw() {
         return this._cells.every(_cell => _cell.mark !== '');
     }
+    // ボードをクリアする
+    clearBoard() {
+        this._cells.forEach(cell => {
+            cell.mark = '';
+            cell.element.classList.remove('X', 'O');
+            cell.element.textContent = '';
+            if (cell.clickHandler) {
+                cell.element.removeEventListener('click', cell.clickHandler);
+            }
+        });
+        this.addClickHandlers();
+    }
     // クリックイベントの付与
     addClickHandlers() {
-        console.log("アド・クリックハンドラ");
         this._cells.forEach((cell, index) => {
             // セルの要素からクリックイベントリスナーを削除
             if (cell.clickHandler) {
@@ -94,8 +105,6 @@ export class Board {
             cell.element.addEventListener('click', clickHandler);
             cell.clickHandler = clickHandler;
         });
-        // this.game?.saveGameStorage();
-        console.log(this._cells);
     }
     // クリックイベントの内容
     handleCellClick(index) {
@@ -112,30 +121,15 @@ export class Board {
                 // @audit fixed
                 this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
             }
-            // this.game.saveGameStorage();
         }
-    }
-    // ボードをクリアする
-    clearBoard() {
-        this._cells.forEach(cell => {
-            cell.mark = '';
-            cell.element.classList.remove('X', 'O');
-            cell.element.textContent = '';
-            if (cell.clickHandler) {
-                cell.element.removeEventListener('click', cell.clickHandler);
-            }
-        });
-        this.addClickHandlers();
+        this.game.saveGameStorage();
     }
     // ボードの状態の取得
     getBoardState() {
-        console.log("ゲット・ボードステイト");
         return this._cells.map(cell => ({ mark: cell.mark }));
     }
     // ボードの状態の復元
     setBoardState(state) {
-        console.log("セット・ボードステイト");
-        console.log(state);
         state.forEach((cellState, index) => {
             if (cellState.mark) {
                 this._cells[index].mark = cellState.mark;
@@ -144,7 +138,6 @@ export class Board {
             }
         });
         this.addClickHandlers();
-        console.log(this._cells);
     }
     // ゲッター
     get cells() {

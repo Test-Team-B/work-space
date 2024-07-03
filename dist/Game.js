@@ -3,59 +3,85 @@ import { UltimateBoard } from "./ultimateBoard.js";
 export class Game {
     constructor(playerXName, playerOName, boardSize, isCPUOpponent = false, ultimateBoard = false) {
         this._isCPUThinking = false;
-        console.log("Gameコンストラクタ");
-        console.log(ultimateBoard);
         this._players = {
             'X': { name: playerXName, mark: 'X', isCPU: false },
             'O': { name: playerOName, mark: 'O', isCPU: isCPUOpponent }
         };
-        this._currentPlayer = this._players['X'];
         this._scores = {
             'X': 0,
             'O': 0
         };
+        this._currentPlayer = this._players['X'];
+        this.ultimateMode = ultimateBoard;
+        this._board = this.loadPlayBoard(boardSize);
         this._winningMessageTextElement = document.getElementById('info__message');
         this._ultimateWinningMessageTextElement = document.getElementById('ultimate-info__message');
-        const boardContainer = document.querySelector('.board__container');
-        const ultimateBoardContainer = document.querySelector('.ultimate__board__container');
-        this.ultimateMode = ultimateBoard;
-        this._board = ultimateBoard
-            ? new UltimateBoard(boardSize, ultimateBoardContainer, this)
-            : new Board(boardSize, boardContainer, this);
         this.updateScoreBoardNames(ultimateBoard);
-        console.log(this._board);
+        this.updateScores(ultimateBoard);
     }
     // ゲームを初期化
     initializeGame() {
-        console.log("ゲームクラス・イニシャライズゲーム");
-        // @audit
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
-        console.log(this._board);
-        // this.loadGameStorage();
-        console.log("ロード後");
-        console.log(this._board);
         this.handleAddClick();
     }
     // ゲームだけ初期化,スコアはそのまま,ターン表示初期化
     continueGame() {
-        console.log("コンティニューゲーム");
         this.initializeGame();
         this.handleClearBoard();
         if (this._currentPlayer.isCPU) {
             this.playCPUTurn();
-            console.log("CPUターン");
         }
     }
     // ゲームをリスタート
     resetGame() {
-        console.log("リセットゲーム");
         this.resetScores();
         this.initializeGame();
         this.handleClearBoard();
     }
+    // プレイヤー交代
+    switchPlayer() {
+        this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
+        if (this._currentPlayer.isCPU) {
+            this.playCPUTurn();
+        }
+    }
+    // スコアをリセット
+    resetScores() {
+        this._scores = {
+            'X': 0,
+            'O': 0
+        };
+    }
+    // スコアボードの更新
+    updateScores(isUltimateBoard = false) {
+        if (isUltimateBoard) {
+            document.getElementById('ultimate-scoreboard__X-score').innerText = `${this._scores['X']}`;
+            document.getElementById('ultimate-scoreboard__O-score').innerText = `${this._scores['O']}`;
+        }
+        else {
+            document.getElementById('scoreboard__X__score').innerText = `${this._scores['X']}`;
+            document.getElementById('scoreboard__O__score').innerText = `${this._scores['O']}`;
+        }
+    }
+    // スコアボードの名前を初期化
+    updateScoreBoardNames(isUltimateBoard = false) {
+        if (isUltimateBoard) {
+            document.getElementById('ultimate-scoreboard__X-name').innerText = this._players['X'].name;
+            document.getElementById('ultimate-scoreboard__O-name').innerText = this._players['O'].name;
+        }
+        else {
+            document.getElementById('scoreboard__X__name').innerText = this._players['X'].name;
+            document.getElementById('scoreboard__O__name').innerText = this._players['O'].name;
+        }
+        this.updatePlayerNamesForm();
+    }
+    // 名前入力画面から名前だけ変更
+    updatePlayerNamesForm() {
+        document.getElementById('name-setting__form__player1').value = this._players['X'].name;
+        document.getElementById('name-setting__form__player2').value = this._players['O'].name;
+    }
     // クリアボードの条件分け
     handleClearBoard() {
-        console.log("ハンドルクリアボード");
         if (this._board instanceof UltimateBoard) {
             this._board.clearUltimateBoard();
             this._board.miniBoardResult.fill('');
@@ -67,7 +93,6 @@ export class Game {
     // クリックイベント付与の場合分け
     handleAddClick() {
         if (this.ultimateMode) {
-            console.log("アルテメットハンドラアドクリック");
             this._board.ultimateAddClickHandlers();
             this._board.miniBoardResult.fill('');
         }
@@ -75,28 +100,7 @@ export class Game {
             this._board.addClickHandlers();
         }
     }
-    // スコアをリセット
-    resetScores() {
-        this._scores = {
-            'X': 0,
-            'O': 0
-        };
-    }
-    // プレイヤー交代
-    switchPlayer() {
-        this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
-        console.log("スウィッチプレイヤ");
-        console.log(this._currentPlayer);
-        if (this._currentPlayer.isCPU) {
-            this.playCPUTurn();
-            console.log("CPUターン");
-        }
-        else {
-            console.log("人間のターン");
-        }
-    }
     playCPUTurn() {
-        console.log("CPUプレイ");
         this._isCPUThinking = true;
         setTimeout(() => {
             let emptyCells = [];
@@ -125,7 +129,6 @@ export class Game {
                 this._isCPUThinking = false;
             }
         }, 1000);
-        // this.saveGameStorage();
     }
     // ゲーム結果の表示、スコアの更新
     handleEndGame(draw, isUltimateBoard = false) {
@@ -139,34 +142,66 @@ export class Game {
                 this.winningMessageTextElement.innerText = `${this._currentPlayer.name} Wins!`;
             }
         }
+        this.saveGameStorage();
     }
-    // スコアボードの更新
-    updateScores(isUltimateBoard = false) {
-        if (isUltimateBoard) {
-            document.getElementById('ultimate-scoreboard__X-score').innerText = `${this._scores['X']}`;
-            document.getElementById('ultimate-scoreboard__O-score').innerText = `${this._scores['O']}`;
-        }
-        else {
-            document.getElementById('scoreboard__X__score').innerText = `${this._scores['X']}`;
-            document.getElementById('scoreboard__O__score').innerText = `${this._scores['O']}`;
-        }
-    }
-    // スコアボードの名前を初期化
-    updateScoreBoardNames(isUltimateBoard = false) {
-        if (isUltimateBoard) {
-            document.getElementById('ultimate-scoreboard__X-name').innerText = this._players['X'].name;
-            document.getElementById('ultimate-scoreboard__O-name').innerText = this._players['O'].name;
-        }
-        else {
-            document.getElementById('scoreboard__X__name').innerText = this._players['X'].name;
-            document.getElementById('scoreboard__O__name').innerText = this._players['O'].name;
+    // localStorageに保存
+    saveGameStorage() {
+        if (this.board) {
+            const state = {
+                players: this._players,
+                currentPlayer: this._currentPlayer,
+                scores: {
+                    'X': this._scores['X'],
+                    'O': this._scores['O']
+                },
+                isUltimate: this.ultimateMode,
+                board: this.ultimateMode ? this._board.getUltimateBoardState() : this._board.getBoardState(),
+            };
+            const storageKey = this.ultimateMode ? 'ticTacToeUltimateState' : 'ticTacToeNormalState';
+            localStorage.setItem(storageKey, JSON.stringify(state));
         }
     }
-    // 名前入力画面から名前だけ変更
-    updatePlayerNames(playerXName, playerOName) {
-        this._players['X'].name = playerXName;
-        this._players['O'].name = playerOName;
-        this.updateScoreBoardNames(this.ultimateMode);
+    // localStorageからボードとスコアをロード
+    loadPlayBoard(boardSize) {
+        console.log("ローカルプレイヤーネーム");
+        const normalState = localStorage.getItem('ticTacToeNormalState');
+        const ultimateState = localStorage.getItem('ticTacToeUltimateState');
+        const boardContainer = document.querySelector('.board__container');
+        const ultimateBoardContainer = document.querySelector('.ultimate__board__container');
+        let state = null;
+        if (this.ultimateMode && ultimateState) {
+            console.log("アルティメットストレージ");
+            state = JSON.parse(ultimateState);
+        }
+        else if (!this.ultimateMode && normalState) {
+            console.log("ノーマルストレージ");
+            state = JSON.parse(normalState);
+        }
+        if (state) {
+            console.log(state);
+            this._scores = {
+                'X': state.scores ? state.scores['X'] : 0,
+                'O': state.scores ? state.scores['O'] : 0
+            };
+            console.log(this._scores);
+            this.ultimateMode = state.isUltimate;
+            if (state.isUltimate) {
+                console.log("アルティメット・ローカルストレージ");
+                const ultimateBoard = new UltimateBoard(boardSize, ultimateBoardContainer, this);
+                ultimateBoard.setUltimateBoardState(state.board);
+                return ultimateBoard;
+            }
+            else {
+                console.log("ノーマル・ローカルストレージ");
+                const board = new Board(boardSize, boardContainer, this);
+                board.setBoardState(state.board);
+                return board;
+            }
+        }
+        // デフォルトのボードを返す
+        return this.ultimateMode
+            ? new UltimateBoard(boardSize, ultimateBoardContainer, this)
+            : new Board(boardSize, boardContainer, this);
     }
     // ゲッター
     get players() {
@@ -182,12 +217,7 @@ export class Game {
         return this._scores;
     }
     get winningMessageTextElement() {
-        if (this.ultimateMode) {
-            return this._ultimateWinningMessageTextElement;
-        }
-        else {
-            return this._winningMessageTextElement;
-        }
+        return this.ultimateMode ? this._ultimateWinningMessageTextElement : this._winningMessageTextElement;
     }
     get isCPUThinking() {
         return this._isCPUThinking;
