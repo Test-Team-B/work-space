@@ -3,6 +3,7 @@ export class Board {
         this._size = size;
         this._cells = [];
         this._game = game;
+        this._miniBoard = parentElement; // 追加: 各ミニボードのエレメントを取得するために追加(アルティメット用)
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement);
     }
@@ -53,13 +54,10 @@ export class Board {
     }
     // セルにマークをつける
     markCell(cellIndex, mark) {
-        const optionsClickSound = document.getElementById('click-sound');
+        // セルがマークされた時音が鳴る
         const mouseclick = new Audio();
         mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
         mouseclick.play();
-        optionsClickSound.addEventListener('click', (e) => {
-            mouseclick.pause();
-        });
         this._cells[cellIndex].mark = mark;
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;
