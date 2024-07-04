@@ -8,6 +8,7 @@ export class UltimateBoard extends Board {
         this.miniBoardResult = Array(size * size).fill('');
         this.parentElement = document.querySelector('.ultimate__board__container');
         this.createUltimateBoards(size, parentElement, game);
+        this.ultimateAddClickHandlers();
     }
     // ultimateBoard の作成、miniBoardをsize個生成し ultimateBoardの grid に当てはめる
     createUltimateBoards(size, parentElement, game) {
@@ -38,6 +39,7 @@ export class UltimateBoard extends Board {
             this.miniBoards.push(miniBoard);
         }
     }
+    // セルにマーク
     ultimateMarkCell(boardIndex, cellIndex, mark) {
         this.miniBoards[boardIndex].markCell(cellIndex, mark);
         // 追加: セルがマークされた後、そのセルのindexと同じボードが制覇されてない時セルを赤く表示しアクティブボードにする
@@ -59,6 +61,7 @@ export class UltimateBoard extends Board {
         }
         this.preActiveBoardIndex = cellIndex;
     }
+    // アルティメットの勝利判定
     ultimateCheckWin() {
         return this.winningCombinations.some(combination => {
             return combination.every(index => {
@@ -68,26 +71,26 @@ export class UltimateBoard extends Board {
             });
         });
     }
+    // 引き分け判定
     ultimateCheckDraw() {
         return this.miniBoardResult.every(mark => mark !== '');
     }
+    // セルにクリックイベントの付与
     ultimateAddClickHandlers() {
         this.miniBoards.forEach((miniBoard, boardIndex) => {
             miniBoard.cells.forEach((cell, cellIndex) => {
-                // セルの要素からクリックイベントリスナーを削除
                 if (cell.clickHandler) {
                     cell.element.removeEventListener('click', cell.clickHandler);
                 }
                 const clickHandler = (event) => {
-                    // 現在のボードではない時クリックしても反応しない
                     this.ultimateHandleCellClick(cellIndex, boardIndex);
                 };
-                // イベントリスナーを再度追加
                 cell.element.addEventListener('click', clickHandler);
                 cell.clickHandler = clickHandler;
             });
         });
     }
+    // セルにマークした後のミニボードの選択
     ultimateHandleCellClick(cellIndex, boardIndex) {
         if (this.currentBoardIndex !== null && this.currentBoardIndex !== boardIndex) {
             alert("違うボードだよ"); // 後でミニボードの色を変化させて実装
@@ -133,15 +136,8 @@ export class UltimateBoard extends Board {
                 this.game.switchPlayer();
                 this.game.winningMessageTextElement.innerText = `${this.game.currentPlayer.name}'s Turn`;
             }
-            this.game.saveGameStorage();
         }
-    }
-    // アルティメットボードだった場合の旗を立てる
-    ultimateHandleEndGame(draw) {
-        this.game.handleEndGame(draw, true);
-    }
-    get getCurrentBoardIndex() {
-        return this.currentBoardIndex;
+        this.game.saveGameStorage();
     }
     // ボードをクリアする
     clearUltimateBoard() {
@@ -183,13 +179,23 @@ export class UltimateBoard extends Board {
     }
 ////////////////////////////////////////////////////////////////////////////////////////
     // localStorage
+    // アルティメットボードだった場合の旗を立てる
+    ultimateHandleEndGame(draw) {
+        this.game.handleEndGame(draw, true);
+    }
+    // localStorageからボードの状態を取得
     getUltimateBoardState() {
         return this.miniBoards.map(miniBoard => miniBoard.getBoardState());
     }
-    setUltimateBoardState(state) {
-        state.forEach((miniBoardState, boardIndex) => {
+    // ボードの状態を復元
+    setUltimateBoardState(boards) {
+        boards.forEach((miniBoardState, boardIndex) => {
             this.miniBoards[boardIndex].setBoardState(miniBoardState);
         });
         this.ultimateAddClickHandlers();
+    }
+    // ゲッター
+    get getCurrentBoardIndex() {
+        return this.currentBoardIndex;
     }
 }
