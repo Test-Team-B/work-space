@@ -47,10 +47,12 @@ export class Game {
     }
     // スコアをリセット
     resetScores() {
+        console.log("スコアをリセットします");
         this._scores = {
             'X': 0,
             'O': 0
         };
+        this.updateScores(this.ultimateMode);
     }
     // スコアボードの更新
     updateScores(isUltimateBoard = false) {
