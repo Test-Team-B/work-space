@@ -1,5 +1,4 @@
 import { Game } from './Game.js';
-import { Board } from './Board.js';
 
 const boardSize = 3;
 
@@ -11,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 class TicTacToe {
     private game: Game | null = null;
-    private board: Board | null = null;
     private submitButton: HTMLElement;
     private continueButton: HTMLElement;
     private resetButton: HTMLElement;
@@ -84,8 +82,8 @@ class TicTacToe {
         }
     }
 
-     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
-     private startGame(): void {
+    // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
+    private startGame(): void {
         const isCPUMode = this.cpuLevelSelect(true) as string;
         const isUltimate = this.ultimateCheckBox.checked;
         this.game = this.createGame(isCPUMode, isUltimate);
@@ -107,9 +105,11 @@ class TicTacToe {
             this.game?.saveGameStorage();
         }
     }
-    
+
     // ゲームインスタンスの作成
-    public createGame(isCPUMode: string, isUltimate: boolean): Game {
+    private createGame(): Game {
+        const isCPUMode = this.cpuLevelSelect();
+        const isUltimate = this.ultimateCheckBox.checked;
         const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement).value || 'Player X';
         const playerOName = (document.getElementById('name-setting__form__player2') as HTMLInputElement).value || 'Player O';
         return new Game(playerXName, playerOName, boardSize, isCPUMode, isUltimate);
@@ -124,8 +124,8 @@ class TicTacToe {
         }
     }
 
-     // アルティメットモードの切り替えの連動
-     private handleUltimateCheckBox(changedCheckBox: HTMLInputElement): void {
+    // アルティメットモードの切り替えの連動
+    private handleUltimateCheckBox(changedCheckBox: HTMLInputElement): void {
         if (changedCheckBox === this.ultimateCheckBox) {
             this.ultimateNameSettingCheckBox.checked = this.ultimateCheckBox.checked;
             this.startGame();
@@ -158,20 +158,20 @@ class TicTacToe {
         let isCPUMode = null;
         if (this.cpuCheckBox.checked) {
             const selectText = this.levelSelect.options[this.levelSelect.selectedIndex].text
-    
+
             switch (selectText) {
                 case 'EASY':
                     isCPUMode = "easy";
                     break;
-    
+
                 case 'MEDIUM':
                     isCPUMode = "medium";
                     break;
-    
+
                 case 'HARD':
                     isCPUMode = "hard";
                     break;
-    
+
                 default:
                     isCPUMode = "non cpu";
                     break;

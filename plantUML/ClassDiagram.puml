@@ -1,65 +1,103 @@
 @startuml work-space
 class TicTacToe {
+    - game: Game | null = null;
     - submitButton: HTMLElement;
     - continueButton: HTMLElement;
     - resetButton: HTMLElement;
+    - ultimateContinueButton: HTMLElement;
+    - ultimateResetButton: HTMLElement;
     - nameBoard: HTMLElement;
-    - game: Game | null = null;
+    - mainContainer: HTMLElement;
+    - ultimateContainer: HTMLElement;
+    - ultimateCheckBox: HTMLInputElement;
+    - ultimateNameSettingCheckBox: HTMLInputElement;
+    - levelSelect: HTMLSelectElement;
+    - cpuCheckBox: HTMLInputElement;
+    - playerONameFormElement: HTMLInputElement;
     + init(): void
-    + getPlayerNames(): { playerXName: string, playerOName: string }
+    - loadBoardNames(): void
     - submitName(e: Event): void
-    - loadPlayerName(): void 
-    - startGame(playerXName: string, playerOName: string): void
-    - continueGame(): void
-    - resetGame(): void
+    - startGame(): void
+    - _continueGame(): void
+    - _resetGame(): void
+    - createGame(): Game
+    - gameModeChange(): void
+    - handleUltimateCheckBox(changedCheckBox: HTMLInputElement): void
+    - displayChange(showElement: HTMLElement | null, hideElement: HTMLElement): void
+    - toggleElementVisibility(element: HTMLElement | null, isVisible: boolean): void
+    - updateCPUCheck(): void
+    - cpuLevelSelect(): string | null
 }
 
 class Game {
-    - _players: { [key: string]: { name: string, mark: string}};
-    - _currentPlayer: { name: string, mark: string };
-    - _board: Board;
-    - _scores: { [key: string]: number};
+    - _players: { [key: string]: { name: string, mark: string, isCPU: string | null } };
+    - _currentPlayer: { name: string, mark: string, isCPU: string | null };
+    - _isCPUThinking: boolean = false;
+    - _board: Board | UltimateBoard;
+    - _scores: { [key: string]: number };
     - _winningMessageTextElement: HTMLElement;
-    + startGame(): void
-    + continueGame(): void 
-    - initializeGame(): void 
-    - resetScores(): void 
-    + resetGame(): void 
-    + switchPlayer(): void 
-    + handleEndGame(draw: boolean): void 
-    + updateScores(): void 
-    - updateScoreBoardNames(): void 
-    + checkWin(): boolean 
-    get players() 
-    get currentPlayer() 
-    get board() 
-    get scores() 
-    get winningMessageTextElement() 
-    set currentPlayers(player: { name: string, mark: string }) 
-    set board(board: Board) 
-    + saveGameStorage() 
-    + loadGameStorage() 
+    - _ultimateWinningMessageTextElement: HTMLElement;
+    - ultimateMode: boolean;
+    + initializeGame(): void
+    + continueGame(): void
+    + resetGame(): void
+    + switchPlayer(): void
+    - resetScores(): void
+    - updateScores(isUltimateBoard: boolean = false): void
+    - updateScoreBoardNames(isUltimateBoard: boolean = false): void
+    - updatePlayerNamesForm(): void
+    - handleClearBoard(): void
+    - handleAddClick(): void
+    - difficultyOfCPU(): void
+    - playEasyCPU(): void
+    - executeEasyCPUTurn(): void
+    - ultimateBoardCPU(ultimateBoard: UltimateBoard): void
+    - playNormalEasyCPUTurn(): void
+    - hardModeCPU(): void
+    - findBestMove(): number
+    - minimax(depth: number, alpha: number, beta: number, isMaximizing: boolean): number
+    + handleEndGame(draw: boolean, isUltimateBoard: boolean = false): void
+    + saveGameStorage(): void
+    - loadPlayBoard(boardSize: number): Board | UltimateBoard
 }
 
 class Board {
-    - _cells: { mark: string, element: HTMLElement}[];
-    - _size: number;
+    private _game: Game;
+    private _cells: { mark: string, element: HTMLElement, clickHandler?: (event: MouseEvent) => void }[];
+    private _size: number;
     # winningCombinations: number[][];
-    - generateWinningCombinations(size: number): number[][] 
-    # createCells(parentElement: HTMLElement): void 
-    - markCell(cellIndex: number, mark: string): void 
-    - checkWin(): boolean 
-    - checkDraw(): boolean 
-    - addClickHandlers(game: any): void 
-    - clearBoard(): void 
-    get cells() 
-    get size() 
+    - generateWinningCombinations(size: number): number[][]
+    # createCells(parentElement: HTMLElement): void
+    - markCell(cellIndex: number, mark: string): void
+    + checkWin(): boolean
+    + checkDraw(): boolean
+    + handleCellClick(index: number): void
+    + getBoardState(): { mark: string }[]
+    + setBoardState(state: { mark: string }[]): void
     - getBoardState(): { mark: string }[]
-    - setBoardState(state: { mark: string}[]): void 
+    - setBoardState(state: { mark: string}[]): void
+    + getEmptyCells(): number[]
+}
+
+class UltimateBoard {
+    + miniBoards: Board[];
+    + currentBoardIndex: number | null;
+    + miniBoardResult: string[];
+    + parentElement: HTMLElement;
+    - createUltimateBoards(size: number, parentElement: HTMLElement, game: Game): void
+    + ultimateMarkCell(boardIndex: number, cellIndex: number, mark: string): void
+    + ultimateCheckWin(): boolean
+    + ultimateCheckDraw(): boolean
+    + ultimateAddClickHandlers(): void
+    + ultimateHandleCellClick(cellIndex: number, boardIndex: number)
+    + clearUltimateBoard(): void
+    - ultimateHandleEndGame(draw: boolean): void
+    + getUltimateBoardState(): { mark: string }[][]
+    + setUltimateBoardState(boards: { mark: string }[][]): void
 }
 
 TicTacToe --> Game : アソシエーション
-
 Game <..> Board : 依存
+UltimateBoard --|> Board : 継承
 
 @enduml

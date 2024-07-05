@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
 class TicTacToe {
     constructor() {
         this.game = null;
-        this.board = null;
         this.submitButton = document.getElementById('name-setting__form__submit');
         this.continueButton = document.getElementById('info__btn__continue');
         this.resetButton = document.getElementById('info__btn__reset');
@@ -85,7 +84,9 @@ class TicTacToe {
         }
     }
     // ゲームインスタンスの作成
-    createGame(isCPUMode, isUltimate) {
+    createGame() {
+        const isCPUMode = this.cpuLevelSelect();
+        const isUltimate = this.ultimateCheckBox.checked;
         const playerXName = document.getElementById('name-setting__form__player1').value || 'Player X';
         const playerOName = document.getElementById('name-setting__form__player2').value || 'Player O';
         return new Game(playerXName, playerOName, boardSize, isCPUMode, isUltimate);
