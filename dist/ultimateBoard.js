@@ -4,8 +4,11 @@ export class UltimateBoard extends Board {
         super(size, parentElement, game);
         this.miniBoards = [];
         this.currentBoardIndex = null;
+        this.preActiveBoardIndex = null; // 追加: 前回アクティブ(赤く表示)だったボードのindexを追跡するため
         this.miniBoardResult = Array(size * size).fill('');
         this.parentElement = document.querySelector('.ultimate__board__container');
+        this.boundHover = this.ultimateEventMouseHover.bind(this);
+        this.boundLeave = this.ultimateEventMouseLeave.bind(this);
         this.createUltimateBoards(size, parentElement, game);
         this.ultimateAddClickHandlers();
     }
@@ -20,16 +23,45 @@ export class UltimateBoard extends Board {
             miniBoardElement.classList.add('ultimate__mini-board__container');
             parentElement.appendChild(miniBoardElement);
             const miniBoard = new Board(size, miniBoardElement, game);
-            miniBoard.cells.forEach(cell => {
+            miniBoard.cells.forEach((cell, i) => {
                 cell.element.classList.remove('board__container__cell');
                 cell.element.classList.add('ultimate__mini-board-cell');
-            });
+                // 追加: mouseover&mouseleave イベントを追加　現在のホバーしているセルと同じindexのボードをグレースケールで表示
+                cell.element.addEventListener("mouseover", () => {
+                    this.miniBoards[i].cells.forEach((cell) => {
+                        cell.element.classList.add('next');
+                        console.log(miniBoard);
+                    });
+                });
+                cell.element.addEventListener("mouseleave", () => {
+                    this.miniBoards[i].cells.forEach((cell) => {
+                        console.log(cell.element.classList.remove('next'));
+                    });
+                });
+            }); ////////////////////////////////////////////////////////////
             this.miniBoards.push(miniBoard);
         }
     }
     // セルにマーク
     ultimateMarkCell(boardIndex, cellIndex, mark) {
         this.miniBoards[boardIndex].markCell(cellIndex, mark);
+        // セルがマークされた後、そのセルのindexと同じボードが制覇されていない場合、セルを赤く表示しアクティブボードにする
+        if (this.miniBoardResult[cellIndex] === '') {
+            this.miniBoards[cellIndex].cells.forEach(cell => {
+                cell.element.classList.add('active');
+                cell.element.addEventListener("mouseover", this.boundHover);
+                cell.element.addEventListener("mouseleave", this.boundLeave);
+            });
+        }
+        // 前回アクティブだったボードが存在し、preアクティブと次のボードのindexが同じではない場合、preアクティブボードとホバーイベントを解除する
+        if (this.preActiveBoardIndex != null && this.preActiveBoardIndex !== cellIndex) {
+            this.miniBoards[this.preActiveBoardIndex].cells.forEach(cell => {
+                cell.element.classList.remove('active', 'next');
+                cell.element.removeEventListener('mouseover', this.boundHover);
+                cell.element.removeEventListener('mouseleave', this.boundLeave);
+            });
+        }
+        this.preActiveBoardIndex = cellIndex;
     }
     // アルティメットの勝利判定
     ultimateCheckWin() {
@@ -76,6 +108,17 @@ export class UltimateBoard extends Board {
             && !this.miniBoardResult[boardIndex]) {
             this.ultimateMarkCell(boardIndex, cellIndex, this.game.currentPlayer.mark);
             if (this.miniBoards[boardIndex].checkWin()) {
+                // 追加: ボードのCSSクラス大きいXとOを表示させる
+                if (this.game.currentPlayer.mark === 'X') {
+                    this.miniBoards[boardIndex].miniBoard.classList.add('wonX');
+                    this.miniBoards[boardIndex].miniBoard.setAttribute('data-winner', 'X');
+                }
+                else {
+                    this.miniBoards[boardIndex].miniBoard.classList.add('wonO');
+                    this.miniBoards[boardIndex].miniBoard.setAttribute('data-winner', 'O');
+                }
+                this.removeActiveUltimateBoard(); // 追加
+                ///////////////////////////////////////////
                 this.miniBoardResult[boardIndex] = this.game.currentPlayer.mark;
                 this.currentBoardIndex = null; // 勝った人は次のボードを好きに選べる
                 this.ultimateHandleEndGame(false);
@@ -104,7 +147,45 @@ export class UltimateBoard extends Board {
         this.miniBoards.forEach(miniBoard => miniBoard.clearBoard());
         this.currentBoardIndex = null;
         this.ultimateAddClickHandlers();
+        this.removeActiveUltimateBoard(); // 追加 ////////////////////////
+        this.removeLargeXOonUltimateBoard(); // 追加
     }
+    // セルがマウスホバーされたときセルを赤く表示(アクティブ)する
+    ultimateEventMouseHover(event) {
+        const cellElement = event.target;
+        cellElement.classList.add('active');
+        cellElement.classList.remove('next');
+    }
+    // セルがホバーされたときセルのアクティブを解除する
+    ultimateEventMouseLeave(event) {
+        const cellElement = event.target;
+        cellElement.classList.add('next');
+        cellElement.classList.remove('active');
+    }
+    //　前回アクティブだったボードとマウスホバーイベントを解除する(CSSのホバーは残る)
+    removeActiveUltimateBoard() {
+        if (this.preActiveBoardIndex !== null && this.miniBoards[this.preActiveBoardIndex]) {
+            this.miniBoards[this.preActiveBoardIndex].cells.forEach(cell => {
+                cell.element.classList.remove('active');
+                cell.element.removeEventListener("mouseover", this.boundHover);
+                cell.element.removeEventListener("mouseleave", this.boundLeave);
+            });
+        }
+    }
+    // ゲームリセットやコンテニュー時に大きいX,OをボードのCSSクラスから削除
+    removeLargeXOonUltimateBoard() {
+        this.miniBoards.forEach((board) => {
+            if (board.miniBoard.classList.contains('wonO')) {
+                board.miniBoard.classList.remove('wonO');
+                board.miniBoard.removeAttribute('data-winner');
+            }
+            else if (board.miniBoard.classList.contains('wonX')) {
+                board.miniBoard.classList.remove('wonX');
+                board.miniBoard.removeAttribute('data-winner');
+            }
+        });
+    }
+    ////////////////////////////////////////////////////////////////////////////////////
     // アルティメットボードだった場合の旗を立てる
     ultimateHandleEndGame(draw) {
         this.game.handleEndGame(draw, true);

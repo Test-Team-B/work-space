@@ -4,6 +4,7 @@ export class Board {
     private _game: Game;
     private _cells: { mark: string, element: HTMLElement, clickHandler?: (event: MouseEvent) => void }[];
     private _size: number;
+    private _miniBoard: HTMLElement | null;
 
     protected winningCombinations: number[][];
 
@@ -11,6 +12,7 @@ export class Board {
         this._game = game;
         this._cells = [];
         this._size = size;
+        this._miniBoard = parentElement;// 追加： アルティメットのミニボードCSSクラスを追跡するため
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement as HTMLElement);
         this.addClickHandlers();
@@ -182,16 +184,19 @@ export class Board {
     // }
 
       // ゲッター
-      get cells() {
-          return this._cells;
-      }
+    get cells() {
+        return this._cells;
+    }
 
-      get size() {
-          return this._size;
-      }
+    get size() {
+        return this._size;
+    }
 
-      get game() {
-          return this._game;
-      }
-    
+    get game() {
+        return this._game;
+    }
+
+    get miniBoard() {
+        return this._miniBoard;
+    }
 }

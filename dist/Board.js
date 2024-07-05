@@ -3,6 +3,7 @@ export class Board {
         this._game = game;
         this._cells = [];
         this._size = size;
+        this._miniBoard = parentElement; // 追加： アルティメットのミニボードCSSクラスを追跡するため
         this.winningCombinations = this.generateWinningCombinations(size);
         this.createCells(parentElement);
         this.addClickHandlers();
@@ -162,5 +163,8 @@ export class Board {
     }
     get game() {
         return this._game;
+    }
+    get miniBoard() {
+        return this._miniBoard;
     }
 }
