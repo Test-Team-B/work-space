@@ -29,7 +29,7 @@ export class Game {
         this.initializeGame();
         this.handleClearBoard();
         if (this._currentPlayer.isCPU) {
-            this.playCPUTurn();
+            this.difficultyOfCPU();
         }
     }
     // ゲームをリスタート
@@ -42,7 +42,7 @@ export class Game {
     switchPlayer() {
         this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
         if (this._currentPlayer.isCPU) {
-            this.playCPUTurn();
+            this.difficultyOfCPU();
         }
     }
     // スコアをリセット
@@ -100,7 +100,7 @@ export class Game {
             this._board.addClickHandlers();
         }
     }
-    playCPUTurn() {
+    difficultyOfCPU() {
         switch (this._currentPlayer.isCPU) {
             case 'easy':
                 this.playEasyCPU();
@@ -108,7 +108,7 @@ export class Game {
             case 'medium':
                 break;
             case 'hard':
-                this.playHardCPU();
+                this.hardModeCPU();
                 break;
             default:
                 this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
@@ -116,37 +116,82 @@ export class Game {
         }
     }
     playEasyCPU() {
-        this._isCPUThinking = true;
+        if (!this._isCPUThinking) {
+            this._isCPUThinking = true;
+            this.executeEasyCPUTurn();
+        }
+    }
+    executeEasyCPUTurn() {
         setTimeout(() => {
-            let emptyCells = [];
             if (this._board instanceof UltimateBoard) {
-                const boardIndex = this._board.currentBoardIndex !== null ? this._board.currentBoardIndex : Math.floor(Math.random() * this._board.miniBoards.length);
-                this._board.miniBoards[boardIndex].cells.forEach((cell, cellIndex) => {
-                    if (!cell.mark) {
-                        emptyCells.push({ boardIndex, cellIndex, cell });
-                    }
-                });
+                const ultimateBoard = this._board;
+                this.ultimateBoardCPU(ultimateBoard);
             }
             else {
-                emptyCells = this._board.cells
-                    .map((cell, index) => ({ boardIndex: 0, cellIndex: index, cell }))
-                    .filter(({ cell }) => !cell.mark);
-            }
-            if (emptyCells.length > 0) {
-                const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                const { boardIndex, cellIndex } = randomCell;
-                if (this._board instanceof UltimateBoard) {
-                    this._board.ultimateHandleCellClick(cellIndex, boardIndex);
-                }
-                else {
-                    this.switchPlayer();
-                }
-                this.saveGameStorage();
+                this.playNormalEasyCPUTurn();
             }
             this._isCPUThinking = false;
+            // CPUの手番が終わった後、ゲームの状態をチェック
+            if (this._board instanceof UltimateBoard) {
+                if (this._board.ultimateCheckWin()) {
+                    this.handleEndGame(false, true);
+                }
+                else if (this._board.ultimateCheckDraw()) {
+                    this.handleEndGame(true, true);
+                }
+                else if (this._currentPlayer.isCPU) {
+                    // CPUが勝った場合、もう一度CPUの手番にする
+                    this.playEasyCPU();
+                }
+            }
+            else {
+                if (this._board.checkWin()) {
+                    this.handleEndGame(false);
+                }
+                else if (this._board.checkDraw()) {
+                    this.handleEndGame(true);
+                }
+                else if (this._currentPlayer.isCPU) {
+                    this.playEasyCPU();
+                }
+            }
+            this.saveGameStorage();
         }, 1000);
     }
-    playHardCPU() {
+    ultimateBoardCPU(ultimateBoard) {
+        let availableBoards = [];
+        let availableCells = [];
+        if (ultimateBoard.currentBoardIndex !== null) {
+            availableBoards = [ultimateBoard.currentBoardIndex];
+        }
+        else {
+            availableBoards = ultimateBoard.miniBoardResult
+                .map((result, index) => result === '' ? index : -1)
+                .filter(index => index !== -1);
+        }
+        availableBoards.forEach(boardIndex => {
+            const miniBoard = ultimateBoard.miniBoards[boardIndex];
+            miniBoard.cells.forEach((cell, cellIndex) => {
+                if (!cell.mark) {
+                    availableCells.push({ boardIndex, cellIndex });
+                }
+            });
+        });
+        if (availableCells.length > 0) {
+            const randomMove = availableCells[Math.floor(Math.random() * availableCells.length)];
+            ultimateBoard.ultimateHandleCellClick(randomMove.cellIndex, randomMove.boardIndex);
+        }
+    }
+    playNormalEasyCPUTurn() {
+        let emptyCells = this._board.cells
+            .map((cell, index) => ({ cellIndex: index, cell }))
+            .filter(({ cell }) => !cell.mark);
+        if (emptyCells.length > 0) {
+            const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            this._board.handleCellClick(randomCell.cellIndex);
+        }
+    }
+    hardModeCPU() {
         console.log("ハードモード");
         this._isCPUThinking = true;
         setTimeout(() => {
