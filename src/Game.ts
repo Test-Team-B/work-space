@@ -52,6 +52,7 @@ export class Game {
         } else {
             localStorage.removeItem('ticTacToeNormalState');
         }
+        this.resetScores();
         this.initializeGame();
         this.resetScores();
         this.handleClearBoard();
