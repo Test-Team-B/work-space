@@ -105,7 +105,7 @@ ___
 ![UML Diagram](images/plantUML/ClassDiagram/work-space.svg)
 
 ## HTML-CSS関連図
-![HTML-CSS Diagram](images/plantUML/ClassDiagram/test.drawio.png)
+![HTML-CSS Diagram](images/plantUML/ClassDiagram/html-css.drawio.png)
 
 ## アクティビティ図
 
