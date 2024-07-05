@@ -299,6 +299,7 @@ export class Game {
                     'X': this._scores['X'],
                     'O': this._scores['O']
                 },
+                isCPU: this._players['O'].isCPU,
                 isUltimate: this.ultimateMode,
                 board: this.ultimateMode ? this._board.getUltimateBoardState() : this._board.getBoardState(),
             };
