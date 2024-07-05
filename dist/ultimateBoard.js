@@ -7,6 +7,8 @@ export class UltimateBoard extends Board {
         this.preActiveBoardIndex = null; // 追加: 前回アクティブ(赤く表示)だったボードのindexを追跡するため
         this.miniBoardResult = Array(size * size).fill('');
         this.parentElement = document.querySelector('.ultimate__board__container');
+        this.boundHover = this.ultimateEventMouseHover.bind(this);
+        this.boundLeave = this.ultimateEventMouseLeave.bind(this);
         this.createUltimateBoards(size, parentElement, game);
         this.ultimateAddClickHandlers();
     }
@@ -21,14 +23,14 @@ export class UltimateBoard extends Board {
             miniBoardElement.classList.add('ultimate__mini-board__container');
             parentElement.appendChild(miniBoardElement);
             const miniBoard = new Board(size, miniBoardElement, game);
-            miniBoard.cells.forEach((cell, i) => { // 追加: ミニボードのindexを追跡するため
+            miniBoard.cells.forEach((cell, i) => {
                 cell.element.classList.remove('board__container__cell');
                 cell.element.classList.add('ultimate__mini-board-cell');
                 // 追加: mouseover&mouseleave イベントを追加　現在のホバーしているセルと同じindexのボードをグレースケールで表示
-                cell.element.addEventListener("mouseover", () => { 
+                cell.element.addEventListener("mouseover", () => {
                     this.miniBoards[i].cells.forEach((cell) => {
                         cell.element.classList.add('next');
-                        console.log(miniBoard)
+                        console.log(miniBoard);
                     });
                 });
                 cell.element.addEventListener("mouseleave", () => {
@@ -36,28 +38,27 @@ export class UltimateBoard extends Board {
                         console.log(cell.element.classList.remove('next'));
                     });
                 });
-            });////////////////////////////////////////////////////////////
+            }); ////////////////////////////////////////////////////////////
             this.miniBoards.push(miniBoard);
         }
     }
     // セルにマーク
     ultimateMarkCell(boardIndex, cellIndex, mark) {
         this.miniBoards[boardIndex].markCell(cellIndex, mark);
-        // 追加: セルがマークされた後、そのセルのindexと同じボードが制覇されてない時セルを赤く表示しアクティブボードにする
-        if (this.miniBoardResult[cellIndex] == '') {
-            this.miniBoards[cellIndex].cells.forEach(cell => { 
-                    cell.element.classList.add('active');
-                    cell.element.addEventListener("mouseover", this.ultimateEventMouseHover);
-                    cell.element.addEventListener("mouseleave", this.ultimateEventMouseLeave);
+        // セルがマークされた後、そのセルのindexと同じボードが制覇されていない場合、セルを赤く表示しアクティブボードにする
+        if (this.miniBoardResult[cellIndex] === '') {
+            this.miniBoards[cellIndex].cells.forEach(cell => {
+                cell.element.classList.add('active');
+                cell.element.addEventListener("mouseover", this.boundHover);
+                cell.element.addEventListener("mouseleave", this.boundLeave);
             });
         }
-        // 追加: 前回アクティブだったボードが存在し、preアクティブと次のボードのindexが同じではない場合preアクティブボードとホバーイベントを解除する
-        if (this.preActiveBoardIndex != null && this.preActiveBoardIndex != cellIndex) {
+        // 前回アクティブだったボードが存在し、preアクティブと次のボードのindexが同じではない場合、preアクティブボードとホバーイベントを解除する
+        if (this.preActiveBoardIndex != null && this.preActiveBoardIndex !== cellIndex) {
             this.miniBoards[this.preActiveBoardIndex].cells.forEach(cell => {
-                cell.element.classList.remove('active');
-                cell.element.removeEventListener('mouseover', this.ultimateEventMouseHover);
-                cell.element.removeEventListener('mouseleave', this.ultimateEventMouseLeave);
-                cell.element.classList.remove('next');
+                cell.element.classList.remove('active', 'next');
+                cell.element.removeEventListener('mouseover', this.boundHover);
+                cell.element.removeEventListener('mouseleave', this.boundLeave);
             });
         }
         this.preActiveBoardIndex = cellIndex;
@@ -109,13 +110,14 @@ export class UltimateBoard extends Board {
             if (this.miniBoards[boardIndex].checkWin()) {
                 // 追加: ボードのCSSクラス大きいXとOを表示させる
                 if (this.game.currentPlayer.mark === 'X') {
-                    this.miniBoards[boardIndex]._miniBoard.classList.add('wonX');
-                    this.miniBoards[boardIndex]._miniBoard.setAttribute('data-winner', 'X');
-                } else {
-                    this.miniBoards[boardIndex]._miniBoard.classList.add('wonO');
-                    this.miniBoards[boardIndex]._miniBoard.setAttribute('data-winner', 'O');
+                    this.miniBoards[boardIndex].miniBoard.classList.add('wonX');
+                    this.miniBoards[boardIndex].miniBoard.setAttribute('data-winner', 'X');
                 }
-                this.removeActiveUltimateBoard();// 追加
+                else {
+                    this.miniBoards[boardIndex].miniBoard.classList.add('wonO');
+                    this.miniBoards[boardIndex].miniBoard.setAttribute('data-winner', 'O');
+                }
+                this.removeActiveUltimateBoard(); // 追加
                 ///////////////////////////////////////////
                 this.miniBoardResult[boardIndex] = this.game.currentPlayer.mark;
                 this.currentBoardIndex = null; // 勝った人は次のボードを好きに選べる
@@ -148,33 +150,38 @@ export class UltimateBoard extends Board {
         this.removeActiveUltimateBoard(); // 追加 ////////////////////////
         this.removeLargeXOonUltimateBoard(); // 追加
     }
-     // セルがマウスホバーされたときセルを赤く表示(アクティブ)する
-    ultimateEventMouseHover(cell) {
-        cell.target.classList.remove('active');
-        cell.target.classList.add('next');
+    // セルがマウスホバーされたときセルを赤く表示(アクティブ)する
+    ultimateEventMouseHover(event) {
+        const cellElement = event.target;
+        cellElement.classList.add('active');
+        cellElement.classList.remove('next');
     }
     // セルがホバーされたときセルのアクティブを解除する
-    ultimateEventMouseLeave(cell) {
-        cell.target.classList.remove('next');
-        cell.target.classList.add('active');
+    ultimateEventMouseLeave(event) {
+        const cellElement = event.target;
+        cellElement.classList.add('next');
+        cellElement.classList.remove('active');
     }
     //　前回アクティブだったボードとマウスホバーイベントを解除する(CSSのホバーは残る)
     removeActiveUltimateBoard() {
-        this.miniBoards[this.preActiveBoardIndex].cells.forEach(cell => {
-            cell.element.classList.remove('active');
-            cell.element.removeEventListener("mouseover", this.ultimateEventMouseHover);
-            cell.element.removeEventListener("mouseleave", this.ultimateEventMouseLeave);
-        });
+        if (this.preActiveBoardIndex !== null && this.miniBoards[this.preActiveBoardIndex]) {
+            this.miniBoards[this.preActiveBoardIndex].cells.forEach(cell => {
+                cell.element.classList.remove('active');
+                cell.element.removeEventListener("mouseover", this.boundHover);
+                cell.element.removeEventListener("mouseleave", this.boundLeave);
+            });
+        }
     }
     // ゲームリセットやコンテニュー時に大きいX,OをボードのCSSクラスから削除
     removeLargeXOonUltimateBoard() {
-        this.miniBoards.forEach((miniBoard, boardIndex) => {
-            if (miniBoard._miniBoard.classList.contains('wonO')) {
-                this.miniBoards[boardIndex]._miniBoard.classList.remove('wonO');
-                this.miniBoards[boardIndex]._miniBoard.removeAttribute('data-winner', 'O');
-            } else if (miniBoard._miniBoard.classList.contains('wonX')) {
-                this.miniBoards[boardIndex]._miniBoard.classList.remove('wonX');
-                this.miniBoards[boardIndex]._miniBoard.removeAttribute('data-winner', 'X');
+        this.miniBoards.forEach((board) => {
+            if (board.miniBoard.classList.contains('wonO')) {
+                board.miniBoard.classList.remove('wonO');
+                board.miniBoard.removeAttribute('data-winner');
+            }
+            else if (board.miniBoard.classList.contains('wonX')) {
+                board.miniBoard.classList.remove('wonX');
+                board.miniBoard.removeAttribute('data-winner');
             }
         });
     }

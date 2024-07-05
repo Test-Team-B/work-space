@@ -14,9 +14,9 @@ export class UltimateBoard extends Board {
         super(size, parentElement, game);
         this.miniBoards = [];
         this.currentBoardIndex = null;
+        this.preActiveBoardIndex = null; // 追加: 前回アクティブ(赤く表示)だったボードのindexを追跡するため
         this.miniBoardResult = Array(size * size).fill('');
         this.parentElement  = document.querySelector('.ultimate__board__container') as HTMLElement;
-        this.preActiveBoardIndex = null; // 追加: 前回アクティブ(赤く表示)だったボードのindexを追跡するため
         this.boundHover = this.ultimateEventMouseHover.bind(this);
         this.boundLeave = this.ultimateEventMouseLeave.bind(this);
         this.createUltimateBoards(size, parentElement, game);
@@ -36,7 +36,7 @@ export class UltimateBoard extends Board {
             parentElement.appendChild(miniBoardElement);
 
             const miniBoard = new Board(size, miniBoardElement, game)
-            miniBoard.cells.forEach(cell => {
+            miniBoard.cells.forEach((cell, i) => { // 追加: ミニボードのindexを追跡するため
                 cell.element.classList.remove('board__container__cell');
                 cell.element.classList.add('ultimate__mini-board-cell');
                 // 追加: mouseover&mouseleave イベントを追加　現在のホバーしているセルと同じindexのボードをグレースケールで表示
@@ -59,21 +59,21 @@ export class UltimateBoard extends Board {
     // セルにマーク
     public ultimateMarkCell(boardIndex: number, cellIndex: number, mark: string): void {
         this.miniBoards[boardIndex].markCell(cellIndex, mark);
-        // 追加: セルがマークされた後、そのセルのindexと同じボードが制覇されてない時セルを赤く表示しアクティブボードにする
-        if (this.miniBoardResult[cellIndex] == '') {
-            this.miniBoards[cellIndex].cells.forEach(cell => { 
-                    cell.element.classList.add('active');
-                    cell.element.addEventListener("mouseover", this.ultimateEventMouseHover);
-                    cell.element.addEventListener("mouseleave", this.ultimateEventMouseLeave);
+         // セルがマークされた後、そのセルのindexと同じボードが制覇されていない場合、セルを赤く表示しアクティブボードにする
+         if (this.miniBoardResult[cellIndex] === '') {
+            this.miniBoards[cellIndex].cells.forEach(cell => {
+                cell.element.classList.add('active');
+                cell.element.addEventListener("mouseover", this.boundHover);
+                cell.element.addEventListener("mouseleave", this.boundLeave);
             });
         }
-        // 追加: 前回アクティブだったボードが存在し、preアクティブと次のボードのindexが同じではない場合preアクティブボードとホバーイベントを解除する
-        if (this.preActiveBoardIndex != null && this.preActiveBoardIndex != cellIndex) {
+
+        // 前回アクティブだったボードが存在し、preアクティブと次のボードのindexが同じではない場合、preアクティブボードとホバーイベントを解除する
+        if (this.preActiveBoardIndex != null && this.preActiveBoardIndex !== cellIndex) {
             this.miniBoards[this.preActiveBoardIndex].cells.forEach(cell => {
-                cell.element.classList.remove('active');
-                cell.element.removeEventListener('mouseover', this.ultimateEventMouseHover);
-                cell.element.removeEventListener('mouseleave', this.ultimateEventMouseLeave);
-                cell.element.classList.remove('next');
+                cell.element.classList.remove('active', 'next');
+                cell.element.removeEventListener('mouseover', this.boundHover);
+                cell.element.removeEventListener('mouseleave', this.boundLeave);
             });
         }
         this.preActiveBoardIndex = cellIndex;
