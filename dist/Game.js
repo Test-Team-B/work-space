@@ -21,6 +21,7 @@ export class Game {
     }
     // ゲームを初期化
     initializeGame() {
+        this._currentPlayer = this._players['X'];
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         this.handleAddClick();
     }
@@ -40,8 +41,8 @@ export class Game {
         else {
             localStorage.removeItem('ticTacToeNormalState');
         }
-        this.resetScores();
         this.initializeGame();
+        this.resetScores();
         this.handleClearBoard();
     }
     // プレイヤー交代
