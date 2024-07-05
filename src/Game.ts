@@ -46,6 +46,11 @@ export class Game {
 
     // ゲームをリスタート
     public resetGame(): void {
+        if (this.ultimateMode) {
+            localStorage.removeItem('ticTacToeUltimateState');
+        } else {
+            localStorage.removeItem('ticTacToeNormalState');
+        }
         this.resetScores();
         this.initializeGame();
         this.handleClearBoard();

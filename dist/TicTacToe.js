@@ -69,10 +69,8 @@ class TicTacToe {
     // ゲームをlocalStorageを含めリセットする
     _resetGame() {
         var _a, _b;
-        const confirmation = confirm("全ての履歴が消えます。本当にリセットしますか？");
+        const confirmation = confirm("本当にリセットしますか？");
         if (confirmation) {
-            localStorage.removeItem('ticTacToeNormalState');
-            localStorage.removeItem('ticTacToeUltimateState');
             (_a = this.game) === null || _a === void 0 ? void 0 : _a.resetGame();
             (_b = this.game) === null || _b === void 0 ? void 0 : _b.saveGameStorage();
         }
