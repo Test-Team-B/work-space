@@ -48,16 +48,17 @@ export class UltimateBoard extends Board {
         if (this.miniBoardResult[cellIndex] === '') {
             this.miniBoards[cellIndex].cells.forEach(cell => {
                 cell.element.classList.add('active');
-                cell.element.addEventListener("mouseover", this.ultimateEventMouseHover);
-                cell.element.addEventListener("mouseleave", this.ultimateEventMouseLeave);
+                cell.element.addEventListener("mouseover", this.boundHover);
+                cell.element.addEventListener("mouseleave", this.boundLeave);
             });
         }
         // 前回アクティブだったボードが存在し、preアクティブと次のボードのindexが同じではない場合、preアクティブボードとホバーイベントを解除する
         if (this.preActiveBoardIndex != null && this.preActiveBoardIndex !== cellIndex) {
             this.miniBoards[this.preActiveBoardIndex].cells.forEach(cell => {
                 cell.element.classList.remove('active');
-                cell.element.removeEventListener('mouseover', this.ultimateEventMouseHover);
-                cell.element.removeEventListener('mouseleave', this.ultimateEventMouseLeave);
+                cell.element.removeEventListener('mouseover', this.boundHover);
+                cell.element.removeEventListener('mouseleave', this.boundLeave);
+                cell.element.classList.remove('next'); // @audit 5 イベントを消してる最中にホバーをしてるとnextが消えないので追加
             });
         }
         this.preActiveBoardIndex = cellIndex;
@@ -151,19 +152,15 @@ export class UltimateBoard extends Board {
     }
     // セルがマウスホバーされたときセルを赤く表示(アクティブ)する
     ultimateEventMouseHover(event) {
-        // const cellElement = event.target;
-        // cellElement.classList.add('active');
-        // cellElement.classList.remove('next');
-        event.target.classList.remove('next');
-        event.target.classList.add('active');
+        const cellElement = event.target;
+        cellElement.classList.add('next'); // @audit 1
+        cellElement.classList.remove('active');// @audit 2
     }
     // セルがホバーされたときセルのアクティブを解除する
     ultimateEventMouseLeave(event) {
-        // const cellElement = event.target;
-        // cellElement.classList.add('next');
-        // cellElement.classList.remove('active');
-        event.target.classList.remove('active');
-        event.target.classList.add('next');
+        const cellElement = event.target;
+        cellElement.classList.add('active');// @audit 3
+        cellElement.classList.remove('next');// @audit 4
     }
     //　前回アクティブだったボードとマウスホバーイベントを解除する(CSSのホバーは残る)
     removeActiveUltimateBoard() {
