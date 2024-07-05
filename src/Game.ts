@@ -68,7 +68,7 @@ export class Game {
     }
 
     // スコアボードの更新
-    public updateScores(isUltimateBoard: boolean = false): void {
+    private updateScores(isUltimateBoard: boolean = false): void {
         if (isUltimateBoard) {
             document.getElementById('ultimate-scoreboard__X-score')!.innerText = `${this._scores['X']}`;
             document.getElementById('ultimate-scoreboard__O-score')!.innerText = `${this._scores['O']}`;
@@ -91,13 +91,13 @@ export class Game {
     }
 
     // 名前入力画面から名前だけ変更
-    public updatePlayerNamesForm(): void {
+    private updatePlayerNamesForm(): void {
         (document.getElementById('name-setting__form__player1') as HTMLInputElement).value = this._players['X'].name;
         (document.getElementById('name-setting__form__player2') as HTMLInputElement).value = this._players['O'].name;
     }
 
     // クリアボードの条件分け
-    public handleClearBoard(): void {
+    private handleClearBoard(): void {
         if (this._board instanceof UltimateBoard) {
             this._board.clearUltimateBoard();
             this._board.miniBoardResult.fill('');
@@ -107,7 +107,7 @@ export class Game {
     }
 
     // クリックイベント付与の場合分け
-    public handleAddClick(): void {
+    private handleAddClick(): void {
         if (this.ultimateMode) {
             (this._board as UltimateBoard).ultimateAddClickHandlers();
             (this._board as UltimateBoard).miniBoardResult.fill('');
@@ -116,7 +116,7 @@ export class Game {
         }
     }
 
-    public difficultyOfCPU(): void {
+    private difficultyOfCPU(): void {
         switch (this._currentPlayer.isCPU) {
             case 'easy':
                 this.playEasyCPU();
@@ -136,7 +136,7 @@ export class Game {
         }
     }
 
-    public playEasyCPU(): void {
+    private playEasyCPU(): void {
         if (!this._isCPUThinking) {
             this._isCPUThinking = true;
             this.executeEasyCPUTurn();
@@ -216,7 +216,7 @@ export class Game {
         }
     }
 
-    public hardModeCPU(): void {
+    private hardModeCPU(): void {
         console.log("ハードモード")
         this._isCPUThinking = true;
         setTimeout(() => {

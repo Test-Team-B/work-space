@@ -1,5 +1,4 @@
 import { Game } from './Game.js';
-import { Board } from './Board.js';
 
 const boardSize = 3;
 
@@ -11,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 class TicTacToe {
     private game: Game | null = null;
-    private board: Board | null = null;
     private submitButton: HTMLElement;
     private continueButton: HTMLElement;
     private resetButton: HTMLElement;
@@ -101,7 +99,7 @@ class TicTacToe {
     }
     
     // ゲームインスタンスの作成
-    public createGame(): Game {
+    private createGame(): Game {
         const isCPUMode = this.cpuLevelSelect();
         const isUltimate = this.ultimateCheckBox.checked;
         const playerXName = (document.getElementById('name-setting__form__player1') as HTMLInputElement).value || 'Player X';
@@ -119,7 +117,7 @@ class TicTacToe {
     }
 
      // アルティメットモードの切り替えの連動
-     private handleUltimateCheckBox(changedCheckBox: HTMLInputElement): void {
+    private handleUltimateCheckBox(changedCheckBox: HTMLInputElement): void {
         if (changedCheckBox === this.ultimateCheckBox) {
             this.ultimateNameSettingCheckBox.checked = this.ultimateCheckBox.checked;
         } else if (changedCheckBox === this.ultimateNameSettingCheckBox) {
