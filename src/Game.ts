@@ -346,12 +346,11 @@ export class Game {
             state = JSON.parse(normalState);
         }
         if (state) {
-            console.log(state)
+            this._currentPlayer = state.currentPlayer;
             this._scores = {
                 'X': state.scores ? state.scores['X'] : 0,
                 'O': state.scores ? state.scores['O'] : 0
             }
-            console.log(this._scores)
             this.ultimateMode = state.isUltimate;
             if (state.isUltimate) {
                 console.log("アルティメット・ローカルストレージ");
