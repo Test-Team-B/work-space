@@ -31,6 +31,7 @@ export class Game {
 
     // ゲームを初期化
     public initializeGame(): void {
+        this._currentPlayer = this._players['X'];
         this._winningMessageTextElement.innerText = `${this.currentPlayer.name}'s Turn`;
         this.handleAddClick();
     }
@@ -46,8 +47,14 @@ export class Game {
 
     // ゲームをリスタート
     public resetGame(): void {
+        if (this.ultimateMode) {
+            localStorage.removeItem('ticTacToeUltimateState');
+        } else {
+            localStorage.removeItem('ticTacToeNormalState');
+        }
         this.resetScores();
         this.initializeGame();
+        this.resetScores();
         this.handleClearBoard();
     }
 
@@ -61,10 +68,12 @@ export class Game {
 
     // スコアをリセット
     private resetScores(): void {
+        console.log("スコアをリセットします")
         this._scores = {
             'X': 0,
             'O': 0
         };
+        this.updateScores(this.ultimateMode);
     }
 
     // スコアボードの更新
@@ -318,6 +327,7 @@ export class Game {
                     'X': this._scores['X'],
                     'O': this._scores['O']
                 },
+                isCPU: this._players['O'].isCPU,
                 isUltimate: this.ultimateMode,
                 board: this.ultimateMode ? (this._board as UltimateBoard).getUltimateBoardState() : this._board.getBoardState(),
             };
@@ -344,12 +354,11 @@ export class Game {
             state = JSON.parse(normalState);
         }
         if (state) {
-            console.log(state)
+            this._currentPlayer = state.currentPlayer;
             this._scores = {
                 'X': state.scores ? state.scores['X'] : 0,
                 'O': state.scores ? state.scores['O'] : 0
             }
-            console.log(this._scores)
             this.ultimateMode = state.isUltimate;
             if (state.isUltimate) {
                 console.log("アルティメット・ローカルストレージ");

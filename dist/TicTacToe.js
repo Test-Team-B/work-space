@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
 class TicTacToe {
     constructor() {
         this.game = null;
-        this.board = null;
         this.submitButton = document.getElementById('name-setting__form__submit');
         this.continueButton = document.getElementById('info__btn__continue');
         this.resetButton = document.getElementById('info__btn__reset');
@@ -34,13 +33,17 @@ class TicTacToe {
         this.ultimateNameSettingCheckBox.addEventListener('change', () => this.handleUltimateCheckBox(this.ultimateNameSettingCheckBox));
         this.levelSelect.addEventListener('change', () => this.cpuLevelSelect());
         this.cpuCheckBox.addEventListener('change', () => this.updateCPUCheck());
-        this.loadBoardNames(); // localStorageから名前フォームの初期化
+        this.loadNameSetting(); // localStorageから名前フォームの初期化
     }
-    // localStorageのプレイヤー名を名前入力フォームに初期化
-    loadBoardNames() {
-        const normalState = localStorage.getItem('ticTacToeNormalState');
-        if (normalState) {
-            let state = JSON.parse(normalState);
+    // localStorageの履歴をNameSetting画面に反映
+    loadNameSetting() {
+        const statement = localStorage.getItem('ticTacToeNormalState');
+        if (statement) {
+            let state = JSON.parse(statement);
+            this.cpuCheckBox.checked = state.isCPU;
+            if (this.cpuCheckBox.checked) {
+                this.updateCPUCheck();
+            }
             document.getElementById('name-setting__form__player1').value = state.players.X.name;
             if (state.players.O.name !== "CPU") {
                 document.getElementById('name-setting__form__player2').value = state.players.O.name;
@@ -50,13 +53,18 @@ class TicTacToe {
     // スタートボタンを押したらフォームが消えゲームがスタートする
     submitName(e) {
         e.preventDefault();
-        this.gameModeChange();
         this.toggleElementVisibility(this.nameBoard, false);
         this.startGame();
+        if (this.cpuCheckBox.checked) {
+            const options = document.getElementById('options');
+            this.displayChange(options, null);
+        }
     }
     // 名前を受け取りゲームインスタンスを作成、ゲームをスタートする
     startGame() {
-        this.game = this.createGame();
+        const isCPUMode = this.cpuLevelSelect(true);
+        const isUltimate = this.ultimateCheckBox.checked;
+        this.game = this.createGame(isCPUMode, isUltimate);
         this.game.initializeGame();
         this.game.saveGameStorage();
     }
@@ -69,18 +77,14 @@ class TicTacToe {
     // ゲームをlocalStorageを含めリセットする
     _resetGame() {
         var _a, _b;
-        const confirmation = confirm("全ての履歴が消えます。本当にリセットしますか？");
+        const confirmation = confirm("本当にリセットしますか？");
         if (confirmation) {
-            localStorage.removeItem('ticTacToeNormalState');
-            localStorage.removeItem('ticTacToeUltimateState');
             (_a = this.game) === null || _a === void 0 ? void 0 : _a.resetGame();
             (_b = this.game) === null || _b === void 0 ? void 0 : _b.saveGameStorage();
         }
     }
     // ゲームインスタンスの作成
-    createGame() {
-        const isCPUMode = this.cpuLevelSelect();
-        const isUltimate = this.ultimateCheckBox.checked;
+    createGame(isCPUMode, isUltimate) {
         const playerXName = document.getElementById('name-setting__form__player1').value || 'Player X';
         const playerOName = document.getElementById('name-setting__form__player2').value || 'Player O';
         return new Game(playerXName, playerOName, boardSize, isCPUMode, isUltimate);
@@ -98,10 +102,12 @@ class TicTacToe {
     handleUltimateCheckBox(changedCheckBox) {
         if (changedCheckBox === this.ultimateCheckBox) {
             this.ultimateNameSettingCheckBox.checked = this.ultimateCheckBox.checked;
+            this.startGame();
         }
         else if (changedCheckBox === this.ultimateNameSettingCheckBox) {
             this.ultimateCheckBox.checked = this.ultimateNameSettingCheckBox.checked;
         }
+        this.gameModeChange();
     }
     // 画面を消したり表示させたり
     displayChange(showElement, hideElement) {
@@ -119,7 +125,7 @@ class TicTacToe {
         this.playerONameFormElement.value = this.cpuCheckBox.checked ? 'CPU' : '';
     }
     // CPUのレベルの選択
-    cpuLevelSelect() {
+    cpuLevelSelect(btn = false) {
         let isCPUMode = null;
         if (this.cpuCheckBox.checked) {
             const selectText = this.levelSelect.options[this.levelSelect.selectedIndex].text;
@@ -134,7 +140,14 @@ class TicTacToe {
                     isCPUMode = "hard";
                     break;
                 default:
+                    isCPUMode = "non cpu";
                     break;
+            }
+            if (!btn) {
+                const isUltimate = this.ultimateCheckBox.checked;
+                this.game = this.createGame(isCPUMode, isUltimate);
+                this.game.initializeGame();
+                this.game.saveGameStorage();
             }
         }
         return isCPUMode;
