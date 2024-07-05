@@ -84,9 +84,7 @@ class TicTacToe {
         }
     }
     // ゲームインスタンスの作成
-    createGame() {
-        const isCPUMode = this.cpuLevelSelect();
-        const isUltimate = this.ultimateCheckBox.checked;
+    createGame(isCPUMode, isUltimate) {
         const playerXName = document.getElementById('name-setting__form__player1').value || 'Player X';
         const playerOName = document.getElementById('name-setting__form__player2').value || 'Player O';
         return new Game(playerXName, playerOName, boardSize, isCPUMode, isUltimate);
