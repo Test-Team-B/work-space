@@ -130,11 +130,6 @@ export class Game {
             case 'easy':
                 this.playEasyCPU();
                 break;
-
-            case 'medium':
-
-                break;
-
             case 'hard':
                 this.hardModeCPU();
                 break;
@@ -226,7 +221,6 @@ export class Game {
     }
 
     private hardModeCPU(): void {
-        console.log("ハードモード")
         this._isCPUThinking = true;
         setTimeout(() => {
             const bestMove = this.findBestMove();
@@ -246,7 +240,6 @@ export class Game {
     }
 
     private findBestMove(): number {
-        console.log("ファインドベストブーム")
         let bestScore = -Infinity;
         let bestMove = -1;
         const emptyCells = this._board.getEmptyCells();

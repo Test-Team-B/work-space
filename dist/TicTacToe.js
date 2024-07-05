@@ -133,9 +133,6 @@ class TicTacToe {
                 case 'EASY':
                     isCPUMode = "easy";
                     break;
-                case 'MEDIUM':
-                    isCPUMode = "medium";
-                    break;
                 case 'HARD':
                     isCPUMode = "hard";
                     break;

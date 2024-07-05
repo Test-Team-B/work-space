@@ -41,6 +41,7 @@ export class Game {
         else {
             localStorage.removeItem('ticTacToeNormalState');
         }
+        this.resetScores();
         this.initializeGame();
         this.resetScores();
         this.handleClearBoard();
@@ -113,8 +114,6 @@ export class Game {
         switch (this._currentPlayer.isCPU) {
             case 'easy':
                 this.playEasyCPU();
-                break;
-            case 'medium':
                 break;
             case 'hard':
                 this.hardModeCPU();
@@ -201,7 +200,6 @@ export class Game {
         }
     }
     hardModeCPU() {
-        console.log("ハードモード");
         this._isCPUThinking = true;
         setTimeout(() => {
             const bestMove = this.findBestMove();
@@ -222,7 +220,6 @@ export class Game {
         }, 1000);
     }
     findBestMove() {
-        console.log("ファインドベストブーム");
         let bestScore = -Infinity;
         let bestMove = -1;
         const emptyCells = this._board.getEmptyCells();
