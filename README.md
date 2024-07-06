@@ -116,8 +116,6 @@ ___
 ## HTML-CSS関連図
 ![HTML-CSS Diagram](images/plantUML/ClassDiagram/html-css.drawio.png)
 
-## アクティビティ図
-
 ## 作成の経緯
 [Recursion](https://recursionist.io/) というコンピュータサイエンスの学習プラットフォームサービスで、チーム開発を行いました。Gitの使い方を学ぶことを目的とした開発であったため、簡単なゲームを作成しながらGitやGitHubの使い方を学びました。Gitの使い方に慣れてきたところで追加機能をつけるという方向になり、ミーティングを重ねながら機能を実装していきました。
 
