@@ -10,6 +10,14 @@ export class Game {
     private _winningMessageTextElement: HTMLElement;
     private _ultimateWinningMessageTextElement: HTMLElement;
     private ultimateMode: boolean;
+    private scoreBoardScoreX: HTMLElement;
+    private scoreBoardScoreO: HTMLElement;
+    private scoreBoardNameX: HTMLElement;
+    private scoreBoardNameO: HTMLElement;
+    private ultimateScoreboardScoreX: HTMLElement;
+    private ultimateScoreboardScoreO: HTMLElement;
+    private ultimateScoreboardNameX: HTMLElement;
+    private ultimateScoreboardNameO: HTMLElement;
 
     constructor(playerXName: string, playerOName: string, boardSize: number, isCPUMode: string | null = null, ultimateBoard: boolean = false) {
         this._players = {
@@ -24,7 +32,15 @@ export class Game {
         this.ultimateMode = ultimateBoard;
         this._board = this.loadPlayBoard(boardSize);
         this._winningMessageTextElement = document.getElementById('info__message')!;
-        this._ultimateWinningMessageTextElement = document.getElementById('ultimate-info__message')!;
+        this._ultimateWinningMessageTextElement = document.getElementById('ultimate-info__message') as HTMLElement;
+        this.scoreBoardScoreX = document.getElementById('scoreboard__X__score') as HTMLElement;
+        this.scoreBoardScoreO = document.getElementById('scoreboard__O__score') as HTMLElement;
+        this.scoreBoardNameX = document.getElementById('scoreboard__X__name') as HTMLElement;
+        this.scoreBoardNameO = document.getElementById('scoreboard__O__name') as HTMLElement;
+        this.ultimateScoreboardScoreX = document.getElementById('ultimate-scoreboard__X-score') as HTMLElement;
+        this.ultimateScoreboardScoreO = document.getElementById('ultimate-scoreboard__O-score') as HTMLElement;
+        this.ultimateScoreboardNameX = document.getElementById('scoreboard__X__name') as HTMLElement;
+        this.ultimateScoreboardNameO = document.getElementById('scoreboard__O__name') as HTMLElement;
         this.updateScoreBoardNames(ultimateBoard);
         this.updateScores(ultimateBoard);
     }
@@ -52,7 +68,6 @@ export class Game {
         } else {
             localStorage.removeItem('ticTacToeNormalState');
         }
-        this.resetScores();
         this.initializeGame();
         this.resetScores();
         this.handleClearBoard();
@@ -79,27 +94,27 @@ export class Game {
     // スコアボードの更新
     private updateScores(isUltimateBoard: boolean = false): void {
         if (isUltimateBoard) {
-            document.getElementById('ultimate-scoreboard__X-score')!.innerText = `${this._scores['X']}`;
-            document.getElementById('ultimate-scoreboard__O-score')!.innerText = `${this._scores['O']}`;
+            this.ultimateScoreboardScoreX.innerText = `${this._scores['X']}`;
+            this.ultimateScoreboardScoreO.innerText = `${this._scores['O']}`;
         } else {
-            document.getElementById('scoreboard__X__score')!.innerText = `${this._scores['X']}`;
-            document.getElementById('scoreboard__O__score')!.innerText = `${this._scores['O']}`;
+            this.scoreBoardScoreX.innerText = `${this._scores['X']}`;
+            this.scoreBoardScoreO.innerText = `${this._scores['O']}`;
         }
     }
 
     // スコアボードの名前を初期化
     private updateScoreBoardNames(isUltimateBoard: boolean = false): void {
         if (isUltimateBoard) {
-            document.getElementById('ultimate-scoreboard__X-name')!.innerText = this._players['X'].name;
-            document.getElementById('ultimate-scoreboard__O-name')!.innerText = this._players['O'].name;
+            this.ultimateScoreboardNameX.innerText = this._players['X'].name;
+            this.ultimateScoreboardNameO.innerText = this._players['O'].name;
         } else {
-            document.getElementById('scoreboard__X__name')!.innerText = this._players['X'].name;
-            document.getElementById('scoreboard__O__name')!.innerText = this._players['O'].name;
+            this.scoreBoardNameX.innerText = this._players['X'].name;
+            this.scoreBoardNameO.innerText = this._players['O'].name;
         }
         this.updatePlayerNamesForm();
     }
 
-    // 名前入力画面から名前だけ変更
+    // 名前のアップデート
     private updatePlayerNamesForm(): void {
         (document.getElementById('name-setting__form__player1') as HTMLInputElement).value = this._players['X'].name;
         (document.getElementById('name-setting__form__player2') as HTMLInputElement).value = this._players['O'].name;

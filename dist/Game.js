@@ -16,6 +16,14 @@ export class Game {
         this._board = this.loadPlayBoard(boardSize);
         this._winningMessageTextElement = document.getElementById('info__message');
         this._ultimateWinningMessageTextElement = document.getElementById('ultimate-info__message');
+        this.scoreBoardScoreX = document.getElementById('scoreboard__X__score');
+        this.scoreBoardScoreO = document.getElementById('scoreboard__O__score');
+        this.scoreBoardNameX = document.getElementById('scoreboard__X__name');
+        this.scoreBoardNameO = document.getElementById('scoreboard__O__name');
+        this.ultimateScoreboardScoreX = document.getElementById('ultimate-scoreboard__X-score');
+        this.ultimateScoreboardScoreO = document.getElementById('ultimate-scoreboard__O-score');
+        this.ultimateScoreboardNameX = document.getElementById('scoreboard__X__name');
+        this.ultimateScoreboardNameO = document.getElementById('scoreboard__O__name');
         this.updateScoreBoardNames(ultimateBoard);
         this.updateScores(ultimateBoard);
     }
@@ -64,27 +72,27 @@ export class Game {
     // スコアボードの更新
     updateScores(isUltimateBoard = false) {
         if (isUltimateBoard) {
-            document.getElementById('ultimate-scoreboard__X-score').innerText = `${this._scores['X']}`;
-            document.getElementById('ultimate-scoreboard__O-score').innerText = `${this._scores['O']}`;
+            this.ultimateScoreboardScoreX.innerText = `${this._scores['X']}`;
+            this.ultimateScoreboardScoreO.innerText = `${this._scores['O']}`;
         }
         else {
-            document.getElementById('scoreboard__X__score').innerText = `${this._scores['X']}`;
-            document.getElementById('scoreboard__O__score').innerText = `${this._scores['O']}`;
+            this.scoreBoardScoreX.innerText = `${this._scores['X']}`;
+            this.scoreBoardScoreO.innerText = `${this._scores['O']}`;
         }
     }
     // スコアボードの名前を初期化
     updateScoreBoardNames(isUltimateBoard = false) {
         if (isUltimateBoard) {
-            document.getElementById('ultimate-scoreboard__X-name').innerText = this._players['X'].name;
-            document.getElementById('ultimate-scoreboard__O-name').innerText = this._players['O'].name;
+            this.ultimateScoreboardNameX.innerText = this._players['X'].name;
+            this.ultimateScoreboardNameO.innerText = this._players['O'].name;
         }
         else {
-            document.getElementById('scoreboard__X__name').innerText = this._players['X'].name;
-            document.getElementById('scoreboard__O__name').innerText = this._players['O'].name;
+            this.scoreBoardNameX.innerText = this._players['X'].name;
+            this.scoreBoardNameO.innerText = this._players['O'].name;
         }
         this.updatePlayerNamesForm();
     }
-    // 名前入力画面から名前だけ変更
+    // 名前のアップデート
     updatePlayerNamesForm() {
         document.getElementById('name-setting__form__player1').value = this._players['X'].name;
         document.getElementById('name-setting__form__player2').value = this._players['O'].name;
