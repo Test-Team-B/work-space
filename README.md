@@ -142,6 +142,9 @@ ___
 ### UML図
 開発を進めるにあたり全体像の把握や、HTMLのクラス・idの共有を行うためにUML図の作成を行いました。Visual Studio Codeと互換性のあるplantUMLやdraw.ioを使用しGit上で共有を行いました。
 
+### ブランチ設計
+Git、GitHubの使い方を学ぶことが今回のチーム開発の主な目的だったため、シンプルで直感的なブランチ設計であるGit Hub Flowを採用しました。小さな変更を頻繁にマージすることで、バグや問題を早期に発見し、修正していきました。
+
 ## 参考文献
 - 参考ドキュメント
   - [Web API](https://developer.mozilla.org/ja/docs/Web/API)
