@@ -55,13 +55,11 @@ export class Board {
     }
     // セルにマークをつける
     markCell(cellIndex, mark) {
-        const optionsClickSound = document.getElementById('click-sound');
+        const muteCheckBox = document.getElementById('click-sound');
         const mouseclick = new Audio();
         mouseclick.src = "https://uploads.sitepoint.com/wp-content/uploads/2023/06/1687569402mixkit-fast-double-click-on-mouse-275.wav";
-        mouseclick.play();
-        optionsClickSound.addEventListener('click', (e) => {
-            mouseclick.pause();
-        });
+        if (!muteCheckBox.checked)
+            mouseclick.play();
         this._cells[cellIndex].mark = mark;
         this._cells[cellIndex].element.classList.add(mark);
         this._cells[cellIndex].element.textContent = mark;
