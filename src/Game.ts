@@ -143,10 +143,14 @@ export class Game {
     private difficultyOfCPU(): void {
         switch (this._currentPlayer.isCPU) {
             case 'easy':
-                this.playEasyCPU();
+                this.easyModeCPUMove();
                 break;
             case 'hard':
-                this.hardModeCPU();
+                if (this._board instanceof UltimateBoard) {
+                    this.easyModeCPUMove();
+                } else {
+                    this.miniHardCPU();
+                }
                 break;
 
             default:
@@ -155,40 +159,35 @@ export class Game {
         }
     }
 
-    private playEasyCPU(): void {
-        if (!this._isCPUThinking) {
-            this._isCPUThinking = true;
-            this.executeEasyCPUTurn();
-        }
-    }
-
-    private executeEasyCPUTurn(): void {
+    private easyModeCPUMove(): void {
         setTimeout(() => {
+            // UltimateBoardの場合の選択
             if (this._board instanceof UltimateBoard) {
                 const ultimateBoard = this._board as UltimateBoard;
-                this.ultimateBoardCPU(ultimateBoard);
+                this.ultEasyCPU(ultimateBoard);
             } else {
-                this.playNormalEasyCPUTurn();
+                // miniBoardの場合の選択
+                this.miniEasyCPU();
             }
 
             this._isCPUThinking = false;
 
+            // ボードの状態を確認
             if (this._board instanceof UltimateBoard) {
                 if (this._board.ultimateCheckWin()) {
                     this.handleEndGame(false, true);
                 } else if (this._board.ultimateCheckDraw()) {
                     this.handleEndGame(true, true);
                 } else if (this._currentPlayer.isCPU) {
-                    // CPUが勝った場合、もう一度CPUの手番にする
-                    this.playEasyCPU();
+                    // CPUが勝った場合、再度CPUが手を打つ
+                    this._isCPUThinking = true;
+                    this.easyModeCPUMove();
                 }
             } else {
                 if (this._board.checkWin()) {
                     this.handleEndGame(false);
                 } else if (this._board.checkDraw()) {
                     this.handleEndGame(true);
-                } else if (this._currentPlayer.isCPU) {
-                    this.playEasyCPU();
                 }
             }
 
@@ -196,7 +195,8 @@ export class Game {
         }, 1000);
     }
 
-    private ultimateBoardCPU(ultimateBoard: UltimateBoard): void {
+
+    private ultEasyCPU(ultimateBoard: UltimateBoard): void {
         let availableBoards: number[] = [];
         let availableCells: { boardIndex: number, cellIndex: number }[] = [];
 
@@ -223,7 +223,7 @@ export class Game {
         }
     }
 
-    private playNormalEasyCPUTurn(): void {
+    private miniEasyCPU(): void {
         let emptyCells = this._board.cells
             .map((cell, index) => ({ cellIndex: index, cell }))
             .filter(({ cell }) => !cell.mark);
@@ -234,7 +234,7 @@ export class Game {
         }
     }
 
-    private hardModeCPU(): void {
+    private miniHardCPU(): void {
         this._isCPUThinking = true;
         setTimeout(() => {
             const bestMove = this.findBestMove();

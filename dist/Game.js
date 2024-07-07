@@ -120,35 +120,34 @@ export class Game {
     difficultyOfCPU() {
         switch (this._currentPlayer.isCPU) {
             case 'easy':
-                this.playEasyCPU();
-                break;
-            case 'medium':
+                this.easyModeCPUMove();
                 break;
             case 'hard':
-                this.hardModeCPU();
+                if (this._board instanceof UltimateBoard) {
+                    this.easyModeCPUMove();
+                }
+                else {
+                    this.miniHardCPU();
+                }
                 break;
             default:
                 this._currentPlayer = this._currentPlayer.mark === 'X' ? this._players['O'] : this._players['X'];
                 break;
         }
     }
-    playEasyCPU() {
-        if (!this._isCPUThinking) {
-            this._isCPUThinking = true;
-            this.executeEasyCPUTurn();
-        }
-    }
-    executeEasyCPUTurn() {
+    easyModeCPUMove() {
         setTimeout(() => {
+            // UltimateBoardの場合の選択
             if (this._board instanceof UltimateBoard) {
                 const ultimateBoard = this._board;
-                this.ultimateBoardCPU(ultimateBoard);
+                this.ultEasyCPU(ultimateBoard);
             }
             else {
-                this.playNormalEasyCPUTurn();
+                // miniBoardの場合の選択
+                this.miniEasyCPU();
             }
             this._isCPUThinking = false;
-            // CPUの手番が終わった後、ゲームの状態をチェック
+            // ボードの状態を確認
             if (this._board instanceof UltimateBoard) {
                 if (this._board.ultimateCheckWin()) {
                     this.handleEndGame(false, true);
@@ -157,8 +156,9 @@ export class Game {
                     this.handleEndGame(true, true);
                 }
                 else if (this._currentPlayer.isCPU) {
-                    // CPUが勝った場合、もう一度CPUの手番にする
-                    this.playEasyCPU();
+                    // CPUが勝った場合、再度CPUが手を打つ
+                    this._isCPUThinking = true;
+                    this.easyModeCPUMove();
                 }
             }
             else {
@@ -168,14 +168,11 @@ export class Game {
                 else if (this._board.checkDraw()) {
                     this.handleEndGame(true);
                 }
-                else if (this._currentPlayer.isCPU) {
-                    this.playEasyCPU();
-                }
             }
             this.saveGameStorage();
         }, 1000);
     }
-    ultimateBoardCPU(ultimateBoard) {
+    ultEasyCPU(ultimateBoard) {
         let availableBoards = [];
         let availableCells = [];
         if (ultimateBoard.currentBoardIndex !== null) {
@@ -199,7 +196,7 @@ export class Game {
             ultimateBoard.ultimateHandleCellClick(randomMove.cellIndex, randomMove.boardIndex);
         }
     }
-    playNormalEasyCPUTurn() {
+    miniEasyCPU() {
         let emptyCells = this._board.cells
             .map((cell, index) => ({ cellIndex: index, cell }))
             .filter(({ cell }) => !cell.mark);
@@ -208,8 +205,7 @@ export class Game {
             this._board.handleCellClick(randomCell.cellIndex);
         }
     }
-    hardModeCPU() {
-        console.log("ハードモード");
+    miniHardCPU() {
         this._isCPUThinking = true;
         setTimeout(() => {
             const bestMove = this.findBestMove();
@@ -230,7 +226,6 @@ export class Game {
         }, 1000);
     }
     findBestMove() {
-        console.log("ファインドベストブーム");
         let bestScore = -Infinity;
         let bestMove = -1;
         const emptyCells = this._board.getEmptyCells();
